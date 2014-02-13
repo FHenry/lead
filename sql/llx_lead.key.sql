@@ -19,3 +19,6 @@ ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_1 FOREIGN KEY (fk_c_status) RE
 
 ALTER TABLE llx_lead ADD INDEX idx_llx_lead_fk_c_type (fk_c_type);
 ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_2 FOREIGN KEY (fk_c_type) REFERENCES llx_c_lead_type (rowid);
+
+ALTER TABLE llx_lead ADD INDEX idx_llx_lead_fk_soc (fk_soc);
+ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_3 FOREIGN KEY (fk_soc) REFERENCES llx_societe (rowid);

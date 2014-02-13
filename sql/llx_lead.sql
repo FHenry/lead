@@ -17,9 +17,11 @@
 
 CREATE TABLE IF NOT EXISTS llx_lead (
 rowid 			integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
-ref			text NOT NULL,
+ref			varchar(50) NOT NULL,
+entity			integer NOT NULL DEFAULT 0,
 ref_ext 		text,
 ref_int 		text,
+fk_soc	 		integer NOT NULL,
 fk_c_status 		integer NOT NULL,
 fk_c_type 		integer  NOT NULL,
 date_closure 		datetime NOT NULL,

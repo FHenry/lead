@@ -90,7 +90,7 @@ class modLead extends DolibarrModules
             // Set this to 1 if module has its own barcode directory
             //'barcode' => 0,
             // Set this to 1 if module has its own models directory
-            //'models' => 0,
+            'models' => 1,
             // Set this to relative path of css if module has its own css file
             //'css' => '/lead/css/mycss.css.php',
             // Set here all hooks context managed by module
@@ -122,20 +122,24 @@ class modLead extends DolibarrModules
         // (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
         // Example:
         $this->const = array(
-            //	0=>array(
-            //		'MYMODULE_MYNEWCONST1',
-            //		'chaine',
-            //		'myvalue',
-            //		'This is a constant to add',
-            //		1
-            //	),
-            //	1=>array(
-            //		'MYMODULE_MYNEWCONST2',
-            //		'chaine',
-            //		'myvalue',
-            //		'This is another constant to add',
-            //		0
-            //	)
+            	0=>array(
+					'LEAD_ADDON',
+					'chaine',
+					'mod_lead_simple',
+					'Numbering lead rule',
+					0,
+					'allentities',
+					1
+				),
+				1=>array(
+					'LEAD_UNIVERSAL_MASK',
+					'chaine',
+					'',
+					'Numbering lead rule',
+					0,
+					'allentities',
+					1
+				)
         );
 
         // Array to add new pages in new tabs
@@ -170,6 +174,7 @@ class modLead extends DolibarrModules
             $conf->lead = (object) array();
             $conf->lead->enabled = 0;
         }
+        
       $this->dictionnaries=array(
 		'langs'=>'lead@lead',
 		'tabname'=>array(MAIN_DB_PREFIX."c_lead_status", MAIN_DB_PREFIX."c_lead_type"),		

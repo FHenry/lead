@@ -21,15 +21,17 @@
 # Module label 'ModuleXXXName'
 # (where XXX is value of numeric property 'numero' of module)
 Module103111Name = Affaires
+LeadLead = Affaires
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
 Module103111Desc =Gestion d'affaire
+LeadSimpleNumRefModelDesc=Renvoie le numéro sous la forme LEA-yymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0
 
 #
 # Page d'administration
 #
 LeadSetup = Configuration du module Affaires
-Settings = Réglages
+SettingsLead = Réglages
 LeadSetupPage = Page de réglage de Affaires
 
 #
@@ -76,3 +78,8 @@ LeadStatus_LOST=Lost
 LeadType_SUPP=Support
 LeadType_TRAIN=Trainning
 LeadType_ADVI=Consulting
+
+#
+# Card
+#
+LeadCommercial=Responsable

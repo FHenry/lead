@@ -32,7 +32,7 @@ if (! $res) {
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
 require_once '../lib/lead.lib.php';
-//require_once "../class/myclass.class.php";
+require_once "../class/lead.class.php";
 // Translations
 $langs->load("lead@lead");
 
@@ -43,10 +43,36 @@ if (! $user->admin) {
 
 // Parameters
 $action = GETPOST('action', 'alpha');
+$value = GETPOST('value','alpha');
+$label = GETPOST('label','alpha');
+$scandir = GETPOST('scandir','alpha');
 
 /*
  * Actions
  */
+
+if ($action == 'updateMask')
+{
+	$maskconstlead=GETPOST('maskconstlead','alpha');
+	$masklead=GETPOST('masklead','alpha');
+	if ($maskconstlead) $res = dolibarr_set_const($db,$maskconstlead,$masklead,'chaine',0,'',$conf->entity);
+
+	if (! $res > 0) $error++;
+
+	if (! $error)
+	{
+		setEventMessage($langs->trans("SetupSaved"),'mesgs');
+	}
+	else
+	{
+		setEventMessage($langs->trans("Error"),'errors');
+	}
+}
+
+else if ($action == 'setmod')
+{
+	dolibarr_set_const($db, "BUSINESSCASE_ADDON",$value,'chaine',0,'',$conf->entity);
+}
 
 /*
  * View
@@ -69,8 +95,115 @@ dol_fiche_head(
     "lead@lead"
 );
 
-// Setup page goes here
-echo $langs->trans("LeadSetupPage");
+
+/*
+ *  Module numerotation
+*/
+print_titre($langs->trans("LeadSetupPage"));
+
+$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
+
+print '<table class="noborder" width="100%">';
+print '<tr class="liste_titre">';
+print '<td>'.$langs->trans("Name")."</td>\n";
+print '<td>'.$langs->trans("Description")."</td>\n";
+print '<td nowrap>'.$langs->trans("Example")."</td>\n";
+print '<td align="center" width="60">'.$langs->trans("Status").'</td>';
+print '<td align="center" width="16">'.$langs->trans("Infos").'</td>';
+print '</tr>'."\n";
+
+clearstatcache();
+
+$form = new Form($db);
+
+foreach ($dirmodels as $reldir)
+{
+	$dir = dol_buildpath($reldir."core/modules/lead/");
+	
+	
+	if (is_dir($dir))
+	{ 
+		$handle = opendir($dir);
+		if (is_resource($handle))
+		{
+			$var=true;
+
+			while (($file = readdir($handle))!==false)
+			{
+				if ((substr($file, 0, 9) == 'mod_lead_') && substr($file, dol_strlen($file)-3, 3) == 'php')
+				{
+					$file = substr($file, 0, dol_strlen($file)-4);
+					require_once $dir.$file.'.php';
+						
+					$module = new $file;
+
+					// Show modules according to features level
+					if ($module->version == 'development'  && $conf->global->MAIN_FEATURES_LEVEL < 2) continue;
+					if ($module->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1) continue;
+
+					if ($module->isEnabled())
+					{
+						$var=!$var;
+						print '<tr '.$bc[$var].'><td>'.$module->nom."</td><td>\n";
+						print $module->info();
+						print '</td>';
+
+						// Show example of numbering module
+						print '<td class="nowrap">';
+						$tmp=$module->getExample();
+						if (preg_match('/^Error/',$tmp)) print '<div class="error">'.$langs->trans($tmp).'</div>';
+						elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
+						else print $tmp;
+						print '</td>'."\n";
+
+						print '<td align="center">';
+						if ($conf->global->LEAD_ADDON == "$file")
+						{
+							print img_picto($langs->trans("Activated"),'switch_on');
+						}
+						else
+						{
+							print '<a href="'.$_SERVER["PHP_SELF"].'?action=setmod&amp;value='.$file.'">';
+							print img_picto($langs->trans("Disabled"),'switch_off');
+							print '</a>';
+						}
+						print '</td>';
+
+						$businesscase=new Lead($db);
+						$businesscase->initAsSpecimen();
+
+						// Info
+						$htmltooltip='';
+						$htmltooltip.=''.$langs->trans("Version").': <b>'.$module->getVersion().'</b><br>';
+						$nextval=$module->getNextValue($user->id,$mysoc,$propal);
+						if ("$nextval" != $langs->trans("NotAvailable"))	// Keep " on nextval
+						{
+							$htmltooltip.=''.$langs->trans("NextValue").': ';
+							if ($nextval)
+							{
+								$htmltooltip.=$nextval.'<br>';
+							}
+							else
+							{
+								$htmltooltip.=$langs->trans($module->error).'<br>';
+							}
+						}
+
+						print '<td align="center">';
+						print $form->textwithpicto('',$htmltooltip,1,0);
+						print '</td>';
+
+						print "</tr>\n";
+					}
+				}
+			}
+			closedir($handle);
+		}
+	}
+}
+print "</table><br>\n";
+
+
 
 llxFooter();
 
