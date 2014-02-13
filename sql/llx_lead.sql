@@ -1,5 +1,5 @@
--- <one line to give the program's name and a brief idea of what it does.>
--- Copyright (C) <year>  <name of author>
+-- Manage Lead
+-- Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -13,3 +13,22 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+CREATE TABLE IF NOT EXISTS llx_lead (
+rowid 			integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ref			text NOT NULL,
+ref_ext 		text,
+ref_int 		text,
+fk_c_status 		integer NOT NULL,
+fk_c_type 		integer  NOT NULL,
+date_closure 		datetime NOT NULL,
+amount_prosp 		double(24,8) NOT NULL,
+fk_user_resp 		integer NOT NULL,
+description 		text,
+fk_user_author		integer	NOT NULL,
+datec			datetime  NOT NULL,
+fk_user_mod 		integer NOT NULL,
+tms 			timestamp NOT NULL
+)ENGINE=InnoDB;
+

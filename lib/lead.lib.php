@@ -1,6 +1,6 @@
 <?php
-/* <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) <year>  <name of author>
+/* Manage Lead
+ * Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,26 +17,26 @@
  */
 
 /**
- *	\file		lib/mymodule.lib.php
- *	\ingroup	mymodule
+ *	\file		lib/lead.lib.php
+ *	\ingroup	lead
  *	\brief		This file is an example module library
  *				Put some comments here
  */
 
-function mymoduleAdminPrepareHead()
+function leadAdminPrepareHead()
 {
     global $langs, $conf;
 
-    $langs->load("mymodule@mymodule");
+    $langs->load("lead@lead");
 
     $h = 0;
     $head = array();
 
-    $head[$h][0] = dol_buildpath("/mymodule/admin/admin_mymodule.php", 1);
+    $head[$h][0] = dol_buildpath("/lead/admin/admin_lead.php", 1);
     $head[$h][1] = $langs->trans("Settings");
     $head[$h][2] = 'settings';
     $h++;
-    $head[$h][0] = dol_buildpath("/mymodule/admin/about.php", 1);
+    $head[$h][0] = dol_buildpath("/lead/admin/about.php", 1);
     $head[$h][1] = $langs->trans("About");
     $head[$h][2] = 'about';
     $h++;
@@ -44,12 +44,12 @@ function mymoduleAdminPrepareHead()
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     //$this->tabs = array(
-    //	'entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__'
+    //	'entity:+tabname:Title:@lead:/lead/mypage.php?id=__ID__'
     //); // to add new tab
     //$this->tabs = array(
-    //	'entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__'
+    //	'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
     //); // to remove a tab
-    complete_head_from_modules($conf, $langs, $object, $head, $h, 'mymodule');
+    complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead');
 
     return $head;
 }

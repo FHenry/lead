@@ -1,0 +1,78 @@
+# Manage Lead
+# Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# Générique
+#
+
+# Module label 'ModuleXXXName'
+# (where XXX is value of numeric property 'numero' of module)
+Module103111Name = Affaires
+# Module description 'ModuleXXXDesc'
+# (where XXX is value of numeric property 'numero' of module)
+Module103111Desc =Gestion d'affaire
+
+#
+# Page d'administration
+#
+LeadSetup = Configuration du module Affaires
+Settings = Réglages
+LeadSetupPage = Page de réglage de Affaires
+
+#
+# Page À propos
+#
+About = À propos
+LeadAbout = À propos de Affaires
+LeadAboutPage = Page à propos de Affaires
+
+#
+# Permissions
+#
+Permission1031111=Voir les affaires
+Permission1031112=Modifier les affaires
+Permission1031113=Supprimer les affaires
+
+#
+# Dictionnaires
+#
+LeadStatus=Module Affaire - Etapes
+LeadType=Module Affaire - Types
+
+
+#
+# Menu
+#
+LeadList=Liste des affaires
+LeadCreate=Nouvelle affaire
+
+#
+# Status
+#
+LeadStatus_PROSP=Prospect
+LeadStatus_CHIFF=Budget
+LeadStatus_PROPO=Proposal
+LeadStatus_NEGO=Deal
+LeadStatus_RECOND=Renew
+LeadStatus_WIN=Win
+LeadStatus_LOST=Lost
+
+#
+# Type
+#
+LeadType_SUPP=Support
+LeadType_TRAIN=Trainning
+LeadType_ADVI=Consulting

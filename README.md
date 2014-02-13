@@ -1,7 +1,7 @@
-My Module
+Lead
 =========
 
-This is a full featured module template for Dolibarr
+Module LEAD
 
 Licence
 -------
@@ -12,7 +12,7 @@ See COPYING for more information.
 INSTALL
 -------
 
-To install this module, Dolibarr (v >= 3.3) have to be already installed and configured on your server.
+To install this module, Dolibarr (v >= 3.4) have to be already installed and configured on your server.
 
 - In your Dolibarr installation directory: edit the htdocs/conf/conf.php file
 - Find the following lines:
@@ -66,7 +66,6 @@ for example on a Windows system: C:/My Web Sites/Dolibarr/htdocs/custom
 
 From your browser:
 - log in as a Dolibarr administrator
-- under "Setup" -> "Other setup", set "MAIN_FEATURES_LEVEL" to "2"
 - go to "Setup" -> "Modules"
 - the module is under one of the tabs
 - you should now be able to enable the new module

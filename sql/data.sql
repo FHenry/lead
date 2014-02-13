@@ -1,5 +1,5 @@
--- <one line to give the program's name and a brief idea of what it does.>
--- Copyright (C) <year>  <name of author>
+-- Manage Lead
+-- Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -13,3 +13,16 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (1,'PROSP','Prospection',1);
+INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (2,'CHIFF','Chiffrage',1);
+INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (3,'PROPO','Proposition',1);
+INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (4,'NEGO','Négociation',1);
+INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (5,'RECOND','Reconduction',1);
+INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (6,'WIN','Gagné',1);
+INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (7,'LOST','Perdu',1);
+
+INSERT INTO llx_c_lead_type(rowid,code,label,active) VALUES (1,'SUPP','Support',1);
+INSERT INTO llx_c_lead_type(rowid,code,label,active) VALUES (2,'TRAIN','Formation',1);
+INSERT INTO llx_c_lead_type(rowid,code,label,active) VALUES (3,'ADVI','Conseil',1);
+

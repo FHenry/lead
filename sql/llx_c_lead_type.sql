@@ -1,5 +1,5 @@
--- <one line to give the program's name and a brief idea of what it does.>
--- Copyright (C) <year>  <name of author>
+-- Manage Lead
+-- Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -13,3 +13,11 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+create table llx_c_lead_type
+(
+  rowid       integer AUTO_INCREMENT PRIMARY KEY,
+  code 		varchar(5) UNIQUE NOT NULL,
+  label         varchar(50),
+  active      tinyint DEFAULT 1 NOT NULL
+)ENGINE=innodb;

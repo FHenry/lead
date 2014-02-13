@@ -1,6 +1,6 @@
 <?php
-/* <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) <year>  <name of author>
+/* Manage Lead
+ * Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  */
 
 /**
- * 	\file		admin/mymodule.php
- * 	\ingroup	mymodule
+ * 	\file		admin/lead.php
+ * 	\ingroup	lead
  * 	\brief		This file is an example module setup page
  * 				Put some comments here
  */
@@ -31,10 +31,10 @@ if (! $res) {
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
-require_once '../lib/mymodule.lib.php';
+require_once '../lib/lead.lib.php';
 //require_once "../class/myclass.class.php";
 // Translations
-$langs->load("mymodule@mymodule");
+$langs->load("lead@lead");
 
 // Access control
 if (! $user->admin) {
@@ -51,7 +51,7 @@ $action = GETPOST('action', 'alpha');
 /*
  * View
  */
-$page_name = "MyModuleSetup";
+$page_name = "LeadSetup";
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
@@ -60,17 +60,17 @@ $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
-$head = mymoduleAdminPrepareHead();
+$head = leadAdminPrepareHead();
 dol_fiche_head(
     $head,
     'settings',
-    $langs->trans("Module10000Name"),
+    $langs->trans("Module103111Name"),
     0,
-    "mymodule@mymodule"
+    "lead@lead"
 );
 
 // Setup page goes here
-echo $langs->trans("MyModuleSetupPage");
+echo $langs->trans("LeadSetupPage");
 
 llxFooter();
 

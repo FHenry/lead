@@ -1,5 +1,5 @@
-# <one line to give the program's name and a brief idea of what it does.>
-# Copyright (C) <year>  <name of author>
+# Manage Lead
+# Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,26 +15,64 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #
-# Générique
+# Generic
 #
 
 # Module label 'ModuleXXXName'
 # (where XXX is value of numeric property 'numero' of module)
-Module10000Name = Mon module
+Module103111Name = Lead
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
-Module10000Desc = Description de mon module
+Module103111Desc = Manages Lead
 
 #
-# Page d'administration
+# Admin page
 #
-MyModuleSetup = Configuration du module mon module
-Settings = Réglages
-MyModuleSetupPage = Page de réglage de mon module
+LeadSetup = Lead setup
+Settings = Settings
+LeadSetupPage = Lead setup page
 
 #
-# Page À propos
+# About page
 #
-About = À propos
-MyModuleAbout = À propos de mon module
-MyModuleAboutPage = Page à propos de mon module
+About = About
+LeadAbout = About Lead
+LeadAboutPage = Lead about page
+
+
+#
+# Permissions
+#
+Permission1031111=See Lead
+Permission1031112=Update Lead
+Permission1031113=Delete Lead
+
+#
+# Dictionnaires
+#
+LeadStatus=Module Lead - Steps
+LeadType=Module Lead - Types
+
+#
+# Menu
+#
+LeadList=List lead
+LeadCreate=create Lead
+
+#
+# Status
+#
+LeadStatus_PROSP=Prospection
+LeadStatus_CHIFF=Chiffrage
+LeadStatus_PROPO=Proposition
+LeadStatus_NEGO=Négociation
+LeadStatus_RECOND=Reconduction
+LeadStatus_WIN=Gagné
+LeadStatus_LOST=Perdu
+
+#
+# Type
+#
+LeadType_SUPP=Support
+LeadType_TRAIN=Formation
+LeadType_ADVI=Conseil
