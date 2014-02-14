@@ -95,3 +95,4 @@ LeadConfirmDelete=Etes vous sure de supprimer l'affaire ?
 LeadDescription=Description
 LeadDocuments=Documents associeés
 LeadAddElement=Associer
+LeadLate=Affaire en retard

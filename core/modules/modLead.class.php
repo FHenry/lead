@@ -196,7 +196,7 @@ class modLead extends DolibarrModules
         $r = 0;
         // Example:
 
-        //$this->boxes[$r][1] = "MyBox@lead";
+        $this->boxes[$r][1] = "box_lead@lead";
         //$r ++;
         /*
           $this->boxes[$r][1] = "myboxb.php";
@@ -236,7 +236,7 @@ class modLead extends DolibarrModules
         'titre'=>'Module103111Name',
         'mainmenu'=>'lead',
         'leftmenu'=>'0',
-        'url'=>'/lead/index.php',
+        'url'=>'/lead/lead/list.php',
         'langs'=>'lead@lead',
         'position'=>100,
         'enabled'=>'$user->rights->lead->read',
@@ -250,7 +250,7 @@ class modLead extends DolibarrModules
         'type'=>'left',
         'titre'=>'Module103111Name',
         'leftmenu'=>'Module103111Name',
-        'url'=>'/lead/index.php',
+        'url'=>'/lead/lead/list.php',
         'langs'=>'lead@lead',
         'position'=>101,
        'enabled'=>'$user->rights->lead->read',

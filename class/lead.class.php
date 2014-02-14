@@ -415,7 +415,10 @@ class Lead extends CommonObject {
 			foreach ( $filter as $key => $value ) {
 				if (($key == 't.fk_c_status') || ($key == 't.rowid') || ($key == 't.fk_c_type') || ($key == 't.fk_user_resp')) {
 					$sql .= ' AND ' . $key . ' = ' . $value;
-				} elseif (strpos ( $key, 'date' )) {
+				}elseif ($key == 't.date_closure<') {
+					// To allow $filter['YEAR(s.dated)']=>$year
+					$sql .= " AND t.date_closure<='".$this->db->idate($value)."'";
+				}elseif (strpos ( $key, 'date' )) {
 					// To allow $filter['YEAR(s.dated)']=>$year
 					$sql .= ' AND ' . $key . ' = \'' . $value . '\'';
 				} else {
