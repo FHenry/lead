@@ -23,7 +23,9 @@
  */
 
 
-class FormLead
+
+
+class FormLead extends Form
 {
 	var $db;
 	var $error;
@@ -39,195 +41,31 @@ class FormLead
 	{
 		$this->db = $db;
 	}
-
-    /**
-     *    Return combo list of differents propal
-     *
-     *    @param	string	$selected    Preselected value
-     *    @param	string	$htmlname    html name of the component
-     *    @param	array	$filter		 SQL filter
-     *    @param	int		$option_only output only options
-     *    @param	int		$showempty	Show empty row
-     *    @return	void
-     */
-    function select_propal($selected='',$htmlname='propalid',$filter='',$option_only=0,$showempty=1)
-    {
-        global $langs,$conf;
-
-        $sql = "SELECT ";
-        $sql.= " t.rowid, ";
-        $sql.= " t.ref ";
-        $sql.= " FROM ".MAIN_DB_PREFIX."propal as t";
-        $sql.= " WHERE t.entity IN (".$conf->entity.")";
-    	//Manage filter
-		if (!empty($filter) && is_array($filter)){
-			foreach($filter as $key => $value) {
-				if ($key != 'specials') {
-					$sql.= ' AND '.$key.' = \''.$value.'\'';
-				} else {
-					$sql.= ' AND '.$value;
-				}
-			}
-		}
-        dol_syslog(get_class($this)."::select_propal sql=".$sql);
-        $resql=$this->db->query($sql);
-        if ($resql)
-        {
-        	$out='';
-        	$this->num=$this->db->num_rows($resql);
-        	if (empty($option_only)) {
-            	$out.= '<select class="flat" name="'.$htmlname.'" id="'.$htmlname.'">';
-        	}
-        	if (!empty($showempty)) {
-            	if (empty($selected)) {
-            		$out.= '<option value="" selected="selected">&nbsp;</option>';
-            	}else {
-            		$out.= '<option value="">&nbsp;</option>';
-            	}
-        	}
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-            if ($num)
-            {
-                while ($i < $num)
-                {
-                    $obj = $this->db->fetch_object($resql);
-                    if ($selected == $obj->rowid)
-                    {
-                        $out.= '<option value="'.$obj->rowid.'" selected="selected">';
-                    }
-                    else
-                    {
-                        $out.= '<option value="'.$obj->rowid.'">';
-                    }
-                    $out.=$obj->ref;
-                    $out.= '</option>';
-                    $i++;
-                }
-            }
-            if (empty($option_only)) {
-            	$out.= '</select>';
-            }
-            return $out;
-        }
-        else
-        {
-            $this->error=$this->db->lasterror();
-            return -1;
-        }
-    }
-    
-    /**
-     *    Return combo list of differents invoice
-     *
-     *    @param	string	$selected    Preselected value
-     *    @param	string	$htmlname    html name of the component
-     *    @param	array	$filter		 SQL filter
-     *    @param	int		$option_only output only options
-     *    @param	int		$showempty	Show empty row
-     *    @return	void
-     */
-    function select_invoice($selected='',$htmlname='invoiceid',$filter='',$option_only=0,$showempty=1)
-    {
-    	global $langs,$conf;
-    
-    	$sql = "SELECT ";
-    	$sql.= " t.rowid, ";
-    	$sql.= " t.facnumber as ref ";
-    	$sql.= " FROM ".MAIN_DB_PREFIX."facture as t";
-    	$sql.= " WHERE t.entity IN (".$conf->entity.")";
-    	//Manage filter
-    	if (!empty($filter) && is_array($filter)){
-    		foreach($filter as $key => $value) {
-    			if ($key != 'specials') {
-    				$sql.= ' AND '.$key.' = \''.$value.'\'';
-    			} else {
-    				$sql.= ' AND '.$value;
-    			}
-    		}
-    	}
-    	dol_syslog(get_class($this)."::select_invoice sql=".$sql);
-    	$resql=$this->db->query($sql);
-    	if ($resql)
-    	{
-    		$out='';
-    		$this->num=$this->db->num_rows($resql);
-    		if (empty($option_only)) {
-    			$out.= '<select class="flat" name="'.$htmlname.'" id="'.$htmlname.'">';
-    		}
-    		if (!empty($showempty)) {
-    			if (empty($selected)) {
-    				$out.= '<option value="" selected="selected">&nbsp;</option>';
-    			}else {
-    				$out.= '<option value="">&nbsp;</option>';
-    			}
-    		}
-    		$num = $this->db->num_rows($resql);
-    		$i = 0;
-    		if ($num)
-    		{
-    			while ($i < $num)
-    			{
-    				$obj = $this->db->fetch_object($resql);
-    				if ($selected == $obj->rowid)
-    				{
-    					$out.= '<option value="'.$obj->rowid.'" selected="selected">';
-    				}
-    				else
-    				{
-    					$out.= '<option value="'.$obj->rowid.'">';
-    				}
-    				$out.=$obj->ref;
-    				$out.= '</option>';
-    				$i++;
-    			}
-    		}
-    		if (empty($option_only)) {
-    			$out.= '</select>';
-    		}
-    		return $out;
-    	}
-    	else
-    	{
-    		$this->error=$this->db->lasterror();
-    		return -1;
-    	}
-    }
     
     /**
      *    Build Select List of element associable to a businesscase
      *
-     *    @param	object  $object			Object to parse
-     *    @param	object	$businesscase	Object source
+     *    @param	object  $tablename		Object to parse
+     *    @param	object	$lead			Object source
      *    @param	string	$htmlname    	html name of the component
      *    @return	string			The HTML select list of element
      */
-    function select_element($object,$businesscase, $htmlname='elementselect')
+    function select_element($tablename,$lead, $htmlname='elementselect')
     {    
-    	switch ($object->table_element)
+    	switch ($tablename)
     	{
     		case "facture":
     			$sql = "SELECT rowid, facnumber as ref";
-    			break;
-    		case "facture_fourn":
-    			$sql = "SELECT rowid, ref";
-    			break;
-    		case "facture_rec":
-    			$sql = "SELECT rowid, titre as ref";
-    			break;
-    		case "actioncomm":
-    			$sql = "SELECT id as rowid, label as ref";
-    			$projectkey="fk_project";
     			break;
     		default:
     			$sql = "SELECT rowid, ref";
     			break;
     	}
     
-    	$sql.= " FROM ".MAIN_DB_PREFIX.$object->table_element;
-    	$sql.= " WHERE rowid NOT IN (SELECT fk_source FROM ".MAIN_DB_PREFIX."element_element WHERE targettype='".$businesscase->element."')";
-    	$sql.= " AND fk_soc=".$businesscase->fk_soc;
-    	$sql.= " AND entity IN (".getEntity($object->element,1).")";
+    	$sql.= " FROM ".MAIN_DB_PREFIX.$tablename;
+    	$sql.= " WHERE rowid NOT IN (SELECT fk_source FROM ".MAIN_DB_PREFIX."element_element WHERE targettype='".$lead->element."')";
+    	$sql.= " AND fk_soc=".$lead->fk_soc;
+    	//$sql.= " AND entity IN (".getEntity($object->element,1).")";
     	$sql.= " ORDER BY ref DESC";
     
     	dol_syslog(get_class($this)."::select_element sql=".$sql, LOG_DEBUG);
@@ -253,6 +91,60 @@ class FormLead
     	$this->db->free($resql);
     }
     
+    /**
+     *    Return a HTML area with the reference of object and a navigation bar for a business object
+     *    To add a particular filter on select, you must set $object->next_prev_filter to SQL criteria.
+     *
+     *    @param	object	$object			Object to show
+     *    @param   string	$paramid   		Name of parameter to use to name the id into the URL link
+     *    @param   string	$morehtml  		More html content to output just before the nav bar
+     *    @param	int		$shownav	  	Show Condition (navigation is shown if value is 1)
+     *    @param   string	$fieldid   		Nom du champ en base a utiliser pour select next et previous
+     *    @param   string	$fieldref   	Nom du champ objet ref (object->ref) a utiliser pour select next et previous
+     *    @param   string	$morehtmlref  	Code html supplementaire a afficher apres ref
+     *    @param   string	$moreparam  	More param to add in nav link url.
+     * 	  @return  tring    				Portion HTML avec ref + boutons nav
+     */
+    function showrefnav($object,$paramid,$morehtml='',$shownav=1,$fieldid='rowid',$fieldref='ref',$morehtmlref='',$moreparam='')
+    {
+    	global $langs,$conf;
+    
+    	$ret='';
+    	if (empty($fieldid))  $fieldid='rowid';
+    	if (empty($fieldref)) $fieldref='ref';
+    
+    	//print "paramid=$paramid,morehtml=$morehtml,shownav=$shownav,$fieldid,$fieldref,$morehtmlref,$moreparam";
+    	$object->load_previous_next_ref_custom((isset($object->next_prev_filter)?$object->next_prev_filter:''),$fieldid);
+    	$previous_ref = $object->ref_previous?'<a data-role="button" data-icon="arrow-l" data-iconpos="left" href="'.$_SERVER["PHP_SELF"].'?'.$paramid.'='.urlencode($object->ref_previous).$moreparam.'">'.(empty($conf->dol_use_jmobile)?img_picto($langs->trans("Previous"),'previous.png'):'&nbsp;').'</a>':'';
+    	$next_ref     = $object->ref_next?'<a data-role="button" data-icon="arrow-r" data-iconpos="right" href="'.$_SERVER["PHP_SELF"].'?'.$paramid.'='.urlencode($object->ref_next).$moreparam.'">'.(empty($conf->dol_use_jmobile)?img_picto($langs->trans("Next"),'next.png'):'&nbsp;').'</a>':'';
+    
+    	//print "xx".$previous_ref."x".$next_ref;
+    	if ($previous_ref || $next_ref || $morehtml) {
+    		$ret.='<table class="nobordernopadding" width="100%"><tr class="nobordernopadding"><td class="nobordernopadding">';
+    	}
+    
+    	$ret.=$object->$fieldref;
+    	if ($morehtmlref)
+    	{
+    		$ret.=' '.$morehtmlref;
+    	}
+    
+    	if ($morehtml)
+    	{
+    		$ret.='</td><td class="nobordernopadding" align="right">'.$morehtml;
+    	}
+    	if ($shownav && ($previous_ref || $next_ref))
+    	{
+    		$ret.='</td><td class="nobordernopadding" align="center" width="20">'.$previous_ref.'</td>';
+    		$ret.='<td class="nobordernopadding" align="center" width="20">'.$next_ref;
+    	}
+    	if ($previous_ref || $next_ref || $morehtml)
+    	{
+    		$ret.='</td></tr></table>';
+    	}
+    	return $ret;
+    }
+    
     
     /**
      *    Return combo list of differents status
@@ -269,24 +161,22 @@ class FormLead
     	
     	return $this->selectarray ( $htmlname, $lead->status, $selected, $showempty );
     	
-    	
     }
     
     /**
-     *    Return combo list of differents status
+     *    Return combo list of differents type
      *
      *    @param	string	$selected    Preselected value
      *    @param	string	$htmlname    html name of the component
      *    @param	int		$showempty	Show empty row
      *    @return	void
      */
-    function select_lead_type($selected='',$htmlname='leadstatus',$showempty=1) {
+    function select_lead_type($selected='',$htmlname='leadtype',$showempty=1) {
     
     	require_once 'lead.class.php';
     	$lead = new Lead($this->db);
     	 
     	return $this->selectarray ( $htmlname, $lead->type, $selected, $showempty );
-    	 
-    	 
+ 
     }
 }

@@ -16,15 +16,21 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$res = @include ("../main.inc.php"); // For root directory
+$res = @include ("../../main.inc.php"); // For root directory
 if (! $res)
-	$res = @include ("../../main.inc.php"); // For "custom" directory
+	$res = @include ("../../../main.inc.php"); // For "custom" directory
 if (! $res)
 	die ( "Include of main fails" );
 
-require_once '../../class/lead.class.php'; 
-require_once '../../lib/lead.lib.php';
+require_once '../class/lead.class.php'; 
+require_once '../class/html.formlead.class.php';
+require_once '../lib/lead.lib.php';
 require_once(DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php');
+require_once (DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php');
+if (! empty ( $conf->propal->enabled ))
+	require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
+if (! empty ( $conf->facture->enabled ))
+	require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
 
 
 // Security check
@@ -33,18 +39,25 @@ if (! $user->rights->lead->read)
 
 
 $langs->load ( 'lead@lead' );
+if (! empty ( $conf->propal->enabled )) $langs->load ( 'propal' );
+if (! empty ( $conf->facture->enabled )) $langs->load ( 'bills' );
+
+$action=GETPOST('action','alpha');
 
 $id=GETPOST('id','int');
-/*
-$ref=GETPOST('ref','alpha');
-$socid=GETPOST('socid','int');
-$userid=GETPOST('userid','int');
-$propalid=GETPOST('propalid','int');
-$invoiceid=GETPOST('invoiceid','int');
-$action=GETPOST('action','alpha');
+
 $confirm=GETPOST('confirm','alpha');
-$typecreate=GETPOST('type','alpha');
-*/
+
+$ref_int=GETPOST('ref_int','alpha');
+$socid=GETPOST('socid','int');
+if ($socid==-1) $socid=0;
+$userid=GETPOST('userid','int');
+$leadstatus=GETPOST('leadstatus','int');
+$leadtype=GETPOST('leadtype','int');
+$amount_guess=GETPOST('amount_guess');
+$description=GETPOST('description');
+$deadline=dol_mktime(0,0, 0, GETPOST('deadlinemonth'), GETPOST('deadlineday'), GETPOST('deadlineyear'));
+
 
 $object= new Lead($db);
 $extrafields = new ExtraFields($db);
@@ -75,15 +88,65 @@ $parameters=array();
 $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 
 if ($action=="add") {
+	$object->ref_int=$ref_int;
+	$object->ref = $object->getNextNumRef();
+	$object->fk_c_status=$leadstatus;
+	$object->fk_c_type=$leadtype;
+	$object->amount_prosp=$amount_guess;
+	$object->date_closure=$deadline;
+	$object->fk_soc=$socid;
+	$object->fk_user_resp=$userid;
+	$object->description=$description;
 	
-}
+	$result = $object->create($user);
+	if ($result < 0) {
+		$action='create';
+		setEventMessage($object->error,'errors');
+	} else {
+		header('Location:'.$_SERVER["PHP_SELF"].'?id='.$object->id);
+	}
+	
+} elseif ($action=="update") {
+	$object->ref_int=$ref_int;
+	$object->ref = $object->getNextNumRef();
+	$object->fk_c_status=$leadstatus;
+	$object->fk_c_type=$leadtype;
+	$object->amount_prosp=$amount_guess;
+	$object->date_closure=$deadline;
+	$object->fk_soc=$socid;
+	$object->fk_user_resp=$userid;
+	$object->description=$description;
 
-else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->businesscase->delete) {
+	$result = $object->update($user);
+	if ($result < 0) {
+		$action='edit';
+		setEventMessage($object->error,'errors');
+	} else {
+		header('Location:'.$_SERVER["PHP_SELF"].'?id='.$object->id);
+	}
+
+} elseif ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->lead->delete) {
 	$result=$object->delete($user);
 	if ($result<0) {
 		setEventMessage($object->errors,'errors');
 	}else {
-		header('Location:'.dol_buildpath('/businesscase/index.php',1));
+		header('Location:'.dol_buildpath('/lead/index.php',1));
+	}
+} elseif ($action == "addelement") {
+	$tablename = GETPOST ( "tablename" );
+	$elementselectid = GETPOST ( "elementselect" );
+	$result = $object->add_object_linked ( $tablename, $elementselectid );
+	if ($result < 0) {
+		setEventMessage ( $object->error, 'errors' );
+	}
+} elseif ($action == "unlink") {
+	
+	$sourceid=GETPOST('sourceid');
+	$sourcetype=GETPOST('sourcetype');
+	
+	$result = $object->deleteObjectLinked ( $sourceid, $sourcetype);
+	if ($result < 0) {
+		setEventMessage ( $object->error, 'errors' );
 	}
 }
 
@@ -97,8 +160,6 @@ llxHeader('',$langs->trans('Module103111Name'));
 
 $form = new Form($db);
 $formlead = new FormLead($db);
-$companystatic=new Societe($db);
-
 
 
 $now=dol_now();
@@ -107,7 +168,7 @@ if ($action == 'create' && $user->rights->lead->write)
 {
 	print_fiche_titre($langs->trans("LeadCreate"),'',dol_buildpath('/lead/img/object_lead.png',1),1);
 
-	print '<form name="addprop" action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+	print '<form name="addlead" action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<input type="hidden" name="action" value="add">';
 
@@ -117,9 +178,37 @@ if ($action == 'create' && $user->rights->lead->write)
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_users($userid,'userid',0);
+	print $form->select_users(empty($userid)?$user->id:$userid,'userid',0);
 	print '</td>';
 	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadRefInt');
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="ref_int" size="10" value="'.$ref_int.'"/>';
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadStep');
+	print '</td>';
+	print '<td>';
+	print $formlead->select_lead_status($leadstatus,'leadstatus',0);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadType');
+	print '</td>';
+	print '<td>';
+	print $formlead->select_lead_type($leadtype,'leadtype',0);
+	print '</td>';
+	print '</tr>';
+	
 	print '<tr>';
 	print '<td class="fieldrequired">';
 	print $langs->trans('Customer');
@@ -130,29 +219,174 @@ if ($action == 'create' && $user->rights->lead->write)
 	print '</td>';
 	print '</tr>';
 	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadAmountGuess');
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="amount_guess" size="5" value="'.price2num($amount_guess).'"/>';
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadDeadLine');
+	print '</td>';
+	print '<td>';
+	print $form->select_date($deadline,'deadline',0,0,0,"addlead",1,1,0,0);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadDescription');
+	print '</td>';
+	print '<td>';
+	$doleditor = new DolEditor ( 'description', $object->description, '', 160, 'dolibarr_notes', 'In', true, false, $conf->global->FCKEDITOR_ENABLE, 4, 90 );
+	$doleditor->Create ();
+	print '</td>';
+	print '</tr>';
+	
+	
+	// Other attributes
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+
+	if (empty($reshook) && ! empty($extrafields->attribute_label))
+	{
+		print $actioncomm->showOptionals($extrafields,'edit');
+	}
+	
+	
 	print '<table>';
+	
+	
 
 	print '<center>';
-	print '<input type="submit" class="button" value="'.$langs->trans("BuCaNewBusinessCase").'">';
+	print '<input type="submit" class="button" value="'.$langs->trans("Create").'">';
 	print '&nbsp;<input type="button" class="button" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
 	print '</center>';
 
 
 	print '</form>';
 
-}else
-{
+}elseif ($action=='edit'){
+	
+	$head = lead_prepare_head($object);
+	dol_fiche_head($head, 'card', $langs->trans('Module103111Name'), 0, dol_buildpath('/lead/img/object_lead.png',1),1);
+	
+	print '<form name="editlead" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="POST">';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="action" value="update">';
+	
+	print '<table class="border" width="100%">';
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadCommercial');
+	print '</td>';
+	print '<td>';
+	print $form->select_users($object->fk_user_resp,'userid',0);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadRefInt');
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="ref_int" size="10" value="'.$object->ref_int.'"/>';
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadStep');
+	print '</td>';
+	print '<td>';
+	print $formlead->select_lead_status($object->fk_c_status,'leadstatus',0);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadType');
+	print '</td>';
+	print '<td>';
+	print $formlead->select_lead_type($object->fk_c_type,'leadtype',0);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired">';
+	print $langs->trans('Customer');
+	print '</td>';
+	print '<td>';
+	$events=array();
+	print $form->select_company($object->thirdparty->id,'socid','client<>0',1,1,0,$events);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadAmountGuess');
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="amount_guess" size="5" value="'.price2num($object->amount_prosp).'"/>';
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td class="fieldrequired"  width="20%">';
+	print $langs->trans('LeadDeadLine');
+	print '</td>';
+	print '<td>';
+	print $form->select_date($object->date_closure,'deadline',0,0,0,"addlead",1,1,0,0);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadDescription');
+	print '</td>';
+	print '<td>';
+	$doleditor = new DolEditor ( 'description', $object->description, '', 160, 'dolibarr_notes', 'In', true, false, $conf->global->FCKEDITOR_ENABLE, 4, 90 );
+	$doleditor->Create ();
+	print '</td>';
+	print '</tr>';
+	
+	
+	// Other attributes
+	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+	
+	if (empty($reshook) && ! empty($extrafields->attribute_label))
+	{
+		print $actioncomm->showOptionals($extrafields,'edit');
+	}
+	
+	
+	print '<table>';
+	
+	
+	
+	print '<center>';
+	print '<input type="submit" class="button" value="'.$langs->trans("Save").'">';
+	print '&nbsp;<input type="button" class="button" value="'.$langs->trans("Cancel").'" onClick="javascript:history.go(-1)">';
+	print '</center>';
+	
+	
+	print '</form>';
+}
+else{
 	/*
 	 * Show object in view mode
 	*/
-	$head = businesscase_prepare_head($object);
-	dol_fiche_head($head, 'card', $langs->trans('Module103010Name'), 0, dol_buildpath('/businesscase/img/object_businesscase.png',1),1);
+	$head = lead_prepare_head($object);
+	dol_fiche_head($head, 'card', $langs->trans('Module103111Name'), 0, dol_buildpath('/lead/img/object_lead.png',1),1);
 
 	//Confirm form
 	$formconfirm='';
 	if ($action == 'delete')
 	{
-		$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('BuCaDelete'), $langs->trans('BuCaConfirmDelete'), 'confirm_delete', '', 0, 1);
+		$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('LeadDelete'), $langs->trans('LeadConfirmDelete'), 'confirm_delete', '', 0, 1);
 	}
 
 	if (empty($formconfirm))
@@ -162,7 +396,7 @@ if ($action == 'create' && $user->rights->lead->write)
 	}
 	print $formconfirm;
 
-	$linkback = '<a href="'.dol_buildpath('/businesscase/business/case/list.php',1).'">'.$langs->trans("BackToList").'</a>';
+	$linkback = '<a href="'.dol_buildpath('/lead/lead/list.php',1).'">'.$langs->trans("BackToList").'</a>';
 
 	print '<table class="border" width="100%">';
 	print '<tr>';
@@ -170,28 +404,32 @@ if ($action == 'create' && $user->rights->lead->write)
 	print $langs->trans('Ref');
 	print '</td>';
 	print '<td>';
-	print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref', '');
+	print $formlead->showrefnav($object, 'id', $linkback, 1, 'rowid', 'ref', '');
 	print '</td>';
 	print '</tr>';
 	
 	print '<tr>';
 	print '<td width="20%">';
-	print $langs->trans('BuCaCommercial');
+	print $langs->trans('LeadRefInt');
+	print '</td>';
+	print '<td>';
+	print $object->ref_int;
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td width="20%">';
+	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
 	$userstatic=new User($db);
-	$result = $userstatic->fetch($object->fk_user);
+	$result = $userstatic->fetch($object->fk_user_resp);
 	if ($result<0) {
 		setEventMessage($userstatic->error,'errors');
 	}
 	print $userstatic->getFullName($langs);
 	print '</td>';
 	print '</tr>';
-
-	// Ref Client
-	print '<tr><td>'.$form->editfieldkey("RefCustomer",'ref_client',$object->ref_client,$object,$user->rights->businesscase->write,'string').'</td><td>';
-	print $form->editfieldval("RefCustomer",'ref_client',$object->ref_client,$object,$user->rights->businesscase->write ,'string');
-	print '</td></tr>';
 
 	print '<tr>';
 	print '<td>';
@@ -201,77 +439,70 @@ if ($action == 'create' && $user->rights->lead->write)
 	print $object->thirdparty->getNomUrl();
 	print '</td>';
 	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadStep');
+	print '</td>';
+	print '<td>';
+	print $object->status_label;
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadType');
+	print '</td>';
+	print '<td>';
+	print $object->type_label;
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadAmountGuess');
+	print '</td>';
+	print '<td>';
+	print price($object->amount_prosp,'HTML').$langs->getCurrencySymbol($conf->currency);
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadDeadLine');
+	print '</td>';
+	print '<td>';
+	print dol_print_date($object->date_closure, 'daytext');
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadRealAmount');
+	print '</td>';
+	print '<td>';
+	print $object->getRealAmount().$langs->getCurrencySymbol($conf->currency);
+	print '</td>';
+	print '</tr>';
 
-
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadDescription');
+	print '</td>';
+	print '<td>';
+	print $object->description;
+	print '</td>';
+	print '</tr>';
+	
 	// Other attributes
-	$res=$object->fetch_optionals($object->id,$extralabels);
-	$parameters=array('colspan' => ' colspan="2"');
-	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action); // Note that $action and $object may have been modified by hook
+	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+	
 	if (empty($reshook) && ! empty($extrafields->attribute_label))
 	{
-
-		if ($action == 'edit_extras')
-		{
-			print '<form enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'" method="post" name="formsoc">';
-			print '<input type="hidden" name="action" value="update_extras">';
-			print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-			print '<input type="hidden" name="id" value="'.$object->id.'">';
-		}
-
-		foreach($extrafields->attribute_label as $key=>$label)
-		{
-			if ($action == 'edit_extras') {
-				$value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
-			} else {
-				$value=$object->array_options["options_".$key];
-			}
-			if ($extrafields->attribute_type[$key] == 'separate')
-			{
-				print $extrafields->showSeparator($key);
-			}
-			else
-			{
-				print '<tr><td';
-				if (! empty($extrafields->attribute_required[$key])) print ' class="fieldrequired"';
-				print '>'.$label.'</td><td>';
-				// Convert date into timestamp format
-				if (in_array($extrafields->attribute_type[$key],array('date','datetime')))
-				{
-					$value = isset($_POST["options_".$key])?dol_mktime($_POST["options_".$key."hour"], $_POST["options_".$key."min"], 0, $_POST["options_".$key."month"], $_POST["options_".$key."day"], $_POST["options_".$key."year"]):$db->jdate($object->array_options['options_'.$key]);
-				}
-
-				if ($action == 'edit_extras' && $user->rights->businesscase->write)
-				{
-					print $extrafields->showInputField($key,$value);
-				}
-				else
-				{
-					print $extrafields->showOutputField($key,$value);
-				}
-				print '</td></tr>'."\n";
-			}
-		}
-
-		if(count($extrafields->attribute_label) > 0) {
-
-			if ($action == 'edit_extras' && $user->rights->businesscase->write)
-			{
-				print '<tr><td></td><td>';
-				print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
-				print '</form>';
-				print '</td></tr>';
-
-			}
-			else {
-				if ($object->statut == 0 && $user->rights->businesscase->write)
-				{
-					print '<tr><td></td><td><a href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=edit_extras">'.img_picto('','edit').' '.$langs->trans('Modify').'</a></td></tr>';
-				}
-			}
-		}
+		print $actioncomm->showOptionals($extrafields);
 	}
 
-	print '</table>';
+	print '</table>';	
 	print "</div>\n";
 
 	/*
@@ -281,17 +512,17 @@ if ($action == 'create' && $user->rights->lead->write)
 	print '<div class="tabsAction">';
 
 	// Delete
-	if ($user->rights->ficheinter->creer)
+	if ($user->rights->lead->write)
 	{
-		print '<div class="inline-block divButAction"><a class="butAction" href="ficheinter.php?id='.$object->id.'&action=create">'.$langs->trans("BuCaCreateInter")."</a></div>\n";
+		print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=edit">'.$langs->trans("Edit")."</a></div>\n";
 	}
 	else
 	{
-		print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("BuCaCreateInter")."</font></div>";
+		print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Edit")."</font></div>";
 	}
 
 	// Delete
-	if ($user->rights->businesscase->delete)
+	if ($user->rights->lead->delete)
 	{
 		print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=delete">'.$langs->trans("Delete")."</a></div>\n";
 	}
@@ -301,40 +532,129 @@ if ($action == 'create' && $user->rights->lead->write)
 	}
 	print '</div>';
 	
-	//Business case line
-	print '<div class="fiche">';
-	$linesarray=$object->fetch_lines();
 
-	if ($linesarray<0) {
-		setEventMessage($object->error,'errors');
-	}
 	
-	print '<table class="noborder" width="100%">';
-	print '<tr>';
-	print '<th width="10px"></th>';
-	print '<th align="left">'.$langs->trans('Label').'</th>';
-	print '<th align="left">'.$langs->trans('Element').'</th>';
-	print '</tr>';
-	if (is_array($linesarray) && count($linesarray)>0) {
-		foreach($linesarray as $line) {
-			print '<tr>';
-			print '<td>';
-			for ($i=0;$i<$line->level_line;$i++) {
-				print '&nbsp;&nbsp;&nbsp;&nbsp;';
+	
+	print_fiche_titre ( $langs->trans ( 'LeadDocuments' ), '', 'lead@lead' );
+	
+	
+	if (! empty ( $conf->propal->enabled ))
+		$listofreferent ['propal'] = array ('title' => "Proposal",'class' => 'Propal','table' => 'propal','test' => $conf->propal->enabled && $user->rights->propale->lire);
+	if (! empty ( $conf->facture->enabled ))
+		$listofreferent ['invoice'] = array ('title' => "Bill",'class' => 'Facture','table' => 'facture','test' => $conf->facture->enabled && $user->rights->facture->lire);
+	
+	foreach ( $listofreferent as $key => $value ) {
+		$title = $value ['title'];
+		$classname = $value ['class'];
+		$tablename = $value ['table'];
+		$qualified = $value ['test'];
+		
+		if ($qualified) {
+			print '<br>';
+				
+			print_titre ( $langs->trans ( $title ) );
+				
+			$selectList = $formlead->select_element ( $tablename, $object );
+			if ($selectList) {
+				print '<form action="' . $_SERVER ["PHP_SELF"] . '?id=' . $id . '" method="post">';
+				print '<input type="hidden" name="tablename" value="' . $tablename . '">';
+				print '<input type="hidden" name="action" value="addelement">';
+				print '<table><tr><td>' . $langs->trans ( "SelectElement" ) . '</td>';
+				print '<td>' . $selectList . '</td>';
+				print '<td><input type="submit" class="button" value="' . $langs->trans ( "LeadAddElement" ) . '"></td>';
+				print '</tr></table>';
+				print '</form>';
 			}
-			print '</td>';
-			print '<td>'.$line->label.'</td>';
-			print '<td>';
-			if (!empty($line->fk_element)) {
-				print $object->getElementUrl($line->fk_element,$line->elementtype,1);
-			}
-			print '</td>';
+			print '<table class="noborder" width="100%">';
+				
+			print '<tr class="liste_titre">';
+			print '<td></td>';
+			print '<td width="100">' . $langs->trans ( "Ref" ) . '</td>';
+			print '<td width="100" align="center">' . $langs->trans ( "Date" ) . '</td>';
+			print '<td>' . $langs->trans ( "ThirdParty" ) . '</td>';
+			if (empty ( $value ['disableamount'] ))
+				print '<td align="right" width="120">' . $langs->trans ( "AmountHT" ) . '</td>';
+			if (empty ( $value ['disableamount'] ))
+				print '<td align="right" width="120">' . $langs->trans ( "AmountTTC" ) . '</td>';
+			print '<td align="right" width="200">' . $langs->trans ( "Status" ) . '</td>';
 			print '</tr>';
+				
+			$ret = $object->fetch_document_link ($id,$tablename);
+			if ($ret < 0) {
+				setEventMessage ( $object->error, 'errors' );
+			}
+				
+			$elementarray = array ();
+			$elementarray = $object->doclines;
+			if (count ( $elementarray ) > 0 && is_array ( $elementarray )) {
+				$var = true;
+				$total_ht = 0;
+				$total_ttc = 0;
+				$num = count ( $elementarray );
+				foreach ( $elementarray as $line ) {
+					$element = new $classname ( $db );
+					$element->fetch ( $line->fk_source );
+					$element->fetch_thirdparty ();
+					print $classname;
+						
+					$var = ! $var;
+					print "<tr " . $bc [$var] . ">";
+					
+					print '<td width="1%">';
+					print '<a href="'.$_SERVER ["PHP_SELF"].'?id=' . $id . '&action=unlink&sourceid='.$element->id.'&sourcetype='.$tablename.'">'.img_picto($langs->trans('LeadUnlinkDoc'),'unlink.png@lead').'</a>';
+					print "</td>\n";
+					
+					// Ref
+					print '<td align="left">';
+					print $element->getNomUrl ( 1 );
+					print "</td>\n";
+						
+					// Date
+					$date = $element->date;
+					if (empty ( $date ))
+						$date = $element->datep;
+					if (empty ( $date ))
+						$date = $element->date_contrat;
+					if (empty ( $date ))
+						$date = $element->datev; // Fiche inter
+					print '<td align="center">' . dol_print_date ( $date, 'day' ) . '</td>';
+						
+					// Third party
+					print '<td align="left">';
+					if (is_object ( $element->client ))
+						print $element->client->getNomUrl ( 1, '', 48 );
+					print '</td>';
+						
+					// Amount
+					if (empty ( $value ['disableamount'] ))
+						print '<td align="right">' . (isset ( $element->total_ht ) ? price ( $element->total_ht ) : '&nbsp;') . '</td>';
+		
+					// Amount
+					if (empty ( $value ['disableamount'] ))
+						print '<td align="right">' . (isset ( $element->total_ttc ) ? price ( $element->total_ttc ) : '&nbsp;') . '</td>';
+		
+					// Status
+					print '<td align="right">' . $element->getLibStatut ( 5 ) . '</td>';
+						
+					print '</tr>';
+						
+					$total_ht = $total_ht + $element->total_ht;
+					$total_ttc = $total_ttc + $element->total_ttc;
+				}
+		
+				print '<tr class="liste_total">';
+				print '<td>&nbsp;</td>';
+				print '<td colspan="3">' . $langs->trans ( "Number" ) . ': ' . $i . '</td>';
+				if (empty ( $value ['disableamount'] ))
+					print '<td align="right" width="100">' . $langs->trans ( "TotalHT" ) . ' : ' . price ( $total_ht ) . '</td>';
+				if (empty ( $value ['disableamount'] ))
+					print '<td align="right" width="100">' . $langs->trans ( "TotalTTC" ) . ' : ' . price ( $total_ttc ) . '</td>';
+				print '<td>&nbsp;</td>';
+				print '</tr>';
+			}
+			print "</table>";
 		}
 	}
-	print '</table>';	
-	print '</div>';
-
 }
 
 

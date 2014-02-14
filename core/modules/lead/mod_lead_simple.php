@@ -56,7 +56,7 @@ class mod_lead_simple extends ModeleNumRefLead
 	 */
 	function getExample()
 	{
-		return $this->prefix."0501-0001";
+		return $this->prefix."1402-0001";
 	}
 
 

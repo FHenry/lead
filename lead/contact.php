@@ -24,14 +24,20 @@
  *       \brief      Onglet de gestion des contacts de propal
  */
 
-require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+$res = @include ("../../main.inc.php"); // For root directory
+if (! $res)
+	$res = @include ("../../../main.inc.php"); // For "custom" directory
+if (! $res)
+	die ( "Include of main fails" );
+require_once '../class/lead.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/propal.lib.php';
+require_once '../lib/lead.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once '../class/html.formlead.class.php';
 
 $langs->load("facture");
+$langs->load("lead@lead");
 $langs->load("orders");
 $langs->load("sendings");
 $langs->load("companies");
@@ -45,12 +51,12 @@ $action=GETPOST('action','alpha');
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'propal', $id);
 
-$object = new Propal($db);
+$object = new Lead($db);
 
 // Load object
-if ($id > 0 || ! empty($ref))
+if ($id > 0)
 {
-	$ret=$object->fetch($id, $ref);
+	$ret=$object->fetch($id);
 	if ($ret == 0)
 	{
 		$langs->load("errors");
@@ -69,7 +75,7 @@ if (! $error)
 }
 else
 {
-	header('Location: '.DOL_URL_ROOT.'/comm/propal/list.php');
+	header('Location: list.php');
 	exit;
 }
 
@@ -78,7 +84,7 @@ else
  * Ajout d'un nouveau contact
  */
 
-if ($action == 'addcontact' && $user->rights->propale->creer)
+if ($action == 'addcontact' && $user->rights->lead->write)
 {
     if ($object->id > 0)
     {
@@ -106,7 +112,7 @@ if ($action == 'addcontact' && $user->rights->propale->creer)
 }
 
 // Bascule du statut d'un contact
-else if ($action == 'swapstatut' && $user->rights->propale->creer)
+else if ($action == 'swapstatut' && $user->rights->lead->write)
 {
 	if ($object->id > 0)
 	{
@@ -115,7 +121,7 @@ else if ($action == 'swapstatut' && $user->rights->propale->creer)
 }
 
 // Efface un contact
-else if ($action == 'deletecontact' && $user->rights->propale->creer)
+else if ($action == 'deletecontact' && $user->rights->lead->write)
 {
 	$result = $object->delete_contact($lineid);
 
@@ -130,78 +136,76 @@ else if ($action == 'deletecontact' && $user->rights->propale->creer)
 	}
 }
 
-else if ($action == 'setaddress' && $user->rights->propale->creer)
-{
-	$result=$object->setDeliveryAddress($_POST['fk_address']);
-	if ($result < 0) dol_print_error($db,$object->error);
-}
-
 
 /*
  * View
  */
 
-llxHeader('',$langs->trans('Proposal'),'EN:Commercial_Proposals|FR:Proposition_commerciale|ES:Presupuestos');
+llxHeader('',$langs->trans('LeadContact'));
 
 $form = new Form($db);
 $formcompany= new FormCompany($db);
 $formother = new FormOther($db);
+$formlead = new FormLead($db);
+
 
 if ($object->id > 0)
 {
-	$head = propal_prepare_head($object);
-	dol_fiche_head($head, 'contact', $langs->trans("Proposal"), 0, 'propal');
+	$head = lead_prepare_head($object);
+	dol_fiche_head($head, 'contact', $langs->trans("LeadContact"), 0, 'contact');
 
 	/*
-	 * Propal synthese pour rappel
+	 * Lead synthese pour rappel
 	 */
 	print '<table class="border" width="100%">';
 
-	$linkback='<a href="'.DOL_URL_ROOT.'/comm/propal/list.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+	$linkback='<a href="list.php">'.$langs->trans("BackToList").'</a>';
 
 	// Ref
 	print '<tr><td width="25%">'.$langs->trans('Ref').'</td><td colspan="3">';
-	print $form->showrefnav($object,'ref',$linkback,1,'ref','ref','');
+	print $formlead->showrefnav($object, 'id', $linkback, 1, 'rowid', 'ref', '');
 	print '</td></tr>';
 
-	// Ref client
-	print '<tr><td>';
-	print '<table class="nobordernopadding" width="100%"><tr><td class="nowrap">';
-	print $langs->trans('RefCustomer').'</td><td align="left">';
+	print '<tr>';
+	print '<td width="20%">';
+	print $langs->trans('LeadCommercial');
 	print '</td>';
-	print '</tr></table>';
-	print '</td><td colspan="3">';
-	print $object->ref_client;
+	print '<td>';
+	$userstatic=new User($db);
+	$result = $userstatic->fetch($object->fk_user_resp);
+	if ($result<0) {
+		setEventMessage($userstatic->error,'errors');
+	}
+	print $userstatic->getFullName($langs);
 	print '</td>';
 	print '</tr>';
 
-	// Customer
-	print "<tr><td>".$langs->trans("Company")."</td>";
-	print '<td colspan="3">'.$object->client->getNomUrl(1).'</td></tr>';
-
-	// Delivery address
-	if (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT))
-	{
-		print '<tr><td>';
-		print '<table class="nobordernopadding" width="100%"><tr><td>';
-		print $langs->trans('DeliveryAddress');
-		print '</td>';
-
-		if ($action != 'editdelivery_address' && ! empty($object->brouillon))
-			print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdelivery_address&amp;socid='.$object->socid.'&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetDeliveryAddress'),1).'</a></td>';
-		print '</tr></table>';
-		print '</td><td colspan="3">';
-
-		if ($action == 'editdelivery_address')
-		{
-			$formother->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,$object->socid,'fk_address','propal',$object->id);
-		}
-		else
-		{
-			$formother->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,$object->socid,'none','propal',$object->id);
-		}
-		print '</td></tr>';
-	}
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('Company');
+	print '</td>';
+	print '<td>';
+	print $object->thirdparty->getNomUrl();
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadStep');
+	print '</td>';
+	print '<td>';
+	print $object->status_label;
+	print '</td>';
+	print '</tr>';
+	
+	print '<tr>';
+	print '<td>';
+	print $langs->trans('LeadType');
+	print '</td>';
+	print '<td>';
+	print $object->type_label;
+	print '</td>';
+	print '</tr>';
 
 	print "</table>";
 
@@ -209,13 +213,9 @@ if ($object->id > 0)
 
 	print '<br>';
 
-	// Contacts lines (modules that overwrite templates must declare this into descriptor)
-	$dirtpls=array_merge($conf->modules_parts['tpl'],array('/core/tpl'));
-	foreach($dirtpls as $reldir)
-	{
-		$res=@include dol_buildpath($reldir.'/contacts.tpl.php');
-		if ($res) break;
-	}
+	$res=@include '../tpl/contacts.tpl.php';
+
+
 }
 
 llxFooter();

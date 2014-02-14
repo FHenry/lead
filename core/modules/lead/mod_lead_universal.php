@@ -101,10 +101,10 @@ class mod_lead_universal extends ModeleNumRefLead
 	 *
 	 *	@param		int 		$fk_user    user creating
 	 *  @param	    Societe		$objsoc		Object third party
-	 *	@param		Propal		$propal		Object businesscase
+	 *	@param		Lead		$lead		Object lead
 	 *	@return     string      Valeur
 	 */
-	function getNextValue($fk_user,$objsoc,$businesscase)
+	function getNextValue($fk_user,$objsoc,$lead)
 	{
 		global $db,$conf;
 

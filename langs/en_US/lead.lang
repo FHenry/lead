@@ -59,26 +59,37 @@ LeadType=Module Lead - Types
 #
 LeadList=List lead
 LeadCreate=create Lead
+LeadContact=Lead Contact
 
 #
 # Status
 #
-LeadStatus_PROSP=Prospection
-LeadStatus_CHIFF=Chiffrage
-LeadStatus_PROPO=Proposition
-LeadStatus_NEGO=Négociation
-LeadStatus_RECOND=Reconduction
-LeadStatus_WIN=Gagné
-LeadStatus_LOST=Perdu
+LeadStatus_PROSP=Prospect
+LeadStatus_CHIFF=Budget
+LeadStatus_PROPO=Proposal
+LeadStatus_NEGO=Deal
+LeadStatus_RECOND=Renew
+LeadStatus_WIN=Win
+LeadStatus_LOST=Lost
 
 #
 # Type
 #
 LeadType_SUPP=Support
-LeadType_TRAIN=Formation
-LeadType_ADVI=Conseil
+LeadType_TRAIN=Trainning
+LeadType_ADVI=Consulting
 
 #
 # Card
 #
 LeadCommercial=Commercial
+LeadStep=Steps
+LeadAmountGuess=Budget
+LeadDeadLine=Deadline
+LeadDelete=Delete Lead
+LeadConfirmDelete=Are You sure to delete lead ?
+LeadRefInt=Ref. Int.
+LeadRealAmount=Real amount
+LeadDescription=Description
+LeadDocuments=Link Document
+LeadAddElement=Link

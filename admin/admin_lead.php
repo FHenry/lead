@@ -71,7 +71,7 @@ if ($action == 'updateMask')
 
 else if ($action == 'setmod')
 {
-	dolibarr_set_const($db, "BUSINESSCASE_ADDON",$value,'chaine',0,'',$conf->entity);
+	dolibarr_set_const($db, "LEAD_ADDON",$value,'chaine',0,'',$conf->entity);
 }
 
 /*

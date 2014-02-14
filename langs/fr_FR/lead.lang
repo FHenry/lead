@@ -60,26 +60,38 @@ LeadType=Module Affaire - Types
 #
 LeadList=Liste des affaires
 LeadCreate=Nouvelle affaire
+LeadContact=Contact Affaires
+
 
 #
 # Status
 #
-LeadStatus_PROSP=Prospect
-LeadStatus_CHIFF=Budget
-LeadStatus_PROPO=Proposal
-LeadStatus_NEGO=Deal
-LeadStatus_RECOND=Renew
-LeadStatus_WIN=Win
-LeadStatus_LOST=Lost
+LeadStatus_PROSP=Prospection
+LeadStatus_CHIFF=Chiffrage
+LeadStatus_PROPO=Proposition
+LeadStatus_NEGO=Négociation
+LeadStatus_RECOND=Reconduction
+LeadStatus_WIN=Gagné
+LeadStatus_LOST=Perdu
 
 #
 # Type
 #
 LeadType_SUPP=Support
-LeadType_TRAIN=Trainning
-LeadType_ADVI=Consulting
+LeadType_TRAIN=Formation
+LeadType_ADVI=Conseil
 
 #
 # Card
 #
 LeadCommercial=Responsable
+LeadStep=Etape de vente
+LeadAmountGuess=Montant annoncé
+LeadDeadLine=Date de clôture
+LeadDelete=Supprimer l'affaire
+LeadRefInt=Référence interne
+LeadRealAmount=Montant réel
+LeadConfirmDelete=Etes vous sure de supprimer l'affaire ?
+LeadDescription=Description
+LeadDocuments=Documents associeés
+LeadAddElement=Associer

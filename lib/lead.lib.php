@@ -56,7 +56,46 @@ function leadAdminPrepareHead()
     //$this->tabs = array(
     //	'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
     //); // to remove a tab
-    complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead');
+    complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead_admin');
 
     return $head;
+}
+
+
+function lead_prepare_head($object) {
+	
+	global $langs, $conf;
+	
+	$langs->load("lead@lead");
+	
+	$h = 0;
+	$head = array();
+	
+	$head[$h][0] = dol_buildpath("/lead/lead/card.php", 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("LeadLead");
+	$head[$h][2] = 'card';
+	$h++;
+	
+	$head[$h][0] = dol_buildpath("/lead/lead/contact.php", 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Contacts");
+	$head[$h][2] = 'contact';
+	$h++;
+	
+	$head[$h][0] = dol_buildpath("/lead/lead/info.php", 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Info");
+	$head[$h][2] = 'info';
+	$h++;
+	
+	// Show more tabs from modules
+	// Entries must be declared in modules descriptor with line
+	//$this->tabs = array(
+	//	'entity:+tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	//); // to add new tab
+	//$this->tabs = array(
+	//	'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	//); // to remove a tab
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead');
+	
+	return $head;
+	
 }
