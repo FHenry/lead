@@ -17,7 +17,7 @@
 create table llx_c_lead_status
 (
   rowid       integer AUTO_INCREMENT PRIMARY KEY,
-  code 		varchar(5) UNIQUE NOT NULL,
+  code 		varchar(10) UNIQUE NOT NULL,
   label         varchar(50),
   active      tinyint DEFAULT 1 NOT NULL
 )ENGINE=innodb;
