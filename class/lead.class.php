@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2007-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* 
  * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -240,7 +240,7 @@ class Lead extends CommonObject {
 			$sql .= " " . (! isset ( $this->date_closure ) || dol_strlen ( $this->date_closure ) == 0 ? 'NULL' : "'" . $this->db->idate ( $this->date_closure )) . "',";
 			$sql .= " " . (! isset ( $this->amount_prosp ) ? 'NULL' : "'" . $this->amount_prosp . "'") . ",";
 			$sql .= " " . (! isset ( $this->fk_user_resp ) ? 'NULL' : "'" . $this->fk_user_resp . "'") . ",";
-			$sql .= " " . (! isset ( $this->description ) ? 'NULL' : "'" . $this->db->escape ( $this->description ) . "'") . ",";
+			$sql .= " " . (empty ( $this->description ) ? 'NULL' : "'" . $this->db->escape ( $this->description ) . "'") . ",";
 			$sql .= " " . $user->id . ",";
 			$sql .= " '" . $this->db->idate ( dol_now () ) . "',";
 			$sql .= " " . $user->id . ",";
@@ -413,7 +413,7 @@ class Lead extends CommonObject {
 		
 		if (is_array ( $filter )) {
 			foreach ( $filter as $key => $value ) {
-				if (($key == 't.fk_c_status') || ($key == 't.rowid') || ($key == 't.fk_c_type') || ($key == 't.fk_user_resp')) {
+				if (($key == 't.fk_c_status') || ($key == 't.rowid') || ($key == 'so.rowid') || ($key == 't.fk_c_type') || ($key == 't.fk_user_resp')) {
 					$sql .= ' AND ' . $key . ' = ' . $value;
 				}elseif ($key == 't.date_closure<') {
 					// To allow $filter['YEAR(s.dated)']=>$year
@@ -421,7 +421,9 @@ class Lead extends CommonObject {
 				}elseif (strpos ( $key, 'date' )) {
 					// To allow $filter['YEAR(s.dated)']=>$year
 					$sql .= ' AND ' . $key . ' = \'' . $value . '\'';
-				} else {
+				}elseif ($key=='t.fk_c_status !IN') {
+					$sql .= ' AND t.fk_c_status NOT IN ('.$value.')';
+				}else {
 					$sql .= ' AND ' . $key . ' LIKE \'%' . $this->db->escape ( $value ) . '%\'';
 				}
 			}
@@ -566,7 +568,7 @@ class Lead extends CommonObject {
 			$sql .= " date_closure=" . (dol_strlen ( $this->date_closure ) != 0 ? "'" . $this->db->idate ( $this->date_closure ) . "'" : 'null') . ",";
 			$sql .= " amount_prosp=" . (isset ( $this->amount_prosp ) ? $this->amount_prosp : "null") . ",";
 			$sql .= " fk_user_resp=" . (isset ( $this->fk_user_resp ) ? $this->fk_user_resp : "null") . ",";
-			$sql .= " description=" . (isset ( $this->description ) ? "'" . $this->db->escape ( $this->description ) . "'" : "null") . ",";
+			$sql .= " description=" . (!empty ( $this->description ) ? "'" . $this->db->escape ( $this->description ) . "'" : "null") . ",";
 			$sql .= " fk_user_mod=" . $user->id . ",";
 			$sql .= " tms='" . $this->db->idate ( dol_now () ) . "'";
 			
@@ -650,6 +652,18 @@ class Lead extends CommonObject {
 		}
 		
 		if (! $error) {
+			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "lead_extrafields";
+			$sql .= " WHERE fk_object=" . $this->id;
+				
+			dol_syslog ( get_class ( $this ) . "::delete sql=" . $sql );
+			$resql = $this->db->query ( $sql );
+			if (! $resql) {
+				$error ++;
+				$this->errors [] = "Error " . $this->db->lasterror ();
+			}
+		}
+		
+		if (! $error) {
 			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "lead";
 			$sql .= " WHERE rowid=" . $this->id;
 			
@@ -692,12 +706,8 @@ class Lead extends CommonObject {
 		$this->db->begin ();
 		
 		// Load source object
-		$object->fetch ( $fromid );
-		$object->id = 0;
-		$object->statut = 0;
-		
-		// Clear fields
-		// ...
+		$object->fetch( $fromid );
+		$object->ref = $object->getNextNumRef();
 		
 		// Create clone
 		$result = $object->create ( $user );
@@ -917,18 +927,7 @@ class Lead extends CommonObject {
 		$sql = "SELECT MAX(te." . $fieldid . ")";
 		$sql .= " FROM " . MAIN_DB_PREFIX . $this->table_element . " as te";
 		if (isset ( $this->ismultientitymanaged ) && $this->ismultientitymanaged == 2 || ($this->element != 'societe' && empty ( $this->isnolinkedbythird ) && empty ( $user->rights->societe->client->voir )))
-			$sql .= ", " . MAIN_DB_PREFIX . "societe as s"; // If
-			                                                                                                                                                                                                                                          // we
-			                                                                                                                                                                                                                                          // need
-			                                                                                                                                                                                                                                          // to
-			                                                                                                                                                                                                                                          // link
-			                                                                                                                                                                                                                                          // to
-			                                                                                                                                                                                                                                          // societe
-			                                                                                                                                                                                                                                          // to
-			                                                                                                                                                                                                                                          // limit
-			                                                                                                                                                                                                                                          // select
-			                                                                                                                                                                                                                                          // to
-			                                                                                                                                                                                                                                          // entity
+			$sql .= ", " . MAIN_DB_PREFIX . "societe as s";                                                                                                                                                                                // entity
 		if (empty ( $this->isnolinkedbythird ) && ! $user->rights->societe->client->voir)
 			$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON " . $alias . ".rowid = sc.fk_soc";
 		$sql .= " WHERE te." . $fieldid . " < '" . $this->db->escape ( $this->id ) . "'";
@@ -937,18 +936,7 @@ class Lead extends CommonObject {
 		if (! empty ( $filter ))
 			$sql .= " AND " . $filter;
 		if (isset ( $this->ismultientitymanaged ) && $this->ismultientitymanaged == 2 || ($this->element != 'societe' && empty ( $this->isnolinkedbythird ) && ! $user->rights->societe->client->voir))
-			$sql .= ' AND te.fk_soc = s.rowid'; // If
-			                                                                                                                                                                                                                            // we
-			                                                                                                                                                                                                                            // need
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // link
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // societe
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // limit
-			                                                                                                                                                                                                                            // select
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // entity
+			$sql .= ' AND te.fk_soc = s.rowid'; 
 		if (isset ( $this->ismultientitymanaged ) && $this->ismultientitymanaged == 1)
 			$sql .= ' AND te.entity IN (' . getEntity ( $this->element, 1 ) . ')';
 			
@@ -964,18 +952,7 @@ class Lead extends CommonObject {
 		$sql = "SELECT MIN(te." . $fieldid . ")";
 		$sql .= " FROM " . MAIN_DB_PREFIX . $this->table_element . " as te";
 		if (isset ( $this->ismultientitymanaged ) && $this->ismultientitymanaged == 2 || ($this->element != 'societe' && empty ( $this->isnolinkedbythird ) && ! $user->rights->societe->client->voir))
-			$sql .= ", " . MAIN_DB_PREFIX . "societe as s"; // If
-			                                                                                                                                                                                                                                    // we
-			                                                                                                                                                                                                                                    // need
-			                                                                                                                                                                                                                                    // to
-			                                                                                                                                                                                                                                    // link
-			                                                                                                                                                                                                                                    // to
-			                                                                                                                                                                                                                                    // societe
-			                                                                                                                                                                                                                                    // to
-			                                                                                                                                                                                                                                    // limit
-			                                                                                                                                                                                                                                    // select
-			                                                                                                                                                                                                                                    // to
-			                                                                                                                                                                                                                                    // entity
+			$sql .= ", " . MAIN_DB_PREFIX . "societe as s"; 
 		if (empty ( $this->isnolinkedbythird ) && ! $user->rights->societe->client->voir)
 			$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON " . $alias . ".rowid = sc.fk_soc";
 		$sql .= " WHERE te." . $fieldid . " > '" . $this->db->escape ( $this->id ) . "'";
@@ -985,17 +962,7 @@ class Lead extends CommonObject {
 			$sql .= " AND " . $filter;
 		if (isset ( $this->ismultientitymanaged ) && $this->ismultientitymanaged == 2 || ($this->element != 'societe' && empty ( $this->isnolinkedbythird ) && ! $user->rights->societe->client->voir))
 			$sql .= ' AND te.fk_soc = s.rowid'; // If
-			                                                                                                                                                                                                                            // we
-			                                                                                                                                                                                                                            // need
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // link
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // societe
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // limit
-			                                                                                                                                                                                                                            // select
-			                                                                                                                                                                                                                            // to
-			                                                                                                                                                                                                                            // entity
+			                                                                                                                                                                                                                           
 		if (isset ( $this->ismultientitymanaged ) && $this->ismultientitymanaged == 1)
 			$sql .= ' AND te.entity IN (' . getEntity ( $this->element, 1 ) . ')';
 			// Rem: Bug in some mysql version: SELECT MIN(rowid) FROM llx_socpeople WHERE rowid > 1 when one row in database with rowid=1, returns 1
@@ -1072,4 +1039,3 @@ class DocLink {
 	public $sourcetype;
 	public $targettype;
 }
-?>

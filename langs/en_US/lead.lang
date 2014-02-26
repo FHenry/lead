@@ -32,6 +32,8 @@ Module103111Desc = Manages Lead
 LeadSetup = Lead setup
 SettingsLead = Settings
 LeadSetupPage = Lead setup page
+LeadNbDayDefaultClosure=Nb. Day to add to for closure default date
+LeadAdmVar=Admin value
 
 #
 # About page
@@ -60,6 +62,10 @@ LeadType=Module Lead - Types
 LeadList=List lead
 LeadCreate=create Lead
 LeadContact=Lead Contact
+LeadListCurrent=Current Lead
+LeadListMyLead=My Lead
+LeadListLate=Late lead
+
 
 #
 # Status
@@ -84,12 +90,12 @@ LeadType_ADVI=Consulting
 #
 LeadCommercial=Commercial
 LeadStep=Steps
-LeadAmountGuess=Budget
+LeadAmountGuess=Budget HT
 LeadDeadLine=Deadline
 LeadDelete=Delete Lead
 LeadConfirmDelete=Are You sure to delete lead ?
 LeadRefInt=Ref. Int.
-LeadRealAmount=Real amount
+LeadRealAmount=Real amount HT
 LeadDescription=Description
 LeadDocuments=Link Document
 LeadAddElement=Link

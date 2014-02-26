@@ -1,10 +1,10 @@
 <?php
-/* Manage Lead
- * Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
+/* 
+ * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
- * This program is free software: you can redistribute it and/or modify
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -13,21 +13,20 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
- * 	\file		admin/lead.php
- * 	\ingroup	lead
- * 	\brief		This file is an example module setup page
- * 				Put some comments here
+ * \file		admin/lead.php
+ * \ingroup	lead
+ * \brief		This file is an example module setup page
+ * Put some comments here
  */
 // Dolibarr environment
-$res = @include("../../main.inc.php"); // From htdocs directory
+$res = @include ("../../main.inc.php"); // From htdocs directory
 if (! $res) {
-    $res = @include("../../../main.inc.php"); // From "custom" directory
+	$res = @include ("../../../main.inc.php"); // From "custom" directory
 }
-
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
@@ -38,40 +37,51 @@ $langs->load("lead@lead");
 
 // Access control
 if (! $user->admin) {
-    accessforbidden();
+	accessforbidden();
 }
 
 // Parameters
 $action = GETPOST('action', 'alpha');
-$value = GETPOST('value','alpha');
-$label = GETPOST('label','alpha');
-$scandir = GETPOST('scandir','alpha');
+$value = GETPOST('value', 'alpha');
+$label = GETPOST('label', 'alpha');
+$scandir = GETPOST('scandir', 'alpha');
 
 /*
  * Actions
  */
 
-if ($action == 'updateMask')
-{
-	$maskconstlead=GETPOST('maskconstlead','alpha');
-	$masklead=GETPOST('masklead','alpha');
-	if ($maskconstlead) $res = dolibarr_set_const($db,$maskconstlead,$masklead,'chaine',0,'',$conf->entity);
-
-	if (! $res > 0) $error++;
-
-	if (! $error)
-	{
-		setEventMessage($langs->trans("SetupSaved"),'mesgs');
+if ($action == 'updateMask') {
+	$maskconstlead = GETPOST('maskconstlead', 'alpha');
+	$masklead = GETPOST('masklead', 'alpha');
+	if ($maskconstlead)
+		$res = dolibarr_set_const($db, $maskconstlead, $masklead, 'chaine', 0, '', $conf->entity);
+	
+	if (! $res > 0)
+		$error ++;
+	
+	if (! $error) {
+		setEventMessage($langs->trans("SetupSaved"), 'mesgs');
+	} else {
+		setEventMessage($langs->trans("Error"), 'errors');
 	}
-	else
-	{
-		setEventMessage($langs->trans("Error"),'errors');
-	}
-}
+} 
 
-else if ($action == 'setmod')
-{
-	dolibarr_set_const($db, "LEAD_ADDON",$value,'chaine',0,'',$conf->entity);
+else if ($action == 'setmod') {
+	dolibarr_set_const($db, "LEAD_ADDON", $value, 'chaine', 0, '', $conf->entity);
+} else if ($action == 'setvar') {
+	
+	$nb_day = GETPOST('LEAD_NB_DAY_COSURE_AUTO', 'int');
+	if (! empty($nb_day)) {
+		$res = dolibarr_set_const($db, 'LEAD_NB_DAY_COSURE_AUTO', $nb_day, 'chaine', 0, '', $conf->entity);
+	}
+	if (! $res > 0)
+		$error ++;
+	
+	if (! $error) {
+		setEventMessage($langs->trans("SetupSaved"), 'mesgs');
+	} else {
+		setEventMessage($langs->trans("Error"), 'errors');
+	}
 }
 
 /*
@@ -81,118 +91,104 @@ $page_name = "LeadSetup";
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
-$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
-    . $langs->trans("BackToModuleList") . '</a>';
+$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = leadAdminPrepareHead();
-dol_fiche_head(
-    $head,
-    'settings',
-    $langs->trans("Module103111Name"),
-    0,
-    "lead@lead"
-);
-
+dol_fiche_head($head, 'settings', $langs->trans("Module103111Name"), 0, "lead@lead");
 
 /*
- *  Module numerotation
-*/
+ * Module numerotation
+ */
 print_titre($langs->trans("LeadSetupPage"));
 
-$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
+$dirmodels = array_merge(array(
+	'/'
+), (array) $conf->modules_parts['models']);
 
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
-print '<td>'.$langs->trans("Name")."</td>\n";
-print '<td>'.$langs->trans("Description")."</td>\n";
-print '<td nowrap>'.$langs->trans("Example")."</td>\n";
-print '<td align="center" width="60">'.$langs->trans("Status").'</td>';
-print '<td align="center" width="16">'.$langs->trans("Infos").'</td>';
-print '</tr>'."\n";
+print '<td>' . $langs->trans("Name") . "</td>\n";
+print '<td>' . $langs->trans("Description") . "</td>\n";
+print '<td nowrap>' . $langs->trans("Example") . "</td>\n";
+print '<td align="center" width="60">' . $langs->trans("Status") . '</td>';
+print '<td align="center" width="16">' . $langs->trans("Infos") . '</td>';
+print '</tr>' . "\n";
 
 clearstatcache();
 
 $form = new Form($db);
 
-foreach ($dirmodels as $reldir)
-{
-	$dir = dol_buildpath($reldir."core/modules/lead/");
+foreach ($dirmodels as $reldir) {
+	$dir = dol_buildpath($reldir . "core/modules/lead/");
 	
-	
-	if (is_dir($dir))
-	{ 
+	if (is_dir($dir)) {
 		$handle = opendir($dir);
-		if (is_resource($handle))
-		{
-			$var=true;
-
-			while (($file = readdir($handle))!==false)
-			{
-				if ((substr($file, 0, 9) == 'mod_lead_') && substr($file, dol_strlen($file)-3, 3) == 'php')
-				{
-					$file = substr($file, 0, dol_strlen($file)-4);
-					require_once $dir.$file.'.php';
-						
-					$module = new $file;
-
+		if (is_resource($handle)) {
+			$var = true;
+			
+			while (($file = readdir($handle)) !== false) {
+				if ((substr($file, 0, 9) == 'mod_lead_') && substr($file, dol_strlen($file) - 3, 3) == 'php') {
+					$file = substr($file, 0, dol_strlen($file) - 4);
+					require_once $dir . $file . '.php';
+					
+					$module = new $file();
+					
 					// Show modules according to features level
-					if ($module->version == 'development'  && $conf->global->MAIN_FEATURES_LEVEL < 2) continue;
-					if ($module->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1) continue;
-
-					if ($module->isEnabled())
-					{
-						$var=!$var;
-						print '<tr '.$bc[$var].'><td>'.$module->nom."</td><td>\n";
+					if ($module->version == 'development' && $conf->global->MAIN_FEATURES_LEVEL < 2)
+						continue;
+					if ($module->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1)
+						continue;
+					
+					if ($module->isEnabled()) {
+						$var = ! $var;
+						print '<tr ' . $bc[$var] . '><td>' . $module->nom . "</td><td>\n";
 						print $module->info();
 						print '</td>';
-
+						
 						// Show example of numbering module
 						print '<td class="nowrap">';
-						$tmp=$module->getExample();
-						if (preg_match('/^Error/',$tmp)) print '<div class="error">'.$langs->trans($tmp).'</div>';
-						elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
-						else print $tmp;
-						print '</td>'."\n";
-
-						print '<td align="center">';
-						if ($conf->global->LEAD_ADDON == "$file")
-						{
-							print img_picto($langs->trans("Activated"),'switch_on');
-						}
+						$tmp = $module->getExample();
+						if (preg_match('/^Error/', $tmp))
+							print '<div class="error">' . $langs->trans($tmp) . '</div>';
+						elseif ($tmp == 'NotConfigured')
+							print $langs->trans($tmp);
 						else
-						{
-							print '<a href="'.$_SERVER["PHP_SELF"].'?action=setmod&amp;value='.$file.'">';
-							print img_picto($langs->trans("Disabled"),'switch_off');
+							print $tmp;
+						print '</td>' . "\n";
+						
+						print '<td align="center">';
+						if ($conf->global->LEAD_ADDON == "$file") {
+							print img_picto($langs->trans("Activated"), 'switch_on');
+						} else {
+							print '<a href="' . $_SERVER["PHP_SELF"] . '?action=setmod&amp;value=' . $file . '">';
+							print img_picto($langs->trans("Disabled"), 'switch_off');
 							print '</a>';
 						}
 						print '</td>';
-
-						$businesscase=new Lead($db);
+						
+						$businesscase = new Lead($db);
 						$businesscase->initAsSpecimen();
-
+						
 						// Info
-						$htmltooltip='';
-						$htmltooltip.=''.$langs->trans("Version").': <b>'.$module->getVersion().'</b><br>';
-						$nextval=$module->getNextValue($user->id,$mysoc,$propal);
-						if ("$nextval" != $langs->trans("NotAvailable"))	// Keep " on nextval
+						$htmltooltip = '';
+						$htmltooltip .= '' . $langs->trans("Version") . ': <b>' . $module->getVersion() . '</b><br>';
+						$nextval = $module->getNextValue($user->id, $mysoc, $propal);
+						if ("$nextval" != $langs->trans("NotAvailable")) 						// Keep " on nextval
 						{
-							$htmltooltip.=''.$langs->trans("NextValue").': ';
-							if ($nextval)
-							{
-								$htmltooltip.=$nextval.'<br>';
-							}
-							else
-							{
-								$htmltooltip.=$langs->trans($module->error).'<br>';
+							$htmltooltip .= '' . $langs->trans("NextValue") . ': ';
+							if ($nextval) {
+								$htmltooltip .= $nextval . '<br>';
+							} else {
+								$htmltooltip .= $langs->trans($module->error) . '<br>';
 							}
 						}
-
+						
 						print '<td align="center">';
-						print $form->textwithpicto('',$htmltooltip,1,0);
+						print $form->textwithpicto('', $htmltooltip, 1, 0);
 						print '</td>';
-
+						
 						print "</tr>\n";
 					}
 				}
@@ -203,7 +199,32 @@ foreach ($dirmodels as $reldir)
 }
 print "</table><br>\n";
 
+// Admin var of module
+print_titre($langs->trans("LeadAdmVar"));
 
+print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" >';
+print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+print '<input type="hidden" name="action" value="setvar">';
+
+print '<table class="noborder" width="100%">';
+
+print '<tr class="liste_titre">';
+print '<td>' . $langs->trans("Name") . '</td>';
+print '<td width="400px">' . $langs->trans("Valeur") . '</td>';
+print "</tr>\n";
+
+// Prefecture d\'enregistrement
+print '<tr class="pair"><td>' . $langs->trans("LeadNbDayDefaultClosure") . '</td>';
+print '<td align="left">';
+print '<input type="text" name="LEAD_NB_DAY_COSURE_AUTO" value="' . $conf->global->LEAD_NB_DAY_COSURE_AUTO . '" size="4" ></td>';
+print '</tr>';
+print '</table>';
+
+print '<tr class="impair"><td colspan="2" align="right"><input type="submit" class="button" value="' . $langs->trans("Save") . '"></td>';
+print '</tr>';
+
+print '</table><br>';
+print '</form>';
 
 llxFooter();
 

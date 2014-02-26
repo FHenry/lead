@@ -33,6 +33,8 @@ LeadSimpleNumRefModelDesc=Renvoie le numéro sous la forme LEA-yymm-nnnn où yy 
 LeadSetup = Configuration du module Affaires
 SettingsLead = Réglages
 LeadSetupPage = Page de réglage de Affaires
+LeadNbDayDefaultClosure=Nb. jour a ajouter à la date de du jour pour la date de cloture par defaut
+LeadAdmVar=Administration
 
 #
 # Page À propos
@@ -61,6 +63,9 @@ LeadType=Module Affaire - Types
 LeadList=Liste des affaires
 LeadCreate=Nouvelle affaire
 LeadContact=Contact Affaires
+LeadListCurrent=Affaires en cours
+LeadListMyLead=Mes affaires
+LeadListLate=Affaires en retard
 
 
 #
@@ -86,11 +91,11 @@ LeadType_ADVI=Conseil
 #
 LeadCommercial=Responsable
 LeadStep=Etape de vente
-LeadAmountGuess=Montant annoncé
+LeadAmountGuess=Montant annoncé HT
 LeadDeadLine=Date de clôture
 LeadDelete=Supprimer l'affaire
 LeadRefInt=Référence interne
-LeadRealAmount=Montant réel
+LeadRealAmount=Montant réel HT
 LeadConfirmDelete=Etes vous sure de supprimer l'affaire ?
 LeadDescription=Description
 LeadDocuments=Documents associeés

@@ -1,6 +1,6 @@
 <?php
-/* Lead
- * Copyright (C) 2014      Florian Henry		<florian.henry@open-concept.pro>
+/* 
+ * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,26 +14,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * or see http://www.gnu.org/
  */
 
 /**
- *  \file       lead/core/modules/lead/modules_lead.php
- *  \ingroup    businesscase
- *  \brief      businesscase for numbering businesscase
+ * \file lead/core/modules/lead/modules_lead.php
+ * \ingroup businesscase
+ * \brief businesscase for numbering businesscase
  */
 
 /**
- *	Classe mere des modeles de numerotation des references de lead
+ * Classe mere des modeles de numerotation des references de lead
  */
 abstract class ModeleNumRefLead
 {
-	var $error='';
+
+	var $error = '';
 
 	/**
 	 * Return if a module can be used or not
 	 *
-	 * @return	boolean     true if module can be used
+	 * @return boolean true if module can be used
 	 */
 	function isEnabled()
 	{
@@ -41,9 +41,9 @@ abstract class ModeleNumRefLead
 	}
 
 	/**
-	 *  Renvoi la description par defaut du modele de numerotation
+	 * Renvoi la description par defaut du modele de numerotation
 	 *
-	 * 	@return     string      Texte descripif
+	 * @return string Texte descripif
 	 */
 	function info()
 	{
@@ -53,9 +53,9 @@ abstract class ModeleNumRefLead
 	}
 
 	/**
-	 * 	Renvoi un exemple de numerotation
+	 * Renvoi un exemple de numerotation
 	 *
-	 *  @return     string      Example
+	 * @return string Example
 	 */
 	function getExample()
 	{
@@ -65,10 +65,10 @@ abstract class ModeleNumRefLead
 	}
 
 	/**
-	 *  Test si les numeros deja en vigueur dans la base ne provoquent pas de
-	 *  de conflits qui empechera cette numerotation de fonctionner.
+	 * Test si les numeros deja en vigueur dans la base ne provoquent pas de
+	 * de conflits qui empechera cette numerotation de fonctionner.
 	 *
-	 *  @return     boolean     false si conflit, true si ok
+	 * @return boolean false si conflit, true si ok
 	 */
 	function canBeActivated()
 	{
@@ -76,32 +76,37 @@ abstract class ModeleNumRefLead
 	}
 
 	/**
-	 * 	Renvoi prochaine valeur attribuee
+	 * Renvoi prochaine valeur attribuee
 	 *
-	 *	@param		int 		$fk_user    user creating
-	 *  @param	    Societe		$objsoc		Object third party
-	 *	@param		Lead		$lead		Object lead
-	 *	@return     string      Valeur
+	 * @param int $fk_user
+	 *        	user creating
+	 * @param Societe $objsoc
+	 *        	party
+	 * @param Lead $lead        	
+	 * @return string Valeur
 	 */
-	function getNextValue($fk_user,$objsoc,$lead)
+	function getNextValue($fk_user, $objsoc, $lead)
 	{
 		global $langs;
 		return $langs->trans("NotAvailable");
 	}
 
 	/**
-	 *  Renvoi version du module numerotation
+	 * Renvoi version du module numerotation
 	 *
-	 *  @return     string      Valeur
+	 * @return string Valeur
 	 */
 	function getVersion()
 	{
 		global $langs;
 		$langs->load("admin");
-
-		if ($this->version == 'development') return $langs->trans("VersionDevelopment");
-		if ($this->version == 'experimental') return $langs->trans("VersionExperimental");
-		if ($this->version == 'dolibarr') return DOL_VERSION;
+		
+		if ($this->version == 'development')
+			return $langs->trans("VersionDevelopment");
+		if ($this->version == 'experimental')
+			return $langs->trans("VersionExperimental");
+		if ($this->version == 'dolibarr')
+			return DOL_VERSION;
 		return $langs->trans("NotAvailable");
 	}
 }

@@ -1,10 +1,10 @@
 <?php
-/* Manage Lead
- * Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
+/* 
+ * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
- * This program is free software: you can redistribute it and/or modify
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -13,57 +13,55 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
- *	\file		lib/lead.lib.php
- *	\ingroup	lead
- *	\brief		This file is an example module library
- *				Put some comments here
+ * \file		lib/lead.lib.php
+ * \ingroup	lead
+ * \brief		This file is an example module library
+ * Put some comments here
  */
-
 function leadAdminPrepareHead()
 {
-    global $langs, $conf;
-
-    $langs->load("lead@lead");
-    $langs->load("admin");
-
-    $h = 0;
-    $head = array();
-
-    $head[$h][0] = dol_buildpath("/lead/admin/admin_lead.php", 1);
-    $head[$h][1] = $langs->trans("SettingsLead");
-    $head[$h][2] = 'settings';
-    $h++;
-    
-    $head[$h][0] = dol_buildpath("/lead/admin/lead_extrafields.php", 1);
-    $head[$h][1] = $langs->trans("ExtraFields");
-    $head[$h][2] = 'attributes';
-    $h++;
-    
-    $head[$h][0] = dol_buildpath("/lead/admin/about.php", 1);
-    $head[$h][1] = $langs->trans("About");
-    $head[$h][2] = 'about';
-    $h++;
-
-    // Show more tabs from modules
-    // Entries must be declared in modules descriptor with line
-    //$this->tabs = array(
-    //	'entity:+tabname:Title:@lead:/lead/mypage.php?id=__ID__'
-    //); // to add new tab
-    //$this->tabs = array(
-    //	'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
-    //); // to remove a tab
-    complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead_admin');
-
-    return $head;
+	global $langs, $conf;
+	
+	$langs->load("lead@lead");
+	$langs->load("admin");
+	
+	$h = 0;
+	$head = array();
+	
+	$head[$h][0] = dol_buildpath("/lead/admin/admin_lead.php", 1);
+	$head[$h][1] = $langs->trans("SettingsLead");
+	$head[$h][2] = 'settings';
+	$h ++;
+	
+	$head[$h][0] = dol_buildpath("/lead/admin/lead_extrafields.php", 1);
+	$head[$h][1] = $langs->trans("ExtraFields");
+	$head[$h][2] = 'attributes';
+	$h ++;
+	
+	$head[$h][0] = dol_buildpath("/lead/admin/about.php", 1);
+	$head[$h][1] = $langs->trans("About");
+	$head[$h][2] = 'about';
+	$h ++;
+	
+	// Show more tabs from modules
+	// Entries must be declared in modules descriptor with line
+	// $this->tabs = array(
+	// 'entity:+tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	// ); // to add new tab
+	// $this->tabs = array(
+	// 'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	// ); // to remove a tab
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead_admin');
+	
+	return $head;
 }
 
-
-function lead_prepare_head($object) {
-	
+function lead_prepare_head($object)
+{
 	global $langs, $conf;
 	
 	$langs->load("lead@lead");
@@ -71,31 +69,30 @@ function lead_prepare_head($object) {
 	$h = 0;
 	$head = array();
 	
-	$head[$h][0] = dol_buildpath("/lead/lead/card.php", 1).'?id='.$object->id;
+	$head[$h][0] = dol_buildpath("/lead/lead/card.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("LeadLead");
 	$head[$h][2] = 'card';
-	$h++;
+	$h ++;
 	
-	$head[$h][0] = dol_buildpath("/lead/lead/contact.php", 1).'?id='.$object->id;
+	$head[$h][0] = dol_buildpath("/lead/lead/contact.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Contacts");
 	$head[$h][2] = 'contact';
-	$h++;
+	$h ++;
 	
-	$head[$h][0] = dol_buildpath("/lead/lead/info.php", 1).'?id='.$object->id;
+	$head[$h][0] = dol_buildpath("/lead/lead/info.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Info");
 	$head[$h][2] = 'info';
-	$h++;
+	$h ++;
 	
 	// Show more tabs from modules
 	// Entries must be declared in modules descriptor with line
-	//$this->tabs = array(
-	//	'entity:+tabname:Title:@lead:/lead/mypage.php?id=__ID__'
-	//); // to add new tab
-	//$this->tabs = array(
-	//	'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
-	//); // to remove a tab
+	// $this->tabs = array(
+	// 'entity:+tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	// ); // to add new tab
+	// $this->tabs = array(
+	// 'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	// ); // to remove a tab
 	complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead');
 	
 	return $head;
-	
 }

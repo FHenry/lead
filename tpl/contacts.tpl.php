@@ -1,6 +1,5 @@
 <?php
-/* Copyright (C) 2012 Regis Houssin       <regis.houssin@capnetworks.com>
- * Copyright (C) 2013 Laurent Destailleur <eldy@users.sourceforge.net>
+/* 
  * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,27 +14,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * This template needs:
- * $object
  */
-
 if (! class_exists('Contact')) {
-	require DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+	require DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
 }
 if (! class_exists('FormCompany')) {
-	require DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+	require DOL_DOCUMENT_ROOT . '/core/class/html.formcompany.class.php';
 }
 
 $module = $object->element;
 
+$permission = $user->rights->$module->write;
 
-$permission=$user->rights->$module->write;
-
-$formcompany= new FormCompany($db);
-$companystatic=new Societe($db);
-$contactstatic=new Contact($db);
-$userstatic=new User($db);
+$formcompany = new FormCompany($db);
+$companystatic = new Societe($db);
+$contactstatic = new Contact($db);
+$userstatic = new User($db);
 
 ?>
 
@@ -55,34 +49,50 @@ $userstatic=new User($db);
 	<?php $var=false; ?>
 
 
-	<form class="tagtr impair" action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>" method="POST">
-	<input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>" />
-	<input type="hidden" name="id" value="<?php echo $object->id; ?>" />
-	<input type="hidden" name="action" value="addcontact" />
-	<input type="hidden" name="source" value="internal" />
+	<form class="tagtr impair"
+		action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>"
+		method="POST">
+		<input type="hidden" name="token"
+			value="<?php echo $_SESSION['newtoken']; ?>" /> <input type="hidden"
+			name="id" value="<?php echo $object->id; ?>" /> <input type="hidden"
+			name="action" value="addcontact" /> <input type="hidden"
+			name="source" value="internal" />
 		<div class="nowrap tagtd"><?php echo img_object('','user').' '.$langs->trans("Users"); ?></div>
 		<div class="tagtd"><?php echo $conf->global->MAIN_INFO_SOCIETE_NOM; ?></div>
 		<div class="tagtd maxwidthonsmartphone"><?php echo $form->select_dolusers($user->id, 'userid', 0, (! empty($userAlreadySelected)?$userAlreadySelected:null), 0, null, null, 0, 56); ?></div>
 		<div class="tagtd maxwidthonsmartphone"><?php echo $formcompany->selectTypeContact($object, '', 'type','internal'); ?></div>
 		<div class="tagtd">&nbsp;</div>
-		<div class="tagtd" align="right"><input type="submit" class="button" value="<?php echo $langs->trans("Add"); ?>"></div>
+		<div class="tagtd" align="right">
+			<input type="submit" class="button"
+				value="<?php echo $langs->trans("Add"); ?>">
+		</div>
 	</form>
 
 	<?php $var=!$var; ?>
 
-	<form class="tagtr pair" action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>" method="POST">
-	<input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>" />
-	<input type="hidden" name="id" value="<?php echo $object->id; ?>" />
-	<input type="hidden" name="action" value="addcontact" />
-	<input type="hidden" name="source" value="external" />
+	<form class="tagtr pair"
+		action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>"
+		method="POST">
+		<input type="hidden" name="token"
+			value="<?php echo $_SESSION['newtoken']; ?>" /> <input type="hidden"
+			name="id" value="<?php echo $object->id; ?>" /> <input type="hidden"
+			name="action" value="addcontact" /> <input type="hidden"
+			name="source" value="external" />
 		<div class="tagtd nowrap"><?php echo img_object('','contact').' '.$langs->trans("ThirdPartyContacts"); ?></div>
 		<?php if ($conf->use_javascript_ajax && ! empty($conf->global->COMPANY_USE_SEARCH_TO_SELECT)) { ?>
 		<div class="tagtd nowrap maxwidthonsmartphone">
 			<?php
-			$events=array();
-			$events[]=array('method' => 'getContacts', 'url' => dol_buildpath('/core/ajax/contacts.php',1), 'htmlname' => 'contactid', 'params' => array('add-customer-contact' => 'disabled'));
-			print $form->select_company($object->socid,'socid','',1,0,0,$events);
-			?>
+		$events = array();
+		$events[] = array(
+			'method' => 'getContacts',
+			'url' => dol_buildpath('/core/ajax/contacts.php', 1),
+			'htmlname' => 'contactid',
+			'params' => array(
+				'add-customer-contact' => 'disabled'
+			)
+		);
+		print $form->select_company($object->socid, 'socid', '', 1, 0, 0, $events);
+		?>
 		</div>
 		<div class="tagtd maxwidthonsmartphone">
 			<?php $nbofcontacts=$form->select_contacts($object->socid, '', 'contactid'); ?>
@@ -100,8 +110,10 @@ $userstatic=new User($db);
 			<?php $formcompany->selectTypeContact($object, '', 'type','external'); ?>
 		</div>
 		<div class="tagtd">&nbsp;</div>
-		<div  class="tagtd" align="right">
-			<input type="submit" id="add-customer-contact" class="button" value="<?php echo $langs->trans("Add"); ?>"<?php if (! $nbofcontacts) echo ' disabled="disabled"'; ?>>
+		<div class="tagtd" align="right">
+			<input type="submit" id="add-customer-contact" class="button"
+				value="<?php echo $langs->trans("Add"); ?>"
+				<?php if (! $nbofcontacts) echo ' disabled="disabled"'; ?>>
 		</div>
 	</form>
 
@@ -119,14 +131,17 @@ $userstatic=new User($db);
 	<?php $var=true; ?>
 
 	<?php
-	foreach(array('internal','external') as $source) {
-		$tab = $object->liste_contact(-1,$source);
-		$num=count($tab);
-
+	foreach (array(
+		'internal',
+		'external'
+	) as $source) {
+		$tab = $object->liste_contact(- 1, $source);
+		$num = count($tab);
+		
 		$i = 0;
 		while ($i < $num) {
-			$var = !$var;
-	?>
+			$var = ! $var;
+			?>
 
 	<form class="tagtr <?php echo $var?"pair":"impair"; ?>">
 		<div class="tagtd" align="left">
@@ -135,35 +150,30 @@ $userstatic=new User($db);
 		</div>
 		<div class="tagtd" align="left">
 			<?php
-			if ($tab[$i]['socid'] > 0)
-			{
+			if ($tab[$i]['socid'] > 0) {
 				$companystatic->fetch($tab[$i]['socid']);
 				echo $companystatic->getNomUrl(1);
 			}
-			if ($tab[$i]['socid'] < 0)
-			{
+			if ($tab[$i]['socid'] < 0) {
 				echo $conf->global->MAIN_INFO_SOCIETE_NOM;
 			}
-			if (! $tab[$i]['socid'])
-			{
+			if (! $tab[$i]['socid']) {
 				echo '&nbsp;';
 			}
 			?>
 		</div>
 		<div class="tagtd">
 			<?php
-			if ($tab[$i]['source']=='internal')
-			{
-				$userstatic->id=$tab[$i]['id'];
-				$userstatic->lastname=$tab[$i]['lastname'];
-				$userstatic->firstname=$tab[$i]['firstname'];
+			if ($tab[$i]['source'] == 'internal') {
+				$userstatic->id = $tab[$i]['id'];
+				$userstatic->lastname = $tab[$i]['lastname'];
+				$userstatic->firstname = $tab[$i]['firstname'];
 				echo $userstatic->getNomUrl(1);
 			}
-			if ($tab[$i]['source']=='external')
-			{
-				$contactstatic->id=$tab[$i]['id'];
-				$contactstatic->lastname=$tab[$i]['lastname'];
-				$contactstatic->firstname=$tab[$i]['firstname'];
+			if ($tab[$i]['source'] == 'external') {
+				$contactstatic->id = $tab[$i]['id'];
+				$contactstatic->lastname = $tab[$i]['lastname'];
+				$contactstatic->firstname = $tab[$i]['firstname'];
 				echo $contactstatic->getNomUrl(1);
 			}
 			?>
@@ -172,26 +182,25 @@ $userstatic=new User($db);
 		<div class="tagtd" align="center">
 			<?php if ($object->statut >= 0) echo '<a href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=swapstatut&amp;ligne='.$tab[$i]['rowid'].'">'; ?>
 			<?php
-			if ($tab[$i]['source']=='internal')
-			{
-				$userstatic->id=$tab[$i]['id'];
-				$userstatic->lastname=$tab[$i]['lastname'];
-				$userstatic->firstname=$tab[$i]['firstname'];
-				//echo $userstatic->LibStatut($tab[$i]['status'],3);
+			if ($tab[$i]['source'] == 'internal') {
+				$userstatic->id = $tab[$i]['id'];
+				$userstatic->lastname = $tab[$i]['lastname'];
+				$userstatic->firstname = $tab[$i]['firstname'];
+				// echo $userstatic->LibStatut($tab[$i]['status'],3);
 			}
-			if ($tab[$i]['source']=='external')
-			{
-				$contactstatic->id=$tab[$i]['id'];
-				$contactstatic->lastname=$tab[$i]['lastname'];
-				$contactstatic->firstname=$tab[$i]['firstname'];
-				echo $contactstatic->LibStatut($tab[$i]['status'],3);
+			if ($tab[$i]['source'] == 'external') {
+				$contactstatic->id = $tab[$i]['id'];
+				$contactstatic->lastname = $tab[$i]['lastname'];
+				$contactstatic->firstname = $tab[$i]['firstname'];
+				echo $contactstatic->LibStatut($tab[$i]['status'], 3);
 			}
 			?>
 			<?php if ($object->statut >= 0) echo '</a>'; ?>
 		</div>
 		<div class="tagtd nowrap" align="center">
 			<?php if ($permission) { ?>
-				&nbsp;<a href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=deletecontact&amp;lineid='.$tab[$i]['rowid']; ?>"><?php echo img_delete(); ?></a>
+				&nbsp;<a
+				href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=deletecontact&amp;lineid='.$tab[$i]['rowid']; ?>"><?php echo img_delete(); ?></a>
 			<?php } ?>
 		</div>
 	</form>

@@ -1,8 +1,6 @@
 <?php
-/* Copyright (C) 2005      Patrick Rouillon     <patrick@rouillon.net>
- * Copyright (C) 2005-2009 Destailleur Laurent  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin		<regis.houssin@capnetworks.com>
- * Copyright (C) 2011-2012 Philippe Grand       <philippe.grand@atoo-net.com>
+/* 
+ * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,21 +17,20 @@
  */
 
 /**
- *       \file       htdocs/comm/propal/contact.php
- *       \ingroup    propal
- *       \brief      Onglet de gestion des contacts de propal
+ * \file htdocs/comm/propal/contact.php
+ * \ingroup propal
+ * \brief Onglet de gestion des contacts de propal
  */
-
 $res = @include ("../../main.inc.php"); // For root directory
 if (! $res)
 	$res = @include ("../../../main.inc.php"); // For "custom" directory
 if (! $res)
-	die ( "Include of main fails" );
+	die("Include of main fails");
 require_once '../class/lead.class.php';
-require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
 require_once '../lib/lead.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/html.formcompany.class.php';
 require_once '../class/html.formlead.class.php';
 
 $langs->load("facture");
@@ -42,144 +39,120 @@ $langs->load("orders");
 $langs->load("sendings");
 $langs->load("companies");
 
-$id=GETPOST('id','int');
-$ref= GETPOST('ref','alpha');
-$lineid=GETPOST('lineid','int');
-$action=GETPOST('action','alpha');
+$id = GETPOST('id', 'int');
+$ref = GETPOST('ref', 'alpha');
+$lineid = GETPOST('lineid', 'int');
+$action = GETPOST('action', 'alpha');
 
 // Security check
-if ($user->societe_id) $socid=$user->societe_id;
+if ($user->societe_id)
+	$socid = $user->societe_id;
 $result = restrictedArea($user, 'propal', $id);
 
 $object = new Lead($db);
 
 // Load object
-if ($id > 0)
-{
-	$ret=$object->fetch($id);
-	if ($ret == 0)
-	{
+if ($id > 0) {
+	$ret = $object->fetch($id);
+	if ($ret == 0) {
 		$langs->load("errors");
 		setEventMessage($langs->trans('ErrorRecordNotFound'), 'errors');
-		$error++;
-	}
-	else if ($ret < 0)
-	{
+		$error ++;
+	} else if ($ret < 0) {
 		setEventMessage($object->error, 'errors');
-		$error++;
+		$error ++;
 	}
 }
-if (! $error)
-{
+if (! $error) {
 	$object->fetch_thirdparty();
-}
-else
-{
+} else {
 	header('Location: list.php');
-	exit;
+	exit();
 }
-
 
 /*
  * Ajout d'un nouveau contact
  */
 
-if ($action == 'addcontact' && $user->rights->lead->write)
-{
-    if ($object->id > 0)
-    {
-    	$contactid = (GETPOST('userid','int') ? GETPOST('userid','int') : GETPOST('contactid','int'));
-  		$result = $object->add_contact($contactid, $_POST["type"], $_POST["source"]);
-    }
-
-	if ($result >= 0)
-	{
-		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
-		exit;
+if ($action == 'addcontact' && $user->rights->lead->write) {
+	if ($object->id > 0) {
+		$contactid = (GETPOST('userid', 'int') ? GETPOST('userid', 'int') : GETPOST('contactid', 'int'));
+		$result = $object->add_contact($contactid, $_POST["type"], $_POST["source"]);
 	}
-	else
-	{
-		if ($object->error == 'DB_ERROR_RECORD_ALREADY_EXISTS')
-		{
+	
+	if ($result >= 0) {
+		header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $object->id);
+		exit();
+	} else {
+		if ($object->error == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 			$langs->load("errors");
 			setEventMessage($langs->trans("ErrorThisContactIsAlreadyDefinedAsThisType"), 'errors');
-		}
-		else
-		{
+		} else {
 			setEventMessage($object->error, 'errors');
 		}
 	}
-}
+} 
 
 // Bascule du statut d'un contact
-else if ($action == 'swapstatut' && $user->rights->lead->write)
-{
-	if ($object->id > 0)
-	{
-	    $result=$object->swapContactStatus(GETPOST('ligne'));
+else if ($action == 'swapstatut' && $user->rights->lead->write) {
+	if ($object->id > 0) {
+		$result = $object->swapContactStatus(GETPOST('ligne'));
 	}
-}
+} 
 
 // Efface un contact
-else if ($action == 'deletecontact' && $user->rights->lead->write)
-{
+else if ($action == 'deletecontact' && $user->rights->lead->write) {
 	$result = $object->delete_contact($lineid);
-
-	if ($result >= 0)
-	{
-		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
-		exit;
-	}
-	else
-	{
+	
+	if ($result >= 0) {
+		header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $object->id);
+		exit();
+	} else {
 		dol_print_error($db);
 	}
 }
-
 
 /*
  * View
  */
 
-llxHeader('',$langs->trans('LeadContact'));
+llxHeader('', $langs->trans('LeadContact'));
 
 $form = new Form($db);
-$formcompany= new FormCompany($db);
+$formcompany = new FormCompany($db);
 $formother = new FormOther($db);
 $formlead = new FormLead($db);
 
-
-if ($object->id > 0)
-{
+if ($object->id > 0) {
 	$head = lead_prepare_head($object);
 	dol_fiche_head($head, 'contact', $langs->trans("LeadContact"), 0, 'contact');
-
+	
 	/*
 	 * Lead synthese pour rappel
 	 */
 	print '<table class="border" width="100%">';
-
-	$linkback='<a href="list.php">'.$langs->trans("BackToList").'</a>';
-
+	
+	$linkback = '<a href="list.php">' . $langs->trans("BackToList") . '</a>';
+	
 	// Ref
-	print '<tr><td width="25%">'.$langs->trans('Ref').'</td><td colspan="3">';
+	print '<tr><td width="25%">' . $langs->trans('Ref') . '</td><td colspan="3">';
 	print $formlead->showrefnav($object, 'id', $linkback, 1, 'rowid', 'ref', '');
 	print '</td></tr>';
-
+	
 	print '<tr>';
 	print '<td width="20%">';
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	$userstatic=new User($db);
+	$userstatic = new User($db);
 	$result = $userstatic->fetch($object->fk_user_resp);
-	if ($result<0) {
-		setEventMessage($userstatic->error,'errors');
+	if ($result < 0) {
+		setEventMessage($userstatic->error, 'errors');
 	}
 	print $userstatic->getFullName($langs);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('Company');
@@ -206,16 +179,14 @@ if ($object->id > 0)
 	print $object->type_label;
 	print '</td>';
 	print '</tr>';
-
+	
 	print "</table>";
-
+	
 	print '</div>';
-
+	
 	print '<br>';
-
-	$res=@include '../tpl/contacts.tpl.php';
-
-
+	
+	$res = @include '../tpl/contacts.tpl.php';
 }
 
 llxFooter();
