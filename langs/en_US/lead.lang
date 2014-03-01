@@ -34,6 +34,7 @@ SettingsLead = Settings
 LeadSetupPage = Lead setup page
 LeadNbDayDefaultClosure=Nb. Day to add to for closure default date
 LeadAdmVar=Admin value
+LeadUserGroupAffect=Limit user list affectable on lead to user group
 
 #
 # About page

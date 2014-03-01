@@ -35,6 +35,7 @@ SettingsLead = Réglages
 LeadSetupPage = Page de réglage de Affaires
 LeadNbDayDefaultClosure=Nb. jour a ajouter à la date de du jour pour la date de cloture par defaut
 LeadAdmVar=Administration
+LeadUserGroupAffect=Limité les utilisateurs affectable à une affaire au groupe d'utilisateur
 
 #
 # Page À propos

@@ -214,10 +214,10 @@ if ($resql != - 1) {
 	print_liste_field_titre($langs->trans("LeadCommercial"), $_SERVEUR['PHP_SELF'], "usr.lastname", "", $option, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadStep"), $_SERVEUR['PHP_SELF'], "leadsta.label", "", $option, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadType"), $_SERVEUR['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, '', $sortfield, $sortorder);
-	print '<td></td>';
+	print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
+	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
+	print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
+	print '<td align="center"></td>';
 	
 	print "</tr>\n";
 	
@@ -244,9 +244,9 @@ if ($resql != - 1) {
 	print '</td>';
 	
 	// amount guess
-	print '<td id="totalamountguess"></td>';
+	print '<td id="totalamountguess" align="right"></td>';
 	// amount real
-	print '<td id="totalamountreal"></td>';
+	print '<td id="totalamountreal" align="right"></td>';
 	// dt closure
 	print '<td></td>';
 	// edit button
@@ -303,18 +303,18 @@ if ($resql != - 1) {
 		print '<td>' . $line->type_label . '</td>';
 		
 		// Amount prosp
-		print '<td>' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+		print '<td align="right">' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		$totalamountguess += $line->amount_prosp;
 		
 		// Amount real
 		$amount = $line->getRealAmount();
-		print '<td>' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+		print '<td  align="right">' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		$totalamountreal += $amount;
 		
 		// Closure date
-		print '<td>' . dol_print_date($line->date_closure, 'daytextshort') . '</td>';
+		print '<td  align="right">' . dol_print_date($line->date_closure, 'daytextshort') . '</td>';
 		
-		print '<td><a href="card.php?id=' . $line->id . '&action=edit">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
+		print '<td align="center"><a href="card.php?id=' . $line->id . '&action=edit">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
 		
 		print "</tr>\n";
 		

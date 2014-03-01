@@ -31,6 +31,8 @@ if (! empty($conf->propal->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 if (! empty($conf->facture->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
+if (!empty($conf->global->LEAD_GRP_USER_AFFECT))
+	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
 	
 	// Security check
 if (! $user->rights->lead->read)
@@ -64,6 +66,26 @@ $extrafields = new ExtraFields($db);
 
 $error = 0;
 
+
+
+//Limuit uer list to groups
+$includeuserlist=array();
+if (!empty($conf->global->LEAD_GRP_USER_AFFECT)) {
+	$usergroup=new UserGroup($db);
+	$result=$usergroup->fetch($conf->global->LEAD_GRP_USER_AFFECT);
+	if ($result < 0)
+		setEventMessage($usergroup->error, 'errors');
+
+	$includeuserlisttmp=$usergroup->listUsersForGroup();
+	if (is_array($includeuserlisttmp) && count($includeuserlisttmp)>0) {
+		foreach($includeuserlisttmp as $usertmp) {
+			$includeuserlist[]=$usertmp->id;
+		}
+
+	}
+}
+
+
 // fetch optionals attributes and labels
 $extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
 
@@ -75,7 +97,7 @@ if ($id > 0) {
 	if ($ret > 0)
 		$ret = $object->fetch_thirdparty();
 	if ($ret < 0)
-		setEventMessage($object->error, 'errors');
+		setEventMessage($object->error, 'errors');	
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
@@ -187,7 +209,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_users(empty($userid) ? $user->id : $userid, 'userid', 0);
+	print $form->select_users(empty($userid) ? $user->id : $userid, 'userid', 0, array(),0,$includeuserlist);
 	print '</td>';
 	print '</tr>';
 	
@@ -291,7 +313,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_users($object->fk_user_resp, 'userid', 0);
+	print $form->select_users($object->fk_user_resp, 'userid', 0, array(),0,$includeuserlist);
 	print '</td>';
 	print '</tr>';
 	

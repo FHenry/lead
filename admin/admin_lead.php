@@ -65,7 +65,6 @@ if ($action == 'updateMask') {
 		setEventMessage($langs->trans("Error"), 'errors');
 	}
 } 
-
 else if ($action == 'setmod') {
 	dolibarr_set_const($db, "LEAD_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } else if ($action == 'setvar') {
@@ -74,6 +73,14 @@ else if ($action == 'setmod') {
 	if (! empty($nb_day)) {
 		$res = dolibarr_set_const($db, 'LEAD_NB_DAY_COSURE_AUTO', $nb_day, 'chaine', 0, '', $conf->entity);
 	}
+	if (! $res > 0)
+		$error ++;
+	
+	$user_goup = GETPOST('LEAD_GRP_USER_AFFECT', 'int');
+	if ($user_goup==-1) $user_goup='';
+
+	$res = dolibarr_set_const($db, 'LEAD_GRP_USER_AFFECT', $user_goup, 'chaine', 0, '', $conf->entity);
+
 	if (! $res > 0)
 		$error ++;
 	
@@ -213,10 +220,18 @@ print '<td>' . $langs->trans("Name") . '</td>';
 print '<td width="400px">' . $langs->trans("Valeur") . '</td>';
 print "</tr>\n";
 
-// Prefecture d\'enregistrement
+// Nb Days
 print '<tr class="pair"><td>' . $langs->trans("LeadNbDayDefaultClosure") . '</td>';
 print '<td align="left">';
 print '<input type="text" name="LEAD_NB_DAY_COSURE_AUTO" value="' . $conf->global->LEAD_NB_DAY_COSURE_AUTO . '" size="4" ></td>';
+print '</tr>';
+
+// User Group
+print '<tr class="pair"><td>' . $langs->trans("LeadUserGroupAffect") . '</td>';
+print '<td align="left">';
+print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array(), 0, '', '', $object->entity);
+/*$form->select_
+*/
 print '</tr>';
 print '</table>';
 
