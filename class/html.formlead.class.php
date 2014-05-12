@@ -77,6 +77,7 @@ class FormLead extends Form
 			}
 		}*/
 		$sql .= " AND fk_soc=" . $lead->fk_soc;
+		$sql .= " AND entity=" . $conf->entity;
 		// $sql.= " AND entity IN (".getEntity($object->element,1).")";
 		$sql .= " ORDER BY ref DESC";
 		
