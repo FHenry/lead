@@ -552,6 +552,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 			'title' => "Proposal",
 			'class' => 'Propal',
 			'table' => 'propal',
+			'filter' => array('fk_statut'=>'0,1,2'),
 			'test' => $conf->propal->enabled && $user->rights->propale->lire
 		);
 	if (! empty($conf->facture->enabled))

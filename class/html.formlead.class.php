@@ -51,7 +51,7 @@ class FormLead extends Form
 	 *        	name of the component
 	 * @return string HTML select list of element
 	 */
-	function select_element($tablename, $lead, $htmlname = 'elementselect')
+	function select_element($tablename, $lead, $htmlname = 'elementselect', $filter=array())
 	{
 		global $langs, $conf;
 		
@@ -66,6 +66,16 @@ class FormLead extends Form
 		
 		$sql .= " FROM " . MAIN_DB_PREFIX . $tablename;
 		$sql .= " WHERE rowid NOT IN (SELECT fk_source FROM " . MAIN_DB_PREFIX . "element_element WHERE targettype='" . $lead->element . "')";
+		// Manage filter
+		/*if (count($filter) > 0) {
+			foreach ( $filter as $key => $value ) {
+				if (($key == 's.fk_session_place') || ($key == 'f.rowid') || ($key == 's.type_session') || ($key == 's.status') || ($key == 'sale.fk_user_com')) {
+					$sql .= ' AND ' . $key . ' = ' . $value;
+				} else {
+					$sql .= ' AND ' . $key . ' LIKE \'%' . $this->db->escape($value) . '%\'';
+				}
+			}
+		}*/
 		$sql .= " AND fk_soc=" . $lead->fk_soc;
 		// $sql.= " AND entity IN (".getEntity($object->element,1).")";
 		$sql .= " ORDER BY ref DESC";
