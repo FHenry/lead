@@ -34,7 +34,7 @@ if (! empty($conf->facture->enabled))
 if (!empty($conf->global->LEAD_GRP_USER_AFFECT))
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
 	
-	// Security check
+// Security check
 if (! $user->rights->lead->read)
 	accessforbidden();
 
@@ -156,7 +156,7 @@ if ($action == "add") {
 	if ($result < 0) {
 		setEventMessage($object->errors, 'errors');
 	} else {
-		header('Location:' . dol_buildpath('/lead/index.php', 1));
+		header('Location:' . dol_buildpath('/lead/lead/list.php', 1));
 	}
 } elseif ($action == "addelement") {
 	$tablename = GETPOST("tablename");
@@ -290,7 +290,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 		print $object->showOptionals($extrafields, 'edit');
 	}
 	
-	print '<table>';
+	print '</table>';
 	
 	print '<center>';
 	print '<input type="submit" class="button" value="' . $langs->trans("Create") . '">';
@@ -389,7 +389,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 		print $object->showOptionals($extrafields, 'edit');
 	}
 	
-	print '<table>';
+	print '</table>';
 	
 	print '<center>';
 	print '<input type="submit" class="button" value="' . $langs->trans("Save") . '">';

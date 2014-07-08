@@ -25,6 +25,7 @@ LeadLead= Lead
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
 Module103111Desc = Manages Lead
+LeadSimpleNumRefModelDesc=Return reference like LEA-yymm-nnnn where yy is the year, mm the month and nnnn a counter sequancial without reset
 
 #
 # Admin page
