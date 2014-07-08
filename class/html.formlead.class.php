@@ -65,7 +65,8 @@ class FormLead extends Form
 		}
 		
 		$sql .= " FROM " . MAIN_DB_PREFIX . $tablename;
-		$sql .= " WHERE rowid NOT IN (SELECT fk_source FROM " . MAIN_DB_PREFIX . "element_element WHERE targettype='" . $lead->element . "')";
+		//TODO Fix sourcetype can be different from tablename (exemple project/projet)
+		$sql .= " WHERE rowid NOT IN (SELECT fk_source FROM " . MAIN_DB_PREFIX . "element_element WHERE targettype='" . $lead->element . "' AND sourcetype='".$tablename."')";
 		// Manage filter
 		/*if (count($filter) > 0) {
 			foreach ( $filter as $key => $value ) {
