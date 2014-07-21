@@ -199,7 +199,7 @@ class Lead extends CommonObject {
 			$error ++;
 			$this->errors [] = $langs->trans ( 'ErrorFieldRequired', $langs->transnoentities ( 'LeadType' ) );
 		}
-		if (empty ( $this->amount_prosp )) {
+		if (! isset ( $this->amount_prosp )) {
 			$error ++;
 			$this->errors [] = $langs->trans ( 'ErrorFieldRequired', $langs->transnoentities ( 'LeadAmountGuess' ) );
 		}
@@ -546,7 +546,7 @@ class Lead extends CommonObject {
 			$error ++;
 			$this->errors [] = $langs->trans ( 'ErrorFieldRequired', $langs->transnoentities ( 'LeadType' ) );
 		}
-		if (empty ( $this->amount_prosp )) {
+		if (! isset ( $this->amount_prosp )) {
 			$error ++;
 			$this->errors [] = $langs->trans ( 'ErrorFieldRequired', $langs->transnoentities ( 'LeadAmountGuess' ) );
 		}
