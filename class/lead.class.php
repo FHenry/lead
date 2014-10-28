@@ -1037,7 +1037,7 @@ class Lead extends CommonObject {
 	 * @param int $id
 	 * @return int if KO, >0 if OK
 	 */
-	 function getNomUrl($withpicto=0) {
+	 public function getNomUrl($withpicto=0) {
 	 	global $langs;
 	 	
 	 	$result='';
@@ -1052,6 +1052,11 @@ class Lead extends CommonObject {
 	 	if ($withpicto && $withpicto != 2) $result.=' ';
 	 	$result.=$lien.$this->ref.$lienfin;
 	 	return $result;
+	 }
+	 
+	 public function getLibStatut($mode=0)
+	 {
+	 	return "";
 	 }
 }
 
