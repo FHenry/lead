@@ -102,3 +102,5 @@ LeadDescription=Description
 LeadDocuments=Link Document
 LeadAddElement=Link
 LeadLate=Lead Late
+
+LeadShowLead=Display lead

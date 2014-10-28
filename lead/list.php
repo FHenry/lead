@@ -116,6 +116,16 @@ if (!empty($viewtype)) {
 	}
 }
 
+/*
+if (!empty($user->rights->societe->client->voir)) { 
+	$filter['userlimitviewsoc'] = 1;
+} else {
+	$filter['userlimitviewsoc'] = 0;
+}
+
+$sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+*/
+
 if ($page == - 1) {
 	$page = 0;
 }

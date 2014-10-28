@@ -1030,6 +1030,29 @@ class Lead extends CommonObject {
 			return - 1;
 		}
 	}
+	
+	/**
+	 * Load object in memory from database
+	 *
+	 * @param int $id
+	 * @return int if KO, >0 if OK
+	 */
+	 function getNomUrl($withpicto=0) {
+	 	global $langs;
+	 	
+	 	$result='';
+	 	
+ 		$lien = '<a href="'.dol_buildpath('lead/lead/card.php',1).'id='.$this->id.'">';
+	 	$lienfin='</a>';
+	 	
+	 	$picto='propal';
+	 	$label=$langs->trans("LeadShowLead").': '.$this->ref;
+	 	
+	 	if ($withpicto) $result.=($lien.img_object($label,$picto).$lienfin);
+	 	if ($withpicto && $withpicto != 2) $result.=' ';
+	 	$result.=$lien.$this->ref.$lienfin;
+	 	return $result;
+	 }
 }
 
 class DocLink {
