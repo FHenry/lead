@@ -1056,7 +1056,11 @@ class Lead extends CommonObject {
 	 
 	 public function getLibStatut($mode=0)
 	 {
-	 	return "";
+	 	if (!empty($this->fk_c_status)) {
+	 		return $this->status [$this->fk_c_status];
+	 	} else {
+	 		return '';
+	 	}
 	 }
 }
 
