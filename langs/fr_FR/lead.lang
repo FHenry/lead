@@ -50,6 +50,7 @@ LeadAboutPage = Page à propos de Affaires
 Permission1031111=Voir les affaires
 Permission1031112=Modifier les affaires
 Permission1031113=Supprimer les affaires
+Permission1031114=Exporter les affaires
 
 #
 # Dictionnaires
@@ -103,5 +104,15 @@ LeadDocuments=Documents associeés
 LeadAddElement=Associer
 LeadLate=Affaire en retard
 ConfirmCloneLead=Etes vous sur de cloné le lead
-
 LeadShowLead=Affiché le lead
+
+#
+# Export
+#
+ExportDataset_lead=Lead
+LeadRefExt=Ref. Ext
+LeadStepCode=Etape de vente Code
+LeadStepLabel=Etape de vente Libellé
+LeadTypeCode=Type code
+LeadTypeLabel=Types Libellé
+lead@lead=Affaires

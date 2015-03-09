@@ -51,6 +51,7 @@ LeadAboutPage = Lead about page
 Permission1031111=See Lead
 Permission1031112=Update Lead
 Permission1031113=Delete Lead
+Permission1031114=Export Lead
 
 #
 # Dictionnaires
@@ -103,5 +104,15 @@ LeadDocuments=Link Document
 LeadAddElement=Link
 LeadLate=Lead Late
 ConfirmCloneLead=Are you sure to clone Lead
-
 LeadShowLead=Display lead
+
+#
+# Export
+#
+ExportDataset_lead=Lead
+LeadRefExt=Ref. Ext
+LeadStepCode=Steps Code
+LeadStepLabel=Steps Label
+LeadTypeCode=Type code
+LeadTypeLabel=Types Label
+lead@lead=Leads

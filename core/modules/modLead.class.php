@@ -280,6 +280,12 @@ class modLead extends DolibarrModules
 		$this->rights[$r][4] = 'delete';
 		$r ++;
 		
+		$this->rights[$r][0] = 1031114;
+		$this->rights[$r][1] = 'Export Leads';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'export';
+		$r ++;
+		
 		// $r++;
 		// Main menu entries
 		$this->menus = array(); // List of menus to add
@@ -387,7 +393,101 @@ class modLead extends DolibarrModules
 		$r ++;
 		
 		// Exports
-		// $r = 1;
+		$r = 0;
+		$r ++;
+		$this->export_code [$r] = $this->rights_class . '_' . $r;
+		$this->export_label [$r] = 'ExportDataset_lead';
+		$this->export_icon [$r] = 'lead@lead';
+		$this->export_permission [$r] = array (
+				array (
+						"lead",
+						"export" 
+				) 
+		);
+		$this->export_fields_array [$r] = array (
+				'l.rowid' => 'Id',
+				'l.ref' => 'Ref',
+				'l.ref_ext' => 'LeadRefExt',
+				'l.ref_int' => 'LeadRefInt',
+				'so.nom' => 'Company',
+				'dictstep.code' => 'LeadStepCode',
+				'dictstep.label' => 'LeadStepLabel',
+				'dicttype.code' => 'LeadTypeCode',
+				'dicttype.label' => 'LeadTypeLabel',
+				'l.date_closure' => 'LeadDeadLine',
+				'l.amount_prosp' => 'LeadAmountGuess',
+				'l.description' => 'LeadDescription',
+		);
+		$this->export_TypeFields_array [$r] = array (
+				'l.rowid' => 'Text',
+				'l.ref' => 'Text',
+				'l.ref_ext' => 'Text',
+				'l.ref_int' => 'Text',
+				'so.nom' => 'Text',
+				'dictstep.code' => 'Text',
+				'dictstep.label' => 'Text',
+				'dicttype.code' => 'Text',
+				'dicttype.label' => 'Text',
+				'l.date_closure' => 'Date',
+				'l.amount_prosp' => 'Numeric',
+				'l.description' => 'Text',
+		);
+		$this->export_entities_array [$r] = array (
+				'l.rowid' => 'lead@lead',
+				'l.ref' => 'lead@lead',
+				'l.ref_ext' => 'lead@lead',
+				'l.ref_int' => 'lead@lead',
+				'so.nom' => 'company',
+				'dictstep.code' => 'lead@lead',
+				'dictstep.label' => 'lead@lead',
+				'dicttype.code' => 'lead@lead',
+				'dicttype.label' => 'lead@lead',
+				'l.date_closure' => 'lead@lead',
+				'l.amount_prosp' => 'lead@lead',
+				'l.description' => 'lead@lead',
+		);
+		
+		$this->export_sql_start [$r] = 'SELECT DISTINCT ';
+		$this->export_sql_end [$r] = ' FROM ' . MAIN_DB_PREFIX . 'lead as l';
+		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "societe as so ON so.rowid=l.fk_soc";
+		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "user as usr ON usr.rowid=l.fk_user_resp";
+		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_status as dictstep ON dictstep.rowid=l.fk_c_status";
+		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_type as dicttype ON dicttype.rowid=l.fk_c_type";
+		$this->export_sql_end [$r] .= ' WHERE l.entity IN (' . getEntity("lead", 1) . ')';
+		
+		// Add extra fields
+		$sql="SELECT name, label, type, param FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'lead'";
+		$resql=$this->db->query($sql);
+		if ($resql)    // This can fail when class is used on old database (during migration for example)
+		{
+			while ($obj=$this->db->fetch_object($resql))
+			{
+				$fieldname='extra.'.$obj->name;
+				$fieldlabel=ucfirst($obj->label);
+				$typeFilter="Text";
+				switch($obj->type)
+				{
+					case 'int':
+					case 'double':
+					case 'price':
+						$typeFilter="Numeric";
+						break;
+					case 'date':
+					case 'datetime':
+						$typeFilter="Date";
+						break;
+					case 'boolean':
+						$typeFilter="Boolean";
+						break;
+					case 'sellist':
+						$typeFilter="List:".$obj->param;
+						break;
+				}
+				$this->export_fields_array[$r][$fieldname]=$fieldlabel;
+				$this->export_TypeFields_array[$r][$fieldname]=$typeFilter;
+				$this->export_entities_array[$r][$fieldname]='lead';
+			}
+		}
 		
 		// Example:
 		// $this->export_code[$r]=$this->rights_class.'_'.$r;
