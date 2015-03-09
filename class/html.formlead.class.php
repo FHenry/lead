@@ -59,6 +59,12 @@ class FormLead extends Form
 			case "facture":
 				$sql = "SELECT rowid, facnumber as ref, total as total_ht, date_valid as date_element";
 				break;
+			case "contrat":
+					$sql = "SELECT rowid, ref as ref, 0 as total_ht, date_contrat as date_element";
+					break;
+			case "commande":
+				$sql = "SELECT rowid, ref as ref, total_ht as total_ht, date_commande as date_element";
+				break;
 			default:
 				$sql = "SELECT rowid, ref, total_ht, datep as date_element";
 				break;
@@ -92,7 +98,8 @@ class FormLead extends Form
 				$sellist = '<select class="flat" name="' . $htmlname . '">';
 				while ($i < $num) {
 					$obj = $this->db->fetch_object($resql);
-					$sellist .= '<option value="' . $obj->rowid . '">' . $obj->ref . ' (' . dol_print_date($this->db->jdate ($obj->date_element), 'daytextshort') . ')-' . price($obj->total_ht) . $langs->getCurrencySymbol($conf->currency) . '</option>';
+					$sellist .= '<option value="' . $obj->rowid . '">' . $obj->ref . ' (' . dol_print_date($this->db->jdate ($obj->date_element), 'daytextshort') . ')';
+					$sellist .= (empty($obj->total_ht)?'':'-'.price($obj->total_ht). $langs->getCurrencySymbol($conf->currency))  . '</option>';
 					$i ++;
 				}
 				$sellist .= '</select>';

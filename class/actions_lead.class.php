@@ -33,12 +33,21 @@ class ActionsLead // extends CommonObject
 	 */
 	function showLinkedObjectBlock($parameters, $object, $action) {
 		global $conf, $langs;
-		if (is_object($object) && ($object->element == 'propal' || $object->element == 'facture')) {
+		
+		require_once 'lead.class.php';
+			
+		$lead = new Lead($object->db);
+		
+		$authorized_object=array();
+		foreach($lead->listofreferent as $referent) {
+			$authorized_object[]=$referent['table'];
+		}
+		
+		
+		if (is_object($object) && in_array($object->table_element,$authorized_object)) {
 			$langs->load("lead@lead");
 			require_once 'html.formlead.class.php';
-			require_once 'lead.class.php';
 			
-			$lead = new Lead($object->db);
 			$formlead = new FormLead($object->db);
 			
 			$ret = $lead->fetch_lead_link(($object->rowid ? $id = $object->rowid : $object->id), $object->table_element);

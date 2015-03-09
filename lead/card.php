@@ -31,6 +31,10 @@ if (! empty($conf->propal->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 if (! empty($conf->facture->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
+if (! empty($conf->contrat->enabled))
+	require_once DOL_DOCUMENT_ROOT . '/contrat/class/contrat.class.php';
+if (! empty($conf->commande->enabled))
+	require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
 if (!empty($conf->global->LEAD_GRP_USER_AFFECT))
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
 	
@@ -43,7 +47,10 @@ if (! empty($conf->propal->enabled))
 	$langs->load('propal');
 if (! empty($conf->facture->enabled))
 	$langs->load('bills');
-
+if (! empty($conf->contrat->enabled))
+	$langs->load('contracts');
+if (! empty($conf->commande->enabled))
+	$langs->load('order');
 $action = GETPOST('action', 'alpha');
 
 $id = GETPOST('id', 'int');
@@ -562,23 +569,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	
 	print_fiche_titre($langs->trans('LeadDocuments'), '', 'lead@lead');
 	
-	if (! empty($conf->propal->enabled))
-		$listofreferent['propal'] = array(
-			'title' => "Proposal",
-			'class' => 'Propal',
-			'table' => 'propal',
-			'filter' => array('fk_statut'=>'0,1,2'),
-			'test' => $conf->propal->enabled && $user->rights->propale->lire
-		);
-	if (! empty($conf->facture->enabled))
-		$listofreferent['invoice'] = array(
-			'title' => "Bill",
-			'class' => 'Facture',
-			'table' => 'facture',
-			'test' => $conf->facture->enabled && $user->rights->facture->lire
-		);
-	
-	foreach ($listofreferent as $key => $value) {
+	foreach ($object->listofreferent as $key => $value) {
 		$title = $value['title'];
 		$classname = $value['class'];
 		$tablename = $value['table'];
