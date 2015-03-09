@@ -95,7 +95,7 @@ class modLead extends DolibarrModules
 		// Set this to relative path of css if module has its own css file
 		// 'css' => '/lead/css/mycss.css.php',
 		// Set here all hooks context managed by module
-			'hooks' => array('commonobject'),
+			'hooks' => array('commonobject','commcard','propalcard'),
 		// Set here all workflow context managed by module
 		// 'workflow' => array('order' => array('WORKFLOW_ORDER_AUTOCREATE_INVOICE'))
 				);

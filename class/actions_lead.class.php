@@ -16,132 +16,113 @@
  */
 
 /**
- * 	\file       htdocs/lead/class/actions_lead.class.php
- * 	\ingroup    lead
- * 	\brief      Fichier de la classe des actions/hooks des lead
+ * \file htdocs/lead/class/actions_lead.class.php
+ * \ingroup lead
+ * \brief Fichier de la classe des actions/hooks des lead
  */
- 
-class ActionsLead // extends CommonObject 
-{ 
- 
-	/** Overloading the doActions function : replacing the parent's function with the one below 
-	 *  @param      parameters  meta datas of the hook (context, etc...) 
-	 *  @param      object             the object you want to process (an invoice if you are in invoice module, a propale in propale's module, etc...) 
-	 *  @param      action             current action (if set). Generally create or edit or null 
-	 *  @return       void 
-	 */ 
-	function showLinkedObjectBlock($parameters, $object, $action) 
-	{ 
+class ActionsLead // extends CommonObject
+{
+	
+	/**
+	 * Overloading the doActions function : replacing the parent's function with the one below
+	 * 
+	 * @param parameters meta datas of the hook (context, etc...)
+	 * @param object the object you want to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
+	 * @param action current action (if set). Generally create or edit or null
+	 * @return void
+	 */
+	function showLinkedObjectBlock($parameters, $object, $action) {
 		global $conf, $langs;
-		if (is_object($object) && ($object->element=='propal' || $object->element=='facture')) {
-		$langs->load("lead@lead");
-		require_once 'html.formlead.class.php';
-		require_once 'lead.class.php';
-		
-		$lead=  new Lead($object->db);
-		$formlead= new FormLead($object->db);
-		
-		$ret = $lead->fetch_lead_link(($object->rowid?$id=$object->rowid:$object->id), $object->table_element);
-		if ($ret < 0) {
-			setEventMessage($lead->error, 'errors');
+		if (is_object($object) && ($object->element == 'propal' || $object->element == 'facture')) {
+			$langs->load("lead@lead");
+			require_once 'html.formlead.class.php';
+			require_once 'lead.class.php';
+			
+			$lead = new Lead($object->db);
+			$formlead = new FormLead($object->db);
+			
+			$ret = $lead->fetch_lead_link(($object->rowid ? $id = $object->rowid : $object->id), $object->table_element);
+			if ($ret < 0) {
+				setEventMessage($lead->error, 'errors');
+			}
+			// Build exlcude already linked lead
+			$array_exclude_lead = array ();
+			foreach ( $lead->doclines as $line ) {
+				$array_exclude_lead[] = $line->id;
+			}
+			
+			print '<br>';
+			print_titre($langs->trans('Lead'));
+			print '<form action="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '" method="POST">';
+			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+			print '<input type="hidden" name="redirect" value="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '">';
+			print '<input type="hidden" name="tablename" value="' . $object->table_element . '">';
+			print '<input type="hidden" name="elementselect" value="' . ($object->rowid ? $object->rowid : $object->id) . '">';
+			print '<input type="hidden" name="action" value="link">';
+			print "<table class='noborder allwidth'>";
+			print "<tr class='liste_titre'>";
+			print "<td>" . $langs->trans('LeadLink') . "</td>";
+			print "</tr>";
+			$filter = array (
+					'so.rowid' => ($object->fk_soc ? $object->fk_soc : $object->socid),
+					't.rowid !IN' => implode($array_exclude_lead, ',') 
+			);
+			$selectList = $formlead->select_lead('', 'leadid', 1, $filter);
+			if (! empty($selectList)) {
+				print '<tr>';
+				print '<td>';
+				print $selectList;
+				print "<input type=submit name=join value=" . $langs->trans("Link") . ">";
+				print '</td>';
+				print '</tr>';
+			}
+			
+			foreach ( $lead->doclines as $line ) {
+				print '<tr><td>';
+				print $line->getNomUrl(1);
+				print '<a href="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '?action=unlink&sourceid=' . ($object->rowid ? $object->rowid : $object->id);
+				print '&sourcetype=' . $object->table_element;
+				print '&leadid=' . $line->id;
+				print '&redirect=' . urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+				print '">' . img_picto($langs->trans('LeadUnlinkDoc'), 'unlink.png@lead') . '</a>';
+				print '</td>';
+				print '</tr>';
+			}
+			print "</table>";
+			print "</form>";
 		}
-		//Build exlcude already linked lead
-		$array_exclude_lead=array();
-		foreach ($lead->doclines as $line) {
-			$array_exclude_lead[]=$line->id;
-		}
-
-		print '<br>';
-		print_titre($langs->trans('Lead'));
-		print '<form action="'.dol_buildpath("/lead/lead/manage_link.php",1).'" method="POST">';
-		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-		print '<input type="hidden" name="redirect" value="http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'">';
-		print '<input type="hidden" name="tablename" value="'.$object->table_element.'">';
-		print '<input type="hidden" name="elementselect" value="'.($object->rowid?$object->rowid:$object->id).'">';
-		print '<input type="hidden" name="action" value="link">';
-		print "<table class='noborder allwidth'>";
-		print "<tr class='liste_titre'>";
-		print "<td>".$langs->trans('LeadLink')."</td>";
-		print "</tr>";
-		$filter=array('so.rowid'=>($object->fk_soc?$object->fk_soc:$object->socid),'t.rowid !IN'=>implode($array_exclude_lead,','));
-		$selectList = $formlead->select_lead('','leadid',1,$filter);
-		if (!empty($selectList)) {
-			print '<tr>';
-			print '<td>';
-			print $selectList;
-			print "<input type=submit name=join value=".$langs->trans("Link").">";
-			print '</td>';
-			print '</tr>';
-		}
 		
-		foreach ($lead->doclines as $line) {
-			print '<tr><td>';
-			print $line->getNomUrl(1);
-			print '<a href="'.dol_buildpath("/lead/lead/manage_link.php",1).'?action=unlink&sourceid=' . ($object->rowid?$object->rowid:$object->id);
-			print '&sourcetype=' . $object->table_element;
-			print '&leadid=' . $line->id;
-			print '&redirect='.urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-			print '">'.img_picto($langs->trans('LeadUnlinkDoc'), 'unlink.png@lead') . '</a>';
-			print '</td>';
-			print '</tr>';
-		}
-		print "</table>"; 
-		print "</form>"; 
+		return 0;
+	}
+	
+	/**
+	 * addMoreActionsButtons Method Hook Call
+	 *
+	 * @param array $parameters parameters
+	 * @param Object	&$object			Object to use hooks on
+	 * @param string	&$action			Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	 * @param object $hookmanager class instance
+	 * @return void
+	 */
+	function addMoreActionsButtons($parameters, &$object, &$action, $hookmanager) {
+		global $langs,$conf,$user;
 		
-		
-		
-		
-		}
-
-		/*$num = count($object->linkedObjects);
-		foreach($object->linkedObjects as $objecttype => $objects)
-		{
-			$tplpath = $element = $subelement = $objecttype;
-		
-			if (preg_match('/^([^_]+)_([^_]+)/i',$objecttype,$regs))
+		$current_context=explode(':',$parameters['context']);
+		if (in_array('commcard',$current_context)) {
+			$langs->load("lead@lead");
+	
+			if ($user->rights->lead->write)
 			{
-				$element = $regs[1];
-				$subelement = $regs[2];
-				$tplpath = $element.'/'.$subelement;
+				$html= '<div class="inline-block divButAction"><a class="butAction" href="'.dol_buildpath('/lead/lead/card.php',1).'?action=create&socid='.$object->id.'">'.$langs->trans('LeadCreate').'</a></div>';
 			}
-		
-			// To work with non standard path
-			if ($objecttype == 'facture')          {
-				$tplpath = 'compta/'.$element;
-				if (empty($conf->facture->enabled)) continue;	// Do not show if module disabled
-			}
-			else if ($objecttype == 'propal')           {
-				$tplpath = 'comm/'.$element;
-				if (empty($conf->propal->enabled)) continue;	// Do not show if module disabled
-			}
-			else if ($objecttype == 'shipping')         {
-				$tplpath = 'expedition';
-				if (empty($conf->expedition->enabled)) continue;	// Do not show if module disabled
-			}
-			else if ($objecttype == 'delivery')         {
-				$tplpath = 'livraison';
-			}
-			else if ($objecttype == 'invoice_supplier') {
-				$tplpath = 'fourn/facture';
-			}
-			else if ($objecttype == 'order_supplier')   {
-				$tplpath = 'fourn/commande';
-			}
-		
-			global $linkedObjectBlock;
-			$linkedObjectBlock = $objects;
-		
-			// Output template part (modules that overwrite templates must declare this into descriptor)
-			$dirtpls=array_merge($conf->modules_parts['tpl'],array('/'.$tplpath.'/tpl'));
-			foreach($dirtpls as $reldir)
+			else
 			{
-				$res=@include dol_buildpath($reldir.'/linkedobjectblock.tpl.php');
-				if ($res) break;
+				$html= '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
 			}
+				
+			$html=str_replace('"','\"',$html);
+			print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
 		}
-		
-		$this->resprints=$num;*/
 		return 0;
 	}
 }
-?>
