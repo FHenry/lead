@@ -174,9 +174,10 @@ if ($action == "add") {
 	if ($result < 0) {
 		setEventMessage($object->error, 'errors');
 	}
-} elseif ($action == "clone") {
+} elseif ($action == "confirm_clone" && $confirm=='yes') {
 	
 	$object_clone = new Lead($db);
+	$object_clone->ref_int=GETPOST('ref_interne');
 	$result = $object_clone->createFromClone($object->id);
 	if ($result < 0) {
 		setEventMessage($object_clone->error, 'errors');
@@ -408,6 +409,20 @@ if ($action == 'create' && $user->rights->lead->write) {
 	$formconfirm = '';
 	if ($action == 'delete') {
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('LeadDelete'), $langs->trans('LeadConfirmDelete'), 'confirm_delete', '', 0, 1);
+	}
+	
+	// Clone confirmation
+	if ($action == 'clone') {
+		// Create an array for form
+		$formquestion = array(
+				// 'text' => $langs->trans("ConfirmClone"),
+				// array('type' => 'checkbox', 'name' => 'clone_content', 'label' => $langs->trans("CloneMainAttributes"), 'value' =>
+				// 1),
+				// array('type' => 'checkbox', 'name' => 'update_prices', 'label' => $langs->trans("PuttingPricesUpToDate"), 'value'
+				// => 1),
+				array('type' => 'text','name' => 'ref_interne','label' => $langs->trans("LeadRefInt"),'value' => $langs->trans('CopyOf').' '.$object->ref_int));
+		// Paiement incomplet. On demande si motif = escompte ou autre
+		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Clone'), $langs->trans('ConfirmCloneLead', $object->ref), 'confirm_clone', $formquestion, 'yes', 1);
 	}
 	
 	if (empty($formconfirm)) {

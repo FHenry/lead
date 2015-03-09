@@ -708,6 +708,7 @@ class Lead extends CommonObject {
 		// Load source object
 		$object->fetch( $fromid );
 		$object->ref = $object->getNextNumRef();
+		$object->ref_int=$this->ref_int;
 		
 		// Create clone
 		$result = $object->create ( $user );
@@ -1054,6 +1055,11 @@ class Lead extends CommonObject {
 	 	return $result;
 	 }
 	 
+	 /**
+	  * 
+	  * @param number $mode
+	  * @return multitype:|string
+	  */
 	 public function getLibStatut($mode=0)
 	 {
 	 	if (!empty($this->fk_c_status)) {

@@ -102,5 +102,6 @@ LeadDescription=Description
 LeadDocuments=Documents associeés
 LeadAddElement=Associer
 LeadLate=Affaire en retard
+ConfirmCloneLead=Etes vous sur de cloné le lead
 
 LeadShowLead=Affiché le lead
