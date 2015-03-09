@@ -33,6 +33,8 @@ require_once ('../lib/lead.lib.php');
 require_once ('../class/html.formlead.class.php');
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 require_once (DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php');
+require_once (DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php');
+require_once (DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php');
 
 // Security check
 if (! $user->rights->lead->read)
@@ -61,6 +63,15 @@ if ($search_status == - 1)
 	$search_status = 0;
 $search_month = GETPOST('search_month', 'aplha');
 $search_year = GETPOST('search_year', 'int');
+$search_invoiceid = GETPOST('search_invoiceid', 'int');
+$search_invoiceref = GETPOST('search_invoiceref', 'alpha');
+$search_propalref = GETPOST('search_propalref', 'alpha');
+$search_propalid = GETPOST('search_propalid', 'alpha');
+
+$link_element = GETPOST("link_element");
+if (! empty($link_element)) {
+	$action = 'link_element';
+}
 
 // Do we click on purge search criteria ?
 if (GETPOST("button_removefilter_x")) {
@@ -72,35 +83,48 @@ if (GETPOST("button_removefilter_x")) {
 	$search_status = '';
 	$search_month = '';
 	$search_year = '';
+	$search_invoiceid='';
+	$search_invoiceref='';
+	$search_propalref='';
+	$search_propalid='';
 }
 
 $filter = array();
 if (! empty($search_commercial)) {
 	$filter['t.fk_user_resp'] = $search_commercial;
+	$option .= '&search_commercial=' . $search_commercial;
 }
 if (! empty($search_soc)) {
 	$filter['so.nom'] = $search_soc;
+	$option .= '&search_soc=' . $search_soc;
 }
 if (!empty($socid)) {
 	$filter['so.rowid'] = $socid;
+	$option .= '&socid=' . $socid;
 }
 if (! empty($search_ref)) {
 	$filter['t.ref'] = $search_ref;
+	$option .= '&search_ref=' . $search_ref;
 }
 if (! empty($search_ref_int)) {
 	$filter['t.ref_int'] = $search_ref_int;
+	$option .= '&search_ref_int=' . $search_ref_int;
 }
 if (! empty($search_type)) {
 	$filter['t.fk_c_type'] = $search_type;
+	$option .= '&search_type=' . $search_type;
 }
 if (! empty($search_status)) {
 	$filter['t.fk_c_status'] = $search_status;
+	$option .= '&search_status=' . $search_status;
 }
 if (! empty($search_month)) {
 	$filter['MONTH(t.date_closure)'] = $search_month;
+	$option .= '&search_month=' . $search_month;
 }
 if (! empty($search_year)) {
 	$filter['YEAR(t.date_closure)'] = $search_year;
+	$option .= '&search_year=' . $search_year;
 }
 
 if (!empty($viewtype)) {
@@ -114,7 +138,36 @@ if (!empty($viewtype)) {
 		$filter['t.fk_c_status !IN'] = '6,7';
 		$filter['t.date_closure<'] = dol_now();
 	}
+	$option .= '&viewtype=' . $viewtype;
 }
+
+/*if (! empty($search_invoiceid)) {
+	$invoice = new Facture($db);
+	$invoice->fetch($search_invoiceid);
+	$search_invoiceref = $invoice->ref;
+	$object_socid = $invoice->socid;
+}
+
+if (! empty($search_invoiceref)) {
+	$invoice = new Facture($db);
+	$invoice->fetch('', $search_invoiceref);
+	$search_invoiceid = $invoice->id;
+	$object_socid = $invoice->socid;
+}
+
+if (! empty($search_propalref)) {
+	$propal = new Propal($db);
+	$propal->fetch('', $search_propalref);
+	$search_propalid = $propal->id;
+	$object_socid = $propal->socid;
+}
+
+if (! empty($search_propalid)) {
+	$propal = new Propal($db);
+	$propal->fetch($search_propalid, '');
+	$search_propalref = $propal->ref;
+	$object_socid = $propal->socid;
+}*/
 
 /*
 if (!empty($user->rights->societe->client->voir)) { 
@@ -157,6 +210,20 @@ if (!empty($socid)) {
 	
 	dol_fiche_head($head, 'tabLead', $langs->trans("Module103111Name"),0,dol_buildpath('/lead/img/object_lead.png', 1));
 }
+/*if (! empty($search_invoiceid) || ! empty($search_invoiceref)) {
+	require_once DOL_DOCUMENT_ROOT . '/core/lib/invoice.lib.php';
+	$head = facture_prepare_head($invoice);
+	dol_fiche_head($head, 'tabLead', $langs->trans('LeadOnInvoice'), 0, 'bill');
+	$element_type = 'invoice';
+	$element_id = $search_invoiceid;
+}
+if (! empty($search_propalref) || ! empty($search_propalid)) {
+	require_once DOL_DOCUMENT_ROOT . '/core/lib/propal.lib.php';
+	$head = propal_prepare_head($propal);
+	dol_fiche_head($head, 'tabLead', $langs->trans('LeadOnPropal'), 0, 'propal');
+	$element_type = 'propal';
+	$element_id = $search_propalid;
+}*/
 
 // Count total nb of records
 $nbtotalofrecords = 0;
@@ -168,28 +235,7 @@ $resql = $object->fetch_all($sortorder, $sortfield, $conf->liste_limit, $offset,
 
 if ($resql != - 1) {
 	$num = $resql;
-	
-	if (! empty($search_commercial))
-		$option .= '&search_commercial=' . $search_commercial;
-	if (! empty($search_soc))
-		$option .= '&search_soc=' . $search_soc;
-	if (! empty($search_ref))
-		$option .= '&search_ref=' . $search_ref;
-	if (! empty($search_ref_int))
-		$option .= '&search_ref_int=' . $search_ref_int;
-	if (! empty($search_type))
-		$option .= '&search_type=' . $search_type;
-	if (! empty($search_status))
-		$option .= '&search_status=' . $search_status;
-	if (! empty($search_month))
-		$option .= '&search_month=' . $search_month;
-	if (! empty($search_year))
-		$option .= '&search_year=' . $search_year;
-	if (! empty($viewtype))
-		$option .= '&viewtype=' . $viewtype;
-	if (! empty($socid))
-		$option .= '&socid=' . $socid;
-	
+		
 	print_barre_liste($title, $page, $_SERVEUR['PHP_SELF'], $option, $sortfield, $sortorder, '', $num, $nbtotalofrecords);
 	
 	print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" name="search_form">' . "\n";

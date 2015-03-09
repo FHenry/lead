@@ -410,7 +410,7 @@ class Lead extends CommonObject {
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_type as leadtype ON leadtype.rowid=t.fk_c_type";
 		
 		$sql .= " WHERE t.entity IN (" . getEntity ( 'lead' ) . ")";
-		
+
 		if (is_array ( $filter )) {
 			foreach ( $filter as $key => $value ) {
 				if (($key == 't.fk_c_status') || ($key == 't.rowid') || ($key == 'so.rowid') || ($key == 't.fk_c_type') || ($key == 't.fk_user_resp')) {
@@ -423,6 +423,8 @@ class Lead extends CommonObject {
 					$sql .= ' AND ' . $key . ' = \'' . $value . '\'';
 				}elseif ($key=='t.fk_c_status !IN') {
 					$sql .= ' AND t.fk_c_status NOT IN ('.$value.')';
+				}elseif ($key=='t.rowid !IN') {
+					$sql .= ' AND t.rowid NOT IN ('.$value.')';
 				}else {
 					$sql .= ' AND ' . $key . ' LIKE \'%' . $this->db->escape ( $value ) . '%\'';
 				}
@@ -1038,12 +1040,57 @@ class Lead extends CommonObject {
 	 * @param int $id
 	 * @return int if KO, >0 if OK
 	 */
+	public function fetch_lead_link($id, $tablename) {
+	
+		global $langs;
+	
+		$this->doclines = array ();
+	
+		$sql = "SELECT";
+		$sql .= " t.rowid,";
+		$sql .= " t.fk_source,";
+		$sql .= " t.sourcetype,";
+		$sql .= " t.fk_target,";
+		$sql .= " t.targettype";
+		$sql .= " FROM " . MAIN_DB_PREFIX . "element_element as t";
+		$sql .= " WHERE t.fk_source = " . $id;
+		$sql .= " AND t.targettype='lead'";
+		if (! empty ( $tablename )) {
+			$sql .= " AND t.sourcetype='" . $tablename . "'";
+		}
+		$sql .= " ORDER BY t.sourcetype";
+	
+		dol_syslog ( get_class ( $this ) . "::fetch_document_link sql=" . $sql, LOG_DEBUG );
+		$resql = $this->db->query ( $sql );
+		if ($resql) {
+			while ( $obj = $this->db->fetch_object ( $resql ) ) {
+				$line = new Lead ( $this->db );
+				$line->fetch($obj->fk_target);
+				$this->doclines [] = $line;
+			}
+			$this->db->free ( $resql );
+				
+			return 1;
+		} else {
+			$this->error = "Error " . $this->db->lasterror ();
+			dol_syslog ( get_class ( $this ) . "::fetch_document_link " . $this->error, LOG_ERR );
+				
+			return - 1;
+		}
+	}
+	
+	/**
+	 * Load object in memory from database
+	 *
+	 * @param int $id
+	 * @return int if KO, >0 if OK
+	 */
 	 public function getNomUrl($withpicto=0) {
 	 	global $langs;
 	 	
 	 	$result='';
 	 	
- 		$lien = '<a href="'.dol_buildpath('lead/lead/card.php',1).'id='.$this->id.'">';
+ 		$lien = '<a href="'.dol_buildpath('lead/lead/card.php',1).'?id='.$this->id.'">';
 	 	$lienfin='</a>';
 	 	
 	 	$picto='propal';

@@ -91,11 +91,11 @@ class modLead extends DolibarrModules
 			// Set this to 1 if module has its own barcode directory
 			// 'barcode' => 0,
 			// Set this to 1 if module has its own models directory
-			'models' => 1
+			'models' => 1,
 		// Set this to relative path of css if module has its own css file
 		// 'css' => '/lead/css/mycss.css.php',
 		// Set here all hooks context managed by module
-		// 'hooks' => array('hookcontext1','hookcontext2')
+			'hooks' => array('commonobject'),
 		// Set here all workflow context managed by module
 		// 'workflow' => array('order' => array('WORKFLOW_ORDER_AUTOCREATE_INVOICE'))
 				);
@@ -176,7 +176,9 @@ class modLead extends DolibarrModules
 		// Array to add new pages in new tabs
 		// Example:
 		$this->tabs = array(
-			'thirdparty:+tabLead:Module103111Name:lead@lead:$user->rights->lead->read:/lead/lead/list.php?socid=__ID__'
+			'thirdparty:+tabLead:Module103111Name:lead@lead:$user->rights->lead->read:/lead/lead/list.php?socid=__ID__',
+			//'invoice:+tabAgefodd:AgfMenuSess:agefodd@agefodd:/lead/lead/list.php?search_invoiceid=__ID__',
+			//'propal:+tabAgefodd:AgfMenuSess:agefodd@agefodd:/lead/lead/list.php?search_propalid=__ID__',
 		// // To add a new tab identified by code tabname1
 		// 'objecttype:+tabname1:Title1:langfile@lead:$user->rights->lead->read:/lead/mynewtab1.php?id=__ID__',
 		// // To add another new tab identified by code tabname2

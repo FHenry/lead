@@ -105,6 +105,8 @@ LeadAddElement=Link
 LeadLate=Lead Late
 ConfirmCloneLead=Are you sure to clone Lead
 LeadShowLead=Display lead
+SelectElement=Select element
+LeadLink=Link(ed) Lead
 
 #
 # Export

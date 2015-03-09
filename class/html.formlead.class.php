@@ -199,4 +199,34 @@ class FormLead extends Form
 		
 		return $this->selectarray($htmlname, $lead->type, $selected, $showempty);
 	}
+	
+	/**
+	 * Return combo list of differents type
+	 *
+	 * @param string $selected
+	 *        	value
+	 * @param string $htmlname
+	 *        	name of the component
+	 * @param int $showempty
+	 *        	row
+	 * @return void
+	 */
+	function select_lead($selected = '', $htmlname = 'leadid', $showempty = 1, $filter=array())
+	{
+		$lead_array=array();
+		require_once 'lead.class.php';
+		
+		$lead = new Lead($this->db);
+
+		$result = $lead->fetch_all('DESC', 't.ref', 0, 0, $filter);
+		if ($result<0) {
+			setEventMessage($lead->error,'errors');
+		}
+		foreach($lead->lines as $line) {
+			$lead_array[$line->id] = $line->ref . '-'.$line->ref_int.' ('.$line->status_label.'-'.$line->type_label.')';
+		}
+		if (count($lead_array)>0) {
+			return $this->selectarray($htmlname, $lead_array, $selected, $showempty);
+		}
+	}
 }
