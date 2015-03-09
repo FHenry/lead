@@ -251,7 +251,7 @@ if ($resql != - 1) {
 	if (! empty($socid))
 		print '<input type="hidden" name="socid" value="' . $socid . '"/>';
 	
-	$moreforfilter = $langs->trans('Period') . '(' . $langs->trans("AgfDateDebut") . ')' . ': ';
+	$moreforfilter = $langs->trans('Period') . '(' . $langs->trans("LeadDateDebut") . ')' . ': ';
 	$moreforfilter .= $langs->trans('Month') . ':<input class="flat" type="text" size="4" name="search_month" value="' . $search_month . '">';
 	$moreforfilter .= $langs->trans('Year') . ':' . $formother->selectyear($search_year ? $search_year : - 1, 'search_year', 1, 20, 5);
 	
@@ -387,6 +387,20 @@ if ($resql != - 1) {
 	print "\n" . '</script>' . "\n";
 } else {
 	setEventMessage($object->error, 'errors');
+}
+
+if (!empty($socid)) {
+	//print '</div>';
+	print '<div class="tabsAction">';
+	if ($user->rights->lead->write)
+	{
+		print '<div class="inline-block divButAction"><a class="butAction" href="'.dol_buildpath('/lead/lead/card.php',1).'?action=create&socid='.$socid.'">'.$langs->trans('LeadCreate').'</a></div>';
+	}
+	else
+	{
+		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
+	}
+	print '</div>';
 }
 
 llxFooter();

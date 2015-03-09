@@ -118,3 +118,8 @@ LeadStepLabel=Steps Label
 LeadTypeCode=Type code
 LeadTypeLabel=Types Label
 lead@lead=Leads
+
+#
+# List
+#
+LeadDateDebut = Start Date

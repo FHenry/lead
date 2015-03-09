@@ -118,3 +118,8 @@ LeadStepLabel=Etape de vente Libellé
 LeadTypeCode=Type code
 LeadTypeLabel=Types Libellé
 lead@lead=Affaires
+
+#
+# List
+#
+LeadDateDebut = Date de Debut
