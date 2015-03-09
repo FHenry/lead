@@ -65,8 +65,10 @@ class ActionsLead // extends CommonObject
 			print "</tr>";
 			$filter = array (
 					'so.rowid' => ($object->fk_soc ? $object->fk_soc : $object->socid),
-					't.rowid !IN' => implode($array_exclude_lead, ',') 
 			);
+			if (count($array_exclude_lead)>0) {
+				$filter['t.rowid !IN']=implode($array_exclude_lead, ',');
+			}
 			$selectList = $formlead->select_lead('', 'leadid', 1, $filter);
 			if (! empty($selectList)) {
 				print '<tr>';
@@ -120,6 +122,21 @@ class ActionsLead // extends CommonObject
 				$html= '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
 			}
 				
+			$html=str_replace('"','\"',$html);
+			print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
+		}
+		if (in_array('propalcard',$current_context)) {
+			$langs->load("lead@lead");
+		
+			if ($user->rights->lead->write)
+			{
+				$html= '<div class="inline-block divButAction"><a class="butAction" href="'.dol_buildpath('/lead/lead/card.php',1).'?action=create&amp;socid='.$object->socid.'&amp;amount_guess='.$object->total_ttc.'">'.$langs->trans('LeadCreate').'</a></div>';
+			}
+			else
+			{
+				$html= '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
+			}
+		
 			$html=str_replace('"','\"',$html);
 			print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
 		}
