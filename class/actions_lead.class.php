@@ -32,11 +32,11 @@ class ActionsLead // extends CommonObject
 	 * @return void
 	 */
 	function showLinkedObjectBlock($parameters, $object, $action) {
-		global $conf, $langs;
+		global $conf, $langs ,$db;
 		
 		require_once 'lead.class.php';
 			
-		$lead = new Lead($object->db);
+		$lead = new Lead($db);
 		
 		$authorized_object=array();
 		foreach($lead->listofreferent as $referent) {
