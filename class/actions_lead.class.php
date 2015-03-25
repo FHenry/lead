@@ -32,7 +32,7 @@ class ActionsLead // extends CommonObject
 	 * @return void
 	 */
 	function showLinkedObjectBlock($parameters, $object, $action) {
-		global $conf, $langs ,$db;
+		global $conf, $langs, $db;
 		
 		require_once 'lead.class.php';
 			
@@ -48,7 +48,7 @@ class ActionsLead // extends CommonObject
 			$langs->load("lead@lead");
 			require_once 'html.formlead.class.php';
 			
-			$formlead = new FormLead($object->db);
+			$formlead = new FormLead($db);
 			
 			$ret = $lead->fetch_lead_link(($object->rowid ? $id = $object->rowid : $object->id), $object->table_element);
 			if ($ret < 0) {
