@@ -120,6 +120,9 @@ $parameters = array();
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
 
 if ($action == "add") {
+	
+	$error= 0;
+	
 	$object->ref_int = $ref_int;
 	$object->ref = $object->getNextNumRef();
 	$object->fk_c_status = $leadstatus;
@@ -136,7 +139,21 @@ if ($action == "add") {
 	if ($result < 0) {
 		$action = 'create';
 		setEventMessage($object->error, 'errors');
-	} else {
+		$error++;
+	} 
+	
+	$propalid = GETPOST('propalid','int');
+	if (!empty($propalid)) {
+		$tablename = 'propal';
+		$elementselectid = $propalid;
+		$result = $object->add_object_linked($tablename, $elementselectid);
+		if ($result < 0) {
+			setEventMessage($object->error, 'errors');
+			$error++;
+		}
+	}
+	
+	if (empty($error)) {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 	}
 } elseif ($action == "update") {
@@ -209,6 +226,9 @@ if ($action == 'create' && $user->rights->lead->write) {
 	
 	print '<form name="addlead" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	
+	print '<input type="hidden" name="propalid" value="'.GETPOST('propalid','int').'">';
+	
 	print '<input type="hidden" name="action" value="add">';
 	
 	print '<table class="border" width="100%">';

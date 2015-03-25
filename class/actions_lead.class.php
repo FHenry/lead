@@ -62,12 +62,14 @@ class ActionsLead // extends CommonObject
 			
 			print '<br>';
 			print_titre($langs->trans('Lead'));
-			print '<form action="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '" method="POST">';
-			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-			print '<input type="hidden" name="redirect" value="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '">';
-			print '<input type="hidden" name="tablename" value="' . $object->table_element . '">';
-			print '<input type="hidden" name="elementselect" value="' . ($object->rowid ? $object->rowid : $object->id) . '">';
-			print '<input type="hidden" name="action" value="link">';
+			if (count($lead->doclines)==0) {
+				print '<form action="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '" method="POST">';
+				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+				print '<input type="hidden" name="redirect" value="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '">';
+				print '<input type="hidden" name="tablename" value="' . $object->table_element . '">';
+				print '<input type="hidden" name="elementselect" value="' . ($object->rowid ? $object->rowid : $object->id) . '">';
+				print '<input type="hidden" name="action" value="link">';
+			}
 			print "<table class='noborder allwidth'>";
 			print "<tr class='liste_titre'>";
 			print "<td>" . $langs->trans('LeadLink') . "</td>";
@@ -79,7 +81,7 @@ class ActionsLead // extends CommonObject
 				$filter['t.rowid !IN']=implode($array_exclude_lead, ',');
 			}
 			$selectList = $formlead->select_lead('', 'leadid', 1, $filter);
-			if (! empty($selectList)) {
+			if (! empty($selectList) && count($lead->doclines)==0) {
 				print '<tr>';
 				print '<td>';
 				print $selectList;
@@ -100,7 +102,9 @@ class ActionsLead // extends CommonObject
 				print '</tr>';
 			}
 			print "</table>";
-			print "</form>";
+			if (count($lead->doclines)==0) {
+				print "</form>";
+			}
 		}
 		
 		return 0;
@@ -116,7 +120,7 @@ class ActionsLead // extends CommonObject
 	 * @return void
 	 */
 	function addMoreActionsButtons($parameters, &$object, &$action, $hookmanager) {
-		global $langs,$conf,$user;
+		global $langs,$conf,$user, $db;
 		
 		$current_context=explode(':',$parameters['context']);
 		if (in_array('commcard',$current_context)) {
@@ -135,19 +139,29 @@ class ActionsLead // extends CommonObject
 			print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
 		}
 		if (in_array('propalcard',$current_context)) {
-			$langs->load("lead@lead");
-		
-			if ($user->rights->lead->write)
-			{
-				$html= '<div class="inline-block divButAction"><a class="butAction" href="'.dol_buildpath('/lead/lead/card.php',1).'?action=create&amp;socid='.$object->socid.'&amp;amount_guess='.$object->total_ttc.'">'.$langs->trans('LeadCreate').'</a></div>';
+			require_once 'lead.class.php';
+			$lead = new Lead($db);
+			
+			$ret = $lead->fetch_lead_link(($object->rowid ? $id = $object->rowid : $object->id), $object->table_element);
+			if ($ret < 0) {
+				setEventMessage($lead->error, 'errors');
 			}
-			else
-			{
-				$html= '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
+			
+			if (count($lead->doclines)==0) {
+				$langs->load("lead@lead");
+			
+				if ($user->rights->lead->write)
+				{
+					$html= '<div class="inline-block divButAction"><a class="butAction" href="'.dol_buildpath('/lead/lead/card.php',1).'?action=create&amp;socid='.$object->socid.'&amp;amount_guess='.$object->total_ttc.'&amp;propalid='.$object->id.'">'.$langs->trans('LeadCreate').'</a></div>';
+				}
+				else
+				{
+					$html= '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
+				}
+			
+				$html=str_replace('"','\"',$html);
+				print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
 			}
-		
-			$html=str_replace('"','\"',$html);
-			print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
 		}
 		return 0;
 	}
