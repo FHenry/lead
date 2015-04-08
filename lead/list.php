@@ -325,7 +325,16 @@ if ($resql != - 1) {
 		print "<tr $bc[$var]>";
 		
 		// Ref
-		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref . '</a></td>';
+		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref . '</a>';
+		if ($line->fk_c_status!=6) {
+			$result=$line->isObjectSignedExists();
+			if ($result<0) {
+				setEventMessage($line->error,'errors');
+			}elseif ($result>0) {
+				print img_warning($langs->trans('LeadObjectWindExists'));
+			}
+		}
+		print '</td>';
 		
 		// RefInt
 		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref_int . '</a></td>';

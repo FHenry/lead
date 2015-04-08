@@ -110,6 +110,7 @@ LeadLink=Link(ed) Lead
 LeadLost=Lead close
 LeadConfirmLost=All proposals link to this lead will be close (not signed) ?
 LeadPropalCloseByLead=Proposal close by lost lead %s
+LeadObjectWindExists=Proposal signed or invoice exist (lead status should be win)
 
 #
 # Export

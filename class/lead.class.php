@@ -888,6 +888,12 @@ class Lead extends CommonObject {
 			return - 1;
 		}
 	}
+	
+	/**
+	 * Calculate the proposal signed amount versus invoiced amount
+	 * 
+	 * @return number
+	 */
 	public function getRealAmount() {
 		$totalinvoiceamount = 0;
 		$totalproposalamount = 0;
@@ -926,8 +932,7 @@ class Lead extends CommonObject {
 			if ($this->db->num_rows($resql)) {
 				$obj = $this->db->fetch_object($resql);
 				if (! empty($obj->totalamount))
-					;
-				$totalproposalamount = $obj->totalamount;
+					$totalproposalamount = $obj->totalamount;
 			}
 			$this->db->free($resql);
 		} else {
@@ -938,6 +943,62 @@ class Lead extends CommonObject {
 		
 		return ($totalproposalamount - $totalinvoiceamount);
 	}
+	
+	/**
+	 * Find is a obejct (propal signed or invoice) exists for the lead
+	 * 
+	 * @return int <0 if KO, >0 if OK
+	 */
+	public function isObjectSignedExists() {
+		
+		$nbobjectwined=0;
+		
+		
+		//Count nb propal wined for this lead
+		$sql = "SELECT COUNT(DISTINCT propal.rowid) as cnt ";
+		$sql .= " FROM " . MAIN_DB_PREFIX . "propal as propal";
+		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
+		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='propal' AND elmt.fk_source=propal.rowid";
+		$sql .= " AND propal.fk_statut = 2";
+		
+		dol_syslog(get_class($this) . "::isObjectSignedExists sql=" . $sql, LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql)) {
+				$obj = $this->db->fetch_object($resql);
+				$nbobjectwined=$obj->cnt;
+			}
+			$this->db->free($resql);
+		} else {
+			$this->error = "Error " . $this->db->lasterror();
+			dol_syslog(get_class($this) . "::isProposalSignedExists " . $this->error, LOG_ERR);
+			return - 1;
+		}
+		
+		//Count nb invocie valid for this lead
+		$sql = "SELECT COUNT(DISTINCT fac.rowid) as totalamount ";
+		$sql .= " FROM " . MAIN_DB_PREFIX . "facture as fac";
+		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
+		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='facture' AND elmt.fk_source=fac.rowid";
+		$sql .= " AND fac.fk_statut <> 0";
+		
+		dol_syslog(get_class($this) . "::isObjectSignedExists sql=" . $sql, LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			if ($this->db->num_rows($resql)) {
+				$obj = $this->db->fetch_object($resql);
+				$nbobjectwined+=$obj->cnt;
+			}
+			$this->db->free($resql);
+		} else {
+			$this->error = "Error " . $this->db->lasterror();
+			dol_syslog(get_class($this) . "::isProposalSignedExists " . $this->error, LOG_ERR);
+			return - 1;
+		}
+		
+		return $nbobjectwined;
+	}
+	
 	
 	/**
 	 * Load properties id_previous and id_next
