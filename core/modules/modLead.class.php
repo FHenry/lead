@@ -103,7 +103,8 @@ class modLead extends DolibarrModules
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/lead/temp");
 		$this->dirs = array(
-			'/lead'
+			'/lead',
+			'/lead/stats'
 		);
 		
 		// Config pages. Put here list of php pages
@@ -299,7 +300,7 @@ class modLead extends DolibarrModules
 			'titre' => 'Module103111Name',
 			'mainmenu' => 'lead',
 			'leftmenu' => '0',
-			'url' => '/lead/lead/list.php',
+			'url' => '/lead/index.php',
 			'langs' => 'lead@lead',
 			'position' => 100,
 			'enabled' => '$user->rights->lead->read',
@@ -316,7 +317,7 @@ class modLead extends DolibarrModules
 			'leftmenu' => 'Module103111Name',
 			'url' => '/lead/lead/list.php',
 			'langs' => 'lead@lead',
-			'position' => 101,
+			'position' => 100+$r,
 			'enabled' => '$user->rights->lead->read',
 			'perms' => '$user->rights->lead->read',
 			'target' => '',
@@ -330,7 +331,7 @@ class modLead extends DolibarrModules
 			'titre' => 'LeadCreate',
 			'url' => '/lead/lead/card.php?action=create',
 			'langs' => 'lead@lead',
-			'position' => 102,
+			'position' => 100+$r,
 			'enabled' => '$user->rights->lead->write',
 			'perms' => '$user->rights->lead->write',
 			'target' => '',
@@ -344,7 +345,7 @@ class modLead extends DolibarrModules
 			'titre' => 'LeadList',
 			'url' => '/lead/lead/list.php',
 			'langs' => 'lead@lead',
-			'position' => 102,
+			'position' => 100+$r,
 			'enabled' => '$user->rights->lead->read',
 			'perms' => '$user->rights->lead->read',
 			'target' => '',
@@ -358,7 +359,7 @@ class modLead extends DolibarrModules
 			'titre' => 'LeadListCurrent',
 			'url' => '/lead/lead/list.php?viewtype=current',
 			'langs' => 'lead@lead',
-			'position' => 103,
+			'position' => 100+$r,
 			'enabled' => '$user->rights->lead->read',
 			'perms' => '$user->rights->lead->read',
 			'target' => '',
@@ -372,7 +373,7 @@ class modLead extends DolibarrModules
 			'titre' => 'LeadListMyLead',
 			'url' => '/lead/lead/list.php?viewtype=my',
 			'langs' => 'lead@lead',
-			'position' => 103,
+			'position' => 100+$r,
 			'enabled' => '$user->rights->lead->read',
 			'perms' => '$user->rights->lead->read',
 			'target' => '',
@@ -386,7 +387,7 @@ class modLead extends DolibarrModules
 			'titre' => 'LeadListLate',
 			'url' => '/lead/lead/list.php?viewtype=late',
 			'langs' => 'lead@lead',
-			'position' => 103,
+			'position' => 100+$r,
 			'enabled' => '$user->rights->lead->read',
 			'perms' => '$user->rights->lead->read',
 			'target' => '',

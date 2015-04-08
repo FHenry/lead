@@ -631,11 +631,20 @@ class Lead extends CommonObject {
 				// // End call triggers
 			}
 		}
+		if (! $error) {
+			if ($this->fk_c_status==7) {
+				$result=$this->closeAllProposal($user);
+				if ($result<0) {
+					$this->errors[]=$this->error;
+					$error ++;
+				}
+			}
+		}
 		
 		if (! $error) {
 			
 			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
-{
+			{
 				$result = $this->insertExtraFields();
 				if ($result < 0) {
 					$error ++;
@@ -1137,6 +1146,69 @@ class Lead extends CommonObject {
 		} else {
 			return '';
 		}
+	}
+	
+	/**
+	 * Close proposal link to lead
+	 * @param unknown $user
+	 */
+	public function closeAllProposal($user) {
+		global $langs;
+		
+		$error=0;
+		
+		$this->db->begin();
+		
+		if (! empty($conf->propal->enabled))
+			require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
+		
+		if (empty($error)) {
+			
+			$ret = $this->fetch_document_link($this->id, $this->listofreferent['propal']['table']);
+			if ($result<0) {
+				$this->errors[]=$this->error;
+				$error++;
+			}
+		}
+		
+		if (empty($error)) {
+			//Close all propal linked
+			$elementarray = array();
+			$classname=$this->listofreferent['propal']['class'];
+			$elementarray = $this->doclines;
+			if (count($elementarray) > 0 && is_array($elementarray)) {
+				$var = true;
+				$total_ht = 0;
+				$total_ttc = 0;
+				$num = count($elementarray);
+				foreach ($elementarray as $line) {
+					
+					
+					$element = new $classname($this->db);
+					$element->fetch($line->fk_source);
+					//Close only proposal not already close
+					if ($element->statut!=3 && $element->statut!=2) {
+						$result=$element->cloture($user,3,$langs->trans('LeadPropalCloseByLead', $this->ref));
+						if ($result<0) {
+							$this->errors[]=$this->error;
+							$error++;
+						}
+					}
+				}
+			}
+		}
+		
+		if (empty($error)) {
+			$this->db->commit();
+		} else {
+			foreach ( $this->errors as $errmsg ) {
+				dol_syslog(get_class($this) . "::".__METHOD__." ". $errmsg, LOG_ERR);
+				$this->error .= ($this->error ? ', ' . $errmsg : $errmsg);
+			}
+			$this->db->rollback();
+			return - 1 * $error;
+		}
+		
 	}
 }
 class DocLink {

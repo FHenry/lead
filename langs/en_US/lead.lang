@@ -107,6 +107,9 @@ ConfirmCloneLead=Are you sure to clone Lead
 LeadShowLead=Display lead
 SelectElement=Select element
 LeadLink=Link(ed) Lead
+LeadLost=Lead close
+LeadConfirmLost=All proposals link to this lead will be close (not signed) ?
+LeadPropalCloseByLead=Proposal close by lost lead %s
 
 #
 # Export
@@ -123,3 +126,9 @@ lead@lead=Leads
 # List
 #
 LeadDateDebut = Start Date
+
+#
+# Graph
+#
+LeadNbLeadByType=Nb lead by type
+LeadNbLeadByStatus=Nb lead by steps

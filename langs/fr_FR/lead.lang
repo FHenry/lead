@@ -107,6 +107,9 @@ ConfirmCloneLead=Etes vous sur de cloné le lead
 LeadShowLead=Affiché le lead
 SelectElement=Selectionner l'élément
 LeadLink=Lead associé(s)
+LeadLost=Affaire perdue
+LeadConfirmLost=Toute les proposition commerciale associer a cette affaire seront mises au status "Clos/Non signé" ?
+LeadPropalCloseByLead=Proposition cloturé par l'affaire %s perdue
 
 #
 # Export
@@ -123,3 +126,9 @@ lead@lead=Affaires
 # List
 #
 LeadDateDebut = Date de Debut
+
+#
+# Graph
+#
+LeadNbLeadByType=Nb Affaires par type
+LeadNbLeadByStatus=Nb Affaires par étape de vente

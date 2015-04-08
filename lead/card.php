@@ -1,6 +1,6 @@
 <?php
-/* 
- * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
+/* Lead
+ * Copyright (C) 2014-2015 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -208,6 +208,16 @@ if ($action == "add") {
 	} else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $result);
 	}
+} elseif ($action=="confirm_lost" && $confirm=='yes') {
+	//Status 7=LOST hard coded, loaded by default in data.sql dictionnary (but check is done in this card that call this method)
+	$object->fk_c_status=7;
+	$result=$object->update($user);
+	if ($result < 0) {
+		setEventMessage($object->error, 'errors');
+	}else {
+		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+	}
+	
 }
 
 /*
@@ -438,6 +448,10 @@ if ($action == 'create' && $user->rights->lead->write) {
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('LeadDelete'), $langs->trans('LeadConfirmDelete'), 'confirm_delete', '', 0, 1);
 	}
 	
+	if ($action == 'close') {
+		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('LeadLost'), $langs->trans('LeadConfirmLost'), 'confirm_lost', '', 0, 1);
+	}
+	
 	// Clone confirmation
 	if ($action == 'clone') {
 		// Create an array for form
@@ -575,8 +589,13 @@ if ($action == 'create' && $user->rights->lead->write) {
 	if ($user->rights->lead->write) {
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=edit">' . $langs->trans("Edit") . "</a></div>\n";
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("Clone") . "</a></div>\n";
+		if ($object->status[7]==$langs->trans('LeadStatus_LOST') && $object->fk_c_status!=7) {
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
+		}
 	} else {
 		print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("Edit") . "</font></div>";
+		print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("Clone") . "</font></div>";
+		//print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("LeadLost") . "</font></div>";
 	}
 	
 	// Delete
