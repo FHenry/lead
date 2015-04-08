@@ -273,7 +273,7 @@ class Lead extends CommonObject {
 			$sql .= " " . (! isset($this->fk_c_type) ? 'NULL' : "'" . $this->fk_c_type . "'") . ",";
 			$sql .= " " . (! isset($this->fk_soc) ? 'NULL' : "'" . $this->fk_soc . "'") . ",";
 			$sql .= " " . (! isset($this->date_closure) || dol_strlen($this->date_closure) == 0 ? 'NULL' : "'" . $this->db->idate($this->date_closure)) . "',";
-			$sql .= " " . (! isset($this->amount_prosp) ? 'NULL' : "'" . $this->amount_prosp . "'") . ",";
+			$sql .= " " . (! isset($this->amount_prosp) ? 'NULL' : "'" . price2num($this->amount_prosp) . "'") . ",";
 			$sql .= " " . (! isset($this->fk_user_resp) ? 'NULL' : "'" . $this->fk_user_resp . "'") . ",";
 			$sql .= " " . (empty($this->description) ? 'NULL' : "'" . $this->db->escape($this->description) . "'") . ",";
 			$sql .= " " . $user->id . ",";
@@ -600,7 +600,7 @@ class Lead extends CommonObject {
 			$sql .= " fk_c_type=" . (isset($this->fk_c_type) ? $this->fk_c_type : "null") . ",";
 			$sql .= " fk_soc=" . (isset($this->fk_soc) ? $this->fk_soc : "null") . ",";
 			$sql .= " date_closure=" . (dol_strlen($this->date_closure) != 0 ? "'" . $this->db->idate($this->date_closure) . "'" : 'null') . ",";
-			$sql .= " amount_prosp=" . (isset($this->amount_prosp) ? $this->amount_prosp : "null") . ",";
+			$sql .= " amount_prosp=" . (isset($this->amount_prosp) ? "'".price2num($this->amount_prosp)."'" : "null") . ",";
 			$sql .= " fk_user_resp=" . (isset($this->fk_user_resp) ? $this->fk_user_resp : "null") . ",";
 			$sql .= " description=" . (! empty($this->description) ? "'" . $this->db->escape($this->description) . "'" : "null") . ",";
 			$sql .= " fk_user_mod=" . $user->id . ",";

@@ -641,7 +641,6 @@ if ($action == 'create' && $user->rights->lead->write) {
 					$element = new $classname($db);
 					$element->fetch($line->fk_source);
 					$element->fetch_thirdparty();
-					print $classname;
 					
 					$var = ! $var;
 					print "<tr " . $bc[$var] . ">";
