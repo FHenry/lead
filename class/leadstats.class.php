@@ -48,9 +48,9 @@ class LeadStats {
 		$datay=array();
 		
 		$sql = "SELECT";
-		$sql .= " count(DISTINCT t.rowid), fk_c_type";
+		$sql .= " count(DISTINCT t.rowid), t.fk_c_type";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		$sql .= " GROUP BY fk_c_type";
+		$sql .= " GROUP BY t.fk_c_type";
 	
 		
 		$result=array();
@@ -97,9 +97,9 @@ class LeadStats {
 		$datay=array();
 	
 		$sql = "SELECT";
-		$sql .= " count(DISTINCT t.rowid), fk_c_status";
+		$sql .= " count(DISTINCT t.rowid), t.fk_c_status";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		$sql .= " GROUP BY fk_c_type";
+		$sql .= " GROUP BY t.fk_c_type";
 	
 	
 		$result=array();
