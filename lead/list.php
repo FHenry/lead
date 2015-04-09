@@ -193,7 +193,7 @@ $object = new Lead($db);
 $formother = new FormOther($db);
 
 if (empty($sortorder))
-	$sortorder = "ASC";
+	$sortorder = "DESC";
 if (empty($sortfield))
 	$sortfield = "t.date_closure";
 
