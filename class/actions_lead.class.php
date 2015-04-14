@@ -25,7 +25,7 @@ class ActionsLead // extends CommonObject
 	
 	/**
 	 * Overloading the doActions function : replacing the parent's function with the one below
-	 * 
+	 *
 	 * @param parameters meta datas of the hook (context, etc...)
 	 * @param object the object you want to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
 	 * @param action current action (if set). Generally create or edit or null
@@ -35,16 +35,15 @@ class ActionsLead // extends CommonObject
 		global $conf, $langs, $db;
 		
 		require_once 'lead.class.php';
-			
+		
 		$lead = new Lead($db);
 		
-		$authorized_object=array();
-		foreach($lead->listofreferent as $referent) {
-			$authorized_object[]=$referent['table'];
+		$authorized_object = array ();
+		foreach ( $lead->listofreferent as $referent ) {
+			$authorized_object[] = $referent['table'];
 		}
 		
-		
-		if (is_object($object) && in_array($object->table_element,$authorized_object)) {
+		if (is_object($object) && in_array($object->table_element, $authorized_object)) {
 			$langs->load("lead@lead");
 			require_once 'html.formlead.class.php';
 			
@@ -62,7 +61,7 @@ class ActionsLead // extends CommonObject
 			
 			print '<br>';
 			print_titre($langs->trans('Lead'));
-			if (count($lead->doclines)==0) {
+			if (count($lead->doclines) == 0) {
 				print '<form action="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '" method="POST">';
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 				print '<input type="hidden" name="redirect" value="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '">';
@@ -75,13 +74,13 @@ class ActionsLead // extends CommonObject
 			print "<td>" . $langs->trans('LeadLink') . "</td>";
 			print "</tr>";
 			$filter = array (
-					'so.rowid' => ($object->fk_soc ? $object->fk_soc : $object->socid),
+					'so.rowid' => ($object->fk_soc ? $object->fk_soc : $object->socid) 
 			);
-			if (count($array_exclude_lead)>0) {
-				$filter['t.rowid !IN']=implode($array_exclude_lead, ',');
+			if (count($array_exclude_lead) > 0) {
+				$filter['t.rowid !IN'] = implode($array_exclude_lead, ',');
 			}
 			$selectList = $formlead->select_lead('', 'leadid', 1, $filter);
-			if (! empty($selectList) && count($lead->doclines)==0) {
+			if (! empty($selectList) && count($lead->doclines) == 0) {
 				print '<tr>';
 				print '<td>';
 				print $selectList;
@@ -102,7 +101,7 @@ class ActionsLead // extends CommonObject
 				print '</tr>';
 			}
 			print "</table>";
-			if (count($lead->doclines)==0) {
+			if (count($lead->doclines) == 0) {
 				print "</form>";
 			}
 		}
@@ -114,31 +113,76 @@ class ActionsLead // extends CommonObject
 	 * addMoreActionsButtons Method Hook Call
 	 *
 	 * @param array $parameters parameters
-	 * @param Object	&$object			Object to use hooks on
-	 * @param string	&$action			Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	 * @param Object &$object Object to use hooks on
+	 * @param string &$action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
 	 * @param object $hookmanager class instance
 	 * @return void
 	 */
 	function addMoreActionsButtons($parameters, &$object, &$action, $hookmanager) {
-		global $langs,$conf,$user, $db;
+		global $langs, $conf, $user, $db ,$bc;
 		
-		$current_context=explode(':',$parameters['context']);
-		if (in_array('commcard',$current_context)) {
+		$current_context = explode(':', $parameters['context']);
+		if (in_array('commcard', $current_context)) {
+			
 			$langs->load("lead@lead");
-	
-			if ($user->rights->lead->write)
-			{
-				$html= '<div class="inline-block divButAction"><a class="butAction" href="'.dol_buildpath('/lead/lead/card.php',1).'?action=create&socid='.$object->id.'">'.$langs->trans('LeadCreate').'</a></div>';
+			
+			if ($user->rights->lead->write) {
+				$html = '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/lead/lead/card.php', 1) . '?action=create&socid=' . $object->id . '">' . $langs->trans('LeadCreate') . '</a></div>';
+			} else {
+				$html = '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('LeadCreate') . '</a></div>';
 			}
-			else
-			{
-				$html= '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
-			}
-				
-			$html=str_replace('"','\"',$html);
+			
+			$html = str_replace('"', '\"', $html);
 			print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
+			
+			if ($user->rights->lead->read) {
+				
+				require_once 'lead.class.php';
+				$lead = new Lead($db);
+				
+				$filter['so.rowid'] = $object->id;
+				$resql = $lead->fetch_all('DESC', 't.date_closure', 0, 0, $filter);
+				if ($resql == - 1) {
+					setEventMessage($object->error, 'errors');
+				}
+				
+				$total_lead = count($lead->lines);
+				
+				// $filter['so.rowid'] = $object->id;
+				$resql = $lead->fetch_all('DESC', 't.date_closure', 4, 0, $filter);
+				if ($resql == - 1) {
+					setEventMessage($object->error, 'errors');
+				}
+				
+				$num = count($lead->lines);
+				
+				$html = '<table class="noborder" width="100%">';
+				
+				$html .= '<tr class="liste_titre">';
+				$html .= '<td colspan="6">';
+				$html .= '<table width="100%" class="nobordernopadding"><tr><td>' . $langs->trans("LeadLastLeadUpdated", ($num <= 4 ? $num : 4)) . '</td><td align="right"><a href="' . dol_buildpath('/lead/lead/list.php', 1) . '?socid=' . $object->id . '">' . $langs->trans("LeadList") . ' (' . $total_lead . ')</a></td>';
+				$html .= '<td width="20px" align="right"><a href="' . dol_buildpath('/lead/index.php', 1) . '">' . img_picto($langs->trans("Statistics"), 'stats') . '</a></td>';
+				$html .= '</tr></table></td>';
+				$html .= '</tr>';
+				
+				foreach ( $lead->lines as $lead_line ) {
+					$var = ! $var;
+					$html .='<tr '. $bc[$var].'>';
+					$html .= '<td>'.$lead_line->getNomUrl(1).'</td>';
+					$html .= '<td>'.$lead_line->ref_int.'</td>';
+					$html .= '<td>'.$lead_line->status_label.'</td>';
+					$html .= '<td>'.$lead_line->type_label.'</td>';
+					$html .= '<td>'.price($lead_line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency).'</td>';
+					$html .= '<td>'.dol_print_date($lead_line->date_closure, 'daytextshort').'</td>';
+					$html .= '</tr>';
+				}
+				
+				$html .= '</table>';
+				$html = str_replace('"', '\"', $html);
+				print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".ficheaddleft").append("' . $html . '");});});</script>';
+			}
 		}
-		if (in_array('propalcard',$current_context)) {
+		if (in_array('propalcard', $current_context)) {
 			require_once 'lead.class.php';
 			$lead = new Lead($db);
 			
@@ -147,19 +191,16 @@ class ActionsLead // extends CommonObject
 				setEventMessage($lead->error, 'errors');
 			}
 			
-			if (count($lead->doclines)==0) {
+			if (count($lead->doclines) == 0) {
 				$langs->load("lead@lead");
-			
-				if ($user->rights->lead->write)
-				{
-					$html= '<div class="inline-block divButAction"><a class="butAction" href="'.dol_buildpath('/lead/lead/card.php',1).'?action=create&amp;socid='.$object->socid.'&amp;amount_guess='.$object->total_ttc.'&amp;propalid='.$object->id.'">'.$langs->trans('LeadCreate').'</a></div>';
+				
+				if ($user->rights->lead->write) {
+					$html = '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/lead/lead/card.php', 1) . '?action=create&amp;socid=' . $object->socid . '&amp;amount_guess=' . $object->total_ttc . '&amp;propalid=' . $object->id . '">' . $langs->trans('LeadCreate') . '</a></div>';
+				} else {
+					$html = '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('LeadCreate') . '</a></div>';
 				}
-				else
-				{
-					$html= '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">'.$langs->trans('LeadCreate').'</a></div>';
-				}
-			
-				$html=str_replace('"','\"',$html);
+				
+				$html = str_replace('"', '\"', $html);
 				print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
 			}
 		}

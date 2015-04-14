@@ -111,6 +111,7 @@ LeadLost=Affaire perdue
 LeadConfirmLost=Toute les proposition commerciale associer a cette affaire seront mises au status "Clos/Non signé" ?
 LeadPropalCloseByLead=Proposition cloturé par l'affaire %s perdue
 LeadObjectWindExists=Des propostions signée ou des factures existes (le statuts de l'affaire devrait êter gagné)
+LeadLastLeadUpdated=Les %s derniéres affaires modifiées
 
 #
 # Export
