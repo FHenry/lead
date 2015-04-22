@@ -31,17 +31,6 @@ class FormLead extends Form
 	var $num;
 
 	/**
-	 * Constructor
-	 *
-	 * @param DoliDB $db
-	 *        	handler
-	 */
-	public function __construct($db)
-	{
-		$this->db = $db;
-	}
-
-	/**
 	 * Build Select List of element associable to a businesscase
 	 *
 	 * @param object $tablename
@@ -178,7 +167,7 @@ class FormLead extends Form
 	 *        	name of the component
 	 * @param int $showempty
 	 *        	row
-	 * @return void
+	 * @return string HTML select
 	 */
 	function select_lead_status($selected = '', $htmlname = 'leadstatus', $showempty = 1)
 	{
@@ -197,7 +186,7 @@ class FormLead extends Form
 	 *        	name of the component
 	 * @param int $showempty
 	 *        	row
-	 * @return void
+	 * @return string HTML select
 	 */
 	function select_lead_type($selected = '', $htmlname = 'leadtype', $showempty = 1)
 	{

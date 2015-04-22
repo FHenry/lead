@@ -162,6 +162,11 @@ $stringtoshow .= $px->show();
 $stringtoshow .= '</div></div></div>';
 
 print $stringtoshow; 
+
+
+print '<table class="noborder" width="100%">';
+
+print '</table>';
 llxFooter();
 $db->close();
 ?>

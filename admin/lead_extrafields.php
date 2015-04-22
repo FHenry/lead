@@ -36,6 +36,7 @@ if (! $user->admin)
 $langs->load("admin");
 $langs->load("other");
 $langs->load("agenda");
+$langs->load("lead@lead");
 
 $extrafields = new ExtraFields($db);
 $form = new Form($db);
@@ -132,7 +133,7 @@ if ($action != 'create' && $action != 'edit') {
 
 if ($action == 'create') {
 	print "<br>";
-	print_titre($langs->trans('NewAttribute'));
+	print_fiche_titre($langs->trans('NewAttribute'));
 	
 	require DOL_DOCUMENT_ROOT . '/core/tpl/admin_extrafields_add.tpl.php';
 }
@@ -144,7 +145,7 @@ if ($action == 'create') {
 /* ************************************************************************** */
 if ($action == 'edit' && ! empty($attrname)) {
 	print "<br>";
-	print_titre($langs->trans("FieldEdition", $attrname));
+	print_fiche_titre($langs->trans("FieldEdition", $attrname));
 	
 	require DOL_DOCUMENT_ROOT . '/core/tpl/admin_extrafields_edit.tpl.php';
 }

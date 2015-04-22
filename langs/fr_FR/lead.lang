@@ -1,5 +1,6 @@
 # Manage Lead
 # Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
+# Copyright (C) 2015 Raphaël Doursenaud <rdoursenaud@gpcsolutions.fr>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,18 +25,18 @@ Module103111Name = Affaires
 LeadLead = Affaires
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
-Module103111Desc =Gestion d'affaire
-LeadSimpleNumRefModelDesc=Renvoie le numéro sous la forme LEA-yymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0
+Module103111Desc = Gestion d'affaires
+LeadSimpleNumRefModelDesc = Retourne le numéro sous la forme LEA-yymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0
 
 #
 # Page d'administration
 #
 LeadSetup = Configuration du module Affaires
 SettingsLead = Réglages
-LeadSetupPage = Page de réglage de Affaires
-LeadNbDayDefaultClosure=Nb. jour a ajouter à la date de du jour pour la date de cloture par defaut
+LeadSetupPage = Page de réglages de Affaires
+LeadNbDayDefaultClosure = Nombre de jours à ajouter à la date du jour pour obtenir la date de clôture par défaut
 LeadAdmVar=Administration
-LeadUserGroupAffect=Limité les utilisateurs affectable à une affaire au groupe d'utilisateur
+LeadUserGroupAffect = Limiter les utilisateurs affectables à une affaire au groupe
 
 #
 # Page À propos
@@ -55,14 +56,15 @@ Permission1031114=Exporter les affaires
 #
 # Dictionnaires
 #
-LeadStatus=Module Affaire - Etapes
-LeadType=Module Affaire - Types
+LeadStatus = Module Affaires — Étapes
+LeadType = Module Affaires — Types
 
 
 #
 # Menu
 #
 LeadList=Liste des affaires
+LeadInfo = Informations des affaires
 LeadCreate=Nouvelle affaire
 LeadContact=Contact Affaires
 LeadListCurrent=Affaires en cours
@@ -84,7 +86,7 @@ LeadStatus_LOST=Perdu
 #
 # Type
 #
-LeadType_SUPP=Support
+LeadType_SUPP = Assistance
 LeadType_TRAIN=Formation
 LeadType_ADVI=Conseil
 
@@ -92,15 +94,15 @@ LeadType_ADVI=Conseil
 # Card
 #
 LeadCommercial=Responsable
-LeadStep=Etape de vente
+LeadStep = Étape de vente
 LeadAmountGuess=Montant annoncé HT
 LeadDeadLine=Date de clôture
 LeadDelete=Supprimer l'affaire
 LeadRefInt=Référence interne
 LeadRealAmount=Montant réel HT
-LeadConfirmDelete=Etes vous sure de supprimer l'affaire ?
+LeadConfirmDelete = Êtes-vous sur de vouloir supprimer l'affaire ?
 LeadDescription=Description
-LeadDocuments=Documents associeés
+LeadDocuments = Documents associés
 LeadAddElement=Associer
 LeadLate=Affaire en retard
 ConfirmCloneLead=Etes vous sur de cloné le lead

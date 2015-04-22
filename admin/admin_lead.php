@@ -108,7 +108,7 @@ dol_fiche_head($head, 'settings', $langs->trans("Module103111Name"), 0, "lead@le
 /*
  * Module numerotation
  */
-print_titre($langs->trans("LeadSetupPage"));
+print_fiche_titre($langs->trans("LeadSetupPage"));
 
 $dirmodels = array_merge(array(
 	'/'
@@ -118,7 +118,7 @@ print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
 print '<td>' . $langs->trans("Name") . "</td>\n";
 print '<td>' . $langs->trans("Description") . "</td>\n";
-print '<td nowrap>' . $langs->trans("Example") . "</td>\n";
+print '<td class="nowrap">' . $langs->trans("Example") . "</td>\n";
 print '<td align="center" width="60">' . $langs->trans("Status") . '</td>';
 print '<td align="center" width="16">' . $langs->trans("Infos") . '</td>';
 print '</tr>' . "\n";
@@ -207,7 +207,7 @@ foreach ($dirmodels as $reldir) {
 print "</table><br>\n";
 
 // Admin var of module
-print_titre($langs->trans("LeadAdmVar"));
+print_fiche_titre($langs->trans("LeadAdmVar"));
 
 print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" >';
 print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';

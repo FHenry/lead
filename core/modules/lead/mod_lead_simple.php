@@ -134,5 +134,3 @@ class mod_lead_simple extends ModeleNumRefLead
 		return $this->prefix . $yymm . "-" . $num;
 	}
 }
-
-?>

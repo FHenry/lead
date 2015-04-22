@@ -41,7 +41,7 @@ $id = GETPOST('id', 'int');
  * View
  */
 
-llxHeader('', $langs->trans("LeadLead"));
+llxHeader('', $langs->trans("LeadInfo"));
 
 $object = new Lead($db);
 $object->info($id);

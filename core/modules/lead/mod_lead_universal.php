@@ -124,5 +124,3 @@ class mod_lead_universal extends ModeleNumRefLead
 		return $numFinal;
 	}
 }
-
-?>

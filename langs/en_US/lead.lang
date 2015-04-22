@@ -1,5 +1,6 @@
 # Manage Lead
 # Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
+# Copyright (C) 2015 Raphaël Doursenaud <rdoursenaud@gpcsolutions.fr>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,9 +34,9 @@ LeadSimpleNumRefModelDesc=Return reference like LEA-yymm-nnnn where yy is the ye
 LeadSetup = Lead setup
 SettingsLead = Settings
 LeadSetupPage = Lead setup page
-LeadNbDayDefaultClosure=Nb. Day to add to for closure default date
+LeadNbDayDefaultClosure = Number of days to add to the current date for closure's default
 LeadAdmVar=Admin value
-LeadUserGroupAffect=Limit user list affectable on lead to user group
+LeadUserGroupAffect = Limit user list assignable on lead to user group
 
 #
 # About page
@@ -62,12 +63,13 @@ LeadType=Module Lead - Types
 #
 # Menu
 #
-LeadList=List lead
-LeadCreate=create Lead
+LeadList = List Lead
+LeadInfo = Lead Info
+LeadCreate = Create Lead
 LeadContact=Lead Contact
 LeadListCurrent=Current Lead
 LeadListMyLead=My Lead
-LeadListLate=Late lead
+LeadListLate = Late Lead
 
 
 #
@@ -85,7 +87,7 @@ LeadStatus_LOST=Lost
 # Type
 #
 LeadType_SUPP=Support
-LeadType_TRAIN=Trainning
+LeadType_TRAIN = Training
 LeadType_ADVI=Consulting
 
 #
@@ -93,12 +95,12 @@ LeadType_ADVI=Consulting
 #
 LeadCommercial=Commercial
 LeadStep=Steps
-LeadAmountGuess=Budget HT
+LeadAmountGuess = Budget w/o VAT
 LeadDeadLine=Deadline
 LeadDelete=Delete Lead
-LeadConfirmDelete=Are You sure to delete lead ?
-LeadRefInt=Ref. Int.
-LeadRealAmount=Real amount HT
+LeadConfirmDelete = Are you sure you want to delete the lead ?
+LeadRefInt = Internal reference
+LeadRealAmount = Real amount w/o VAT
 LeadDescription=Description
 LeadDocuments=Link Document
 LeadAddElement=Link

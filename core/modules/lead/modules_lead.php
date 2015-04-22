@@ -28,7 +28,8 @@
 abstract class ModeleNumRefLead
 {
 
-	var $error = '';
+	public $error = '';
+	public $version = '';
 
 	/**
 	 * Return if a module can be used or not
@@ -91,22 +92,23 @@ abstract class ModeleNumRefLead
 		return $langs->trans("NotAvailable");
 	}
 
-	/**
-	 * Renvoi version du module numerotation
-	 *
-	 * @return string Valeur
-	 */
 	function getVersion()
 	{
 		global $langs;
 		$langs->load("admin");
-		
-		if ($this->version == 'development')
-			return $langs->trans("VersionDevelopment");
-		if ($this->version == 'experimental')
-			return $langs->trans("VersionExperimental");
-		if ($this->version == 'dolibarr')
-			return DOL_VERSION;
-		return $langs->trans("NotAvailable");
+
+		switch($this->version) {
+			case 'development':
+				return $langs->trans("VersionDevelopment");
+				break;
+			case 'experimental':
+				return $langs->trans("VersionExperimental");
+				break;
+			case 'dolibarr':
+				return DOL_VERSION;
+				break;
+			default:
+				return $langs->trans("NotAvailable");
+		}
 	}
 }

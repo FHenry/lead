@@ -73,7 +73,7 @@ class box_lead extends ModeleBoxes
 		
 		$this->max = $max;
 		
-		include_once dol_buildpath('/lead/class/lead.class.php');
+		dol_include_once('/lead/class/lead.class.php');
 		
 		$lead = new Lead($db);
 		
@@ -89,7 +89,7 @@ class box_lead extends ModeleBoxes
 		
 		$i = 0;
 		foreach ($lead->lines as $line) {
-			
+			// FIXME: line is an array, not an object
 			$line->fetch_thirdparty();
 			// Ref
 			$this->info_box_contents[$i][0] = array(

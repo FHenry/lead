@@ -528,7 +528,7 @@ class Lead extends CommonObject {
 	 * @param int $notrigger triggers after, 1=disable triggers
 	 * @return int <0 if KO, >0 if OK
 	 */
-	function update($user = 0, $notrigger = 0) {
+	function update($user = null, $notrigger = 0) {
 		global $conf, $langs;
 		$error = 0;
 		
@@ -803,10 +803,10 @@ class Lead extends CommonObject {
 	 * defined into LEAD_ADDON
 	 *
 	 * @param int $fk_user Id
-	 * @param societe $objsoc Object
+	 * @param Societe $objsoc Object
 	 * @return string Reference libre pour la lead
 	 */
-	function getNextNumRef($fk_user = '', $objsoc = '') {
+	function getNextNumRef($fk_user = null, Societe $objsoc = null) {
 		global $conf, $langs;
 		$langs->load("lead@lead");
 		
@@ -851,8 +851,10 @@ class Lead extends CommonObject {
 		} else {
 			$langs->load("errors");
 			print $langs->trans("Error") . " " . $langs->trans("ErrorModuleSetupNotComplete");
-			return "";
+			return null;
 		}
+
+		return null;
 	}
 	
 	/**
@@ -910,8 +912,7 @@ class Lead extends CommonObject {
 			if ($this->db->num_rows($resql)) {
 				$obj = $this->db->fetch_object($resql);
 				if (! empty($obj->totalamount))
-					;
-				$totalinvoiceamount = $obj->totalamount;
+					$totalinvoiceamount = $obj->totalamount;
 			}
 			$this->db->free($resql);
 		} else {
@@ -1011,7 +1012,7 @@ class Lead extends CommonObject {
 		global $conf, $user;
 		
 		if (! $this->table_element) {
-			dol_print_error('', get_class($this) . "::load_previous_next_ref was called on objet with property table_element not defined", LOG_ERR);
+			dol_print_error(null, get_class ( $this ) . "::load_previous_next_ref was called on objet with property table_element not defined");
 			return - 1;
 		}
 		
@@ -1081,6 +1082,7 @@ class Lead extends CommonObject {
 	 * Load object in memory from database
 	 *
 	 * @param int $id
+	 * @param string $tablename Source table
 	 * @return int if KO, >0 if OK
 	 */
 	public function fetch_document_link($id, $tablename) {
