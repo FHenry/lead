@@ -99,7 +99,7 @@ class LeadStats {
 		$sql = "SELECT";
 		$sql .= " count(DISTINCT t.rowid), t.fk_c_status";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		$sql .= " GROUP BY t.fk_c_type";
+		$sql .= " GROUP BY t.fk_c_status";
 	
 	
 		$result=array();
