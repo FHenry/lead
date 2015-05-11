@@ -127,7 +127,7 @@ if ($action == "add") {
 	$object->ref = $object->getNextNumRef();
 	$object->fk_c_status = $leadstatus;
 	$object->fk_c_type = $leadtype;
-	$object->amount_prosp = $amount_guess;
+	$object->amount_prosp = price2num($amount_guess);
 	$object->date_closure = $deadline;
 	$object->fk_soc = $socid;
 	$object->fk_user_resp = $userid;
@@ -512,7 +512,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $langs->trans('Company');
 	print '</td>';
 	print '<td>';
-	print $object->thirdparty->getNomUrl();
+	print '<a href="'.dol_buildpath('/lead/lead/list.php',1).'?socid='.$object->thirdparty->id.'">'.$object->thirdparty->name.'</a>';
 	print '</td>';
 	print '</tr>';
 	
