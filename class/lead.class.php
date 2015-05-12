@@ -481,7 +481,7 @@ class Lead extends CommonObject {
 			
 			while ( $obj = $this->db->fetch_object($resql) ) {
 				
-				$line = new Lead($this->db, 0);
+				$line = new Lead($this->db, 1);
 				
 				$line->id = $obj->rowid;
 				$line->ref = $obj->ref;
@@ -1204,13 +1204,36 @@ class Lead extends CommonObject {
 	 * @return multitype:|string
 	 */
 	public function getLibStatut($mode = 0) {
+		
 		if (! empty($this->fk_c_status)) {
-			return $this->status[$this->fk_c_status];
+			return $this->LibStatut($this->fk_c_status,$mode);
 		} else {
 			return '';
 		}
 	}
-	
+	/**
+	 * 
+	 * @param unknown $statut
+	 * @param unknown $mode
+	 * @return multitype:|string
+	 */
+	public function LibStatut ($statut,$mode) {
+		
+		if ($mode==0) {
+			return $this->status[$statut];
+		} elseif ($mode==1) {
+			if ($statut==1) return img_picto($this->status[$statut],'statut0').' '.$this->status[$statut];
+			elseif ($statut==6) return img_picto($this->status[$statut],'statut3').' '.$this->status[$statut];
+			elseif ($statut==7) return img_picto($this->status[$statut],'statut8').' '.$this->status[$statut];
+			else return img_picto($this->status[$statut],'statut1').' '.$this->status[$statut];
+		} 
+		elseif ($mode==2) {
+			if ($statut==1) return img_picto($this->status[$statut],'statut0');
+			elseif ($statut==6) return img_picto($this->status[$statut],'statut3');
+			elseif ($statut==7) return img_picto($this->status[$statut],'statut8');
+			else return img_picto($this->status[$statut],'statut1');
+		}
+	}
 	/**
 	 * Close proposal link to lead
 	 * @param unknown $user

@@ -170,10 +170,10 @@ class ActionsLead // extends CommonObject
 					$html .='<tr '. $bc[$var].'>';
 					$html .= '<td>'.$lead_line->getNomUrl(1).'</td>';
 					$html .= '<td>'.$lead_line->ref_int.'</td>';
-					$html .= '<td>'.$lead_line->status_label.'</td>';
 					$html .= '<td>'.$lead_line->type_label.'</td>';
 					$html .= '<td>'.price($lead_line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency).'</td>';
 					$html .= '<td>'.dol_print_date($lead_line->date_closure, 'daytextshort').'</td>';
+					$html .= '<td>'.$lead_line->getLibStatut(2).'</td>';
 					$html .= '</tr>';
 				}
 				
