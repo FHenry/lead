@@ -136,3 +136,8 @@ LeadDateDebut = Date de Debut
 #
 LeadNbLeadByType=Nb Affaires par type
 LeadNbLeadByStatus=Nb Affaires par étape de vente
+LeadStats=Statistiques des affaires
+LeadNbLead=Nb Affaires
+LeadNbLeadByMonth=Nb Affaires par mois
+LeadAmountOfLead=Montant des affaires
+LeadAmountOfLeadsByMonth=Montant des affaires par mois

@@ -96,3 +96,30 @@ function lead_prepare_head($object)
 	
 	return $head;
 }
+
+function lead_stats_prepare_head()
+{
+	global $langs, $conf;
+
+	$langs->load("lead@lead");
+
+	$h = 0;
+	$head = array();
+
+	$head[$h][0] = dol_buildpath("/lead/index.php", 1);
+	$head[$h][1] = $langs->trans("LeadStats");
+	$head[$h][2] = 'stat';
+	$h ++;
+
+	// Show more tabs from modules
+	// Entries must be declared in modules descriptor with line
+	// $this->tabs = array(
+	// 'entity:+tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	// ); // to add new tab
+	// $this->tabs = array(
+	// 'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
+	// ); // to remove a tab
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead_stats');
+
+	return $head;
+}

@@ -361,7 +361,7 @@ class Lead extends CommonObject {
 		
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		$sql .= " WHERE t.rowid = " . $id;
-		$sql .= " AND t.entity = " . getEntity('lead', 1);
+		$sql .= " AND t.entity IN (" . getEntity('lead', 1).")";
 		
 		dol_syslog(get_class($this) . "::fetch sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
@@ -377,8 +377,6 @@ class Lead extends CommonObject {
 				$this->fk_c_status = $obj->fk_c_status;
 				$this->fk_c_type = $obj->fk_c_type;
 				$this->fk_soc = $obj->fk_soc;
-				// To allow fetch_thirdparty working
-				$this->socid = $obj->fk_soc;
 				$this->date_closure = $this->db->jdate($obj->date_closure);
 				$this->amount_prosp = $obj->amount_prosp;
 				$this->fk_user_resp = $obj->fk_user_resp;
@@ -490,8 +488,6 @@ class Lead extends CommonObject {
 				$line->fk_c_status = $obj->fk_c_status;
 				$line->fk_c_type = $obj->fk_c_type;
 				$line->fk_soc = $obj->fk_soc;
-				// To allow fetch_thirdparty working
-				$line->socid = $obj->fk_soc;
 				$line->date_closure = $this->db->jdate($obj->date_closure);
 				$line->amount_prosp = $obj->amount_prosp;
 				$line->fk_user_resp = $obj->fk_user_resp;

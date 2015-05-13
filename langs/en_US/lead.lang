@@ -136,3 +136,8 @@ LeadDateDebut = Start Date
 #
 LeadNbLeadByType=Nb lead by type
 LeadNbLeadByStatus=Nb lead by steps
+LeadStats=Lead statisitics
+LeadNbLead=Nb lead
+LeadNbLeadByMonth=Nb lead by month
+LeadAmountOfLead=Lead amount
+LeadAmountOfLeadsByMonth=lead amount by month
