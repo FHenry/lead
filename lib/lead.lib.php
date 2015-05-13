@@ -79,6 +79,23 @@ function lead_prepare_head($object)
 	$head[$h][2] = 'contact';
 	$h ++;
 	
+	$head[$h][0] = dol_buildpath("/lead/lead/document.php", 1) . '?id=' . $object->id;
+	$head[$h][1] = $langs->trans("Documents");
+	$head[$h][2] = 'documents';
+	$h ++;
+	
+	if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
+	{
+		$nbNote = 0;
+		if(!empty($object->note_private)) $nbNote++;
+		if(!empty($object->note_public)) $nbNote++;
+		$head[$h][0] = dol_buildpath("/lead/lead/note.php", 1) . '?id=' . $object->id;
+		$head[$h][1] = $langs->trans('Notes');
+		if($nbNote > 0) $head[$h][1].= ' ('.$nbNote.')';
+		$head[$h][2] = 'note';
+		$h++;
+	}
+	
 	$head[$h][0] = dol_buildpath("/lead/lead/info.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Info");
 	$head[$h][2] = 'info';

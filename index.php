@@ -277,14 +277,14 @@ if (! $mesg)
 
 	$px2->draw($filenamenb,$fileurlnb);
 }
-/*
+
 // Build graphic with transformation rate
 $data = $stats_lead->getTransformRateByMonthWithPrevYear($endyear,$startyear);
 //var_dump($data);
 // $data = array(array('Lib',val1,val2,val3),...)
 
-$filenamenb = $conf->lead->dir_output . "/stats/leadamountprevyear-".$year.".png";
-$fileurlnb = DOL_URL_ROOT . '/viewimage.php?modulepart=leadstats&amp;file=leadamountprevyear-'.$year.'.png';
+$filenamenb = $conf->lead->dir_output . "/stats/leadtransrateprevyear-".$year.".png";
+$fileurlnb = DOL_URL_ROOT . '/viewimage.php?modulepart=leadstats&amp;file=leadtransrateprevyear-'.$year.'.png';
 
 $px3 = new DolGraph();
 $mesg = $px3->isGraphKo();
@@ -302,15 +302,15 @@ if (! $mesg)
 	$px3->SetMinValue(min(0,$px3->GetFloorMinValue()));
 	$px3->SetWidth($WIDTH);
 	$px3->SetHeight($HEIGHT);
-	$px3->SetYLabel($langs->trans("LeadAmountOfLead"));
+	$px3->SetYLabel($langs->trans("LeadTransRateOfLead"));
 	$px3->SetShading(3);
 	$px3->SetHorizTickIncrement(1);
 	$px3->SetPrecisionY(0);
 	$px3->mode='depth';
-	$px3->SetTitle($langs->trans("LeadAmountOfLeadsByMonth"));
+	$px3->SetTitle($langs->trans("LeadTransRateOfLeadsByMonth"));
 
 	$px3->draw($filenamenb,$fileurlnb);
-}*/
+}
 
 $stringtoshow.= '<table class="border" width="100%"><tr valign="top"><td align="center">';
 if ($mesg) { print $mesg; }
@@ -319,7 +319,7 @@ else {
 	$stringtoshow.= "<br>\n";
 	$stringtoshow.= $px2->show();
 	$stringtoshow.= "<br>\n";
-	//$stringtoshow.= $px3->show();
+	$stringtoshow.= $px3->show();
 }
 $stringtoshow.= '</td></tr></table>';
 

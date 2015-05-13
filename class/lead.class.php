@@ -54,6 +54,8 @@ class Lead extends CommonObject {
 	var $datec = '';
 	var $fk_user_mod;
 	var $tms = '';
+	var $note_public = '';
+	var $note_private = '';
 	var $lines = array ();
 	var $doclines = array ();
 	var $status = array ();
@@ -210,6 +212,10 @@ class Lead extends CommonObject {
 			$this->fk_user_mod = trim($this->fk_user_mod);
 		if (isset($this->fk_soc))
 			$this->fk_soc = trim($this->fk_soc);
+		if (isset($this->note_private))
+			$this->note_private = trim($this->note_private);
+		if (isset($this->note_public))
+			$this->note_public = trim($this->note_public);
 			
 			// Check parameters
 			// Put here code to add control on parameters values
@@ -258,6 +264,8 @@ class Lead extends CommonObject {
 			$sql .= "amount_prosp,";
 			$sql .= "fk_user_resp,";
 			$sql .= "description,";
+			$sql .= "note_private,";
+			$sql .= "note_public,";
 			$sql .= "fk_user_author,";
 			$sql .= "datec,";
 			$sql .= "fk_user_mod,";
@@ -276,6 +284,8 @@ class Lead extends CommonObject {
 			$sql .= " " . (! isset($this->amount_prosp) ? 'NULL' : "'" . price2num($this->amount_prosp) . "'") . ",";
 			$sql .= " " . (! isset($this->fk_user_resp) ? 'NULL' : "'" . $this->fk_user_resp . "'") . ",";
 			$sql .= " " . (empty($this->description) ? 'NULL' : "'" . $this->db->escape($this->description) . "'") . ",";
+			$sql .= " " . (empty($this->note_private) ? 'NULL' : "'" . $this->db->escape($this->note_private) . "'") . ",";
+			$sql .= " " . (empty($this->note_public) ? 'NULL' : "'" . $this->db->escape($this->note_public) . "'") . ",";
 			$sql .= " " . $user->id . ",";
 			$sql .= " '" . $this->db->idate(dol_now()) . "',";
 			$sql .= " " . $user->id . ",";
@@ -354,6 +364,8 @@ class Lead extends CommonObject {
 		$sql .= " t.amount_prosp,";
 		$sql .= " t.fk_user_resp,";
 		$sql .= " t.description,";
+		$sql .= " t.note_private,";
+		$sql .= " t.note_public,";
 		$sql .= " t.fk_user_author,";
 		$sql .= " t.datec,";
 		$sql .= " t.fk_user_mod,";
@@ -381,6 +393,8 @@ class Lead extends CommonObject {
 				$this->amount_prosp = $obj->amount_prosp;
 				$this->fk_user_resp = $obj->fk_user_resp;
 				$this->description = $obj->description;
+				$this->note_private = $obj->note_private;
+				$this->note_public = $obj->note_public;
 				$this->fk_user_author = $obj->fk_user_author;
 				$this->datec = $this->db->jdate($obj->datec);
 				$this->fk_user_mod = $obj->fk_user_mod;
@@ -429,6 +443,8 @@ class Lead extends CommonObject {
 		$sql .= " t.amount_prosp,";
 		$sql .= " t.fk_user_resp,";
 		$sql .= " t.description,";
+		$sql .= " t.note_private,";
+		$sql .= " t.note_public,";
 		$sql .= " t.fk_user_author,";
 		$sql .= " t.datec,";
 		$sql .= " t.fk_user_mod,";
@@ -492,6 +508,8 @@ class Lead extends CommonObject {
 				$line->amount_prosp = $obj->amount_prosp;
 				$line->fk_user_resp = $obj->fk_user_resp;
 				$line->description = $obj->description;
+				$line->note_private = $obj->note_private;
+				$line->note_public = $obj->note_public;
 				$line->fk_user_author = $obj->fk_user_author;
 				$line->datec = $this->db->jdate($obj->datec);
 				$line->fk_user_mod = $obj->fk_user_mod;
@@ -552,6 +570,10 @@ class Lead extends CommonObject {
 			$this->fk_user_mod = trim($this->fk_user_mod);
 		if (isset($this->fk_soc))
 			$this->fk_soc = trim($this->fk_soc);
+		if (isset($this->note_private))
+			$this->note_private = trim($this->note_private);
+		if (isset($this->note_public))
+			$this->note_public = trim($this->note_public);
 			
 			// Check parameters
 			// Put here code to add a control on parameters values
@@ -599,6 +621,8 @@ class Lead extends CommonObject {
 			$sql .= " amount_prosp=" . (isset($this->amount_prosp) ? "'".price2num($this->amount_prosp)."'" : "null") . ",";
 			$sql .= " fk_user_resp=" . (isset($this->fk_user_resp) ? $this->fk_user_resp : "null") . ",";
 			$sql .= " description=" . (! empty($this->description) ? "'" . $this->db->escape($this->description) . "'" : "null") . ",";
+			$sql .= " note_private=" . (! empty($this->note_private) ? "'" . $this->db->escape($this->note_private) . "'" : "null") . ",";
+			$sql .= " note_public=" . (! empty($this->note_public) ? "'" . $this->db->escape($this->note_public) . "'" : "null") . ",";
 			$sql .= " fk_user_mod=" . $user->id . ",";
 			$sql .= " tms='" . $this->db->idate(dol_now()) . "'";
 			
@@ -788,6 +812,8 @@ class Lead extends CommonObject {
 		$this->amount_prosp = '';
 		$this->fk_user_resp = '';
 		$this->description = '';
+		$this->note_public = '';
+		$this->note_private = '';
 		$this->fk_user_author = '';
 		$this->datec = '';
 		$this->fk_user_mod = '';

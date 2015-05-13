@@ -164,6 +164,10 @@ class LeadStats extends Stats {
 		
 		return $this->_getAllByYear($sql);
 	}
+	/**
+	 * 
+	 * @return string
+	 */
 	public function buildWhere() {
 		$sqlwhere_str = '';
 		$sqlwhere = array ();
@@ -178,6 +182,9 @@ class LeadStats extends Stats {
 			$sqlwhere[] = " date_format(t.datec,'%Y')='" . $this->year . "'";
 		if (! empty($this->yearmonth))
 			$sqlwhere[] = " t.datec BETWEEN '" . $this->db->idate(dol_get_first_day($this->yearmonth)) . "' AND '" . $this->db->idate(dol_get_last_day($this->yearmonth)) . "'";
+		
+		if (! empty($this->status))
+			$sqlwhere[] = " t.fk_c_status IN (" . $this->status . ")";
 		
 		if (count($sqlwhere) > 0) {
 			$sqlwhere_str = ' WHERE ' . implode(' AND ', $sqlwhere);
@@ -196,6 +203,7 @@ class LeadStats extends Stats {
 		global $user;
 		
 		$this->yearmonth = $year;
+		
 		$sql = "SELECT date_format(t.datec,'%m') as dm, COUNT(*) as nb";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		if (! $user->rights->societe->client->voir && ! $user->societe_id)
@@ -203,6 +211,8 @@ class LeadStats extends Stats {
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
+		
+		$this->yearmonth=0;
 		
 		$res = $this->_getNbByMonth($year, $sql);
 		// var_dump($res);print '<br>';
@@ -227,6 +237,7 @@ class LeadStats extends Stats {
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
+		$this->yearmonth=0;
 		
 		$res = $this->_getAmountByMonth($year, $sql);
 		// var_dump($res);print '<br>';
@@ -274,7 +285,7 @@ class LeadStats extends Stats {
 		
 		// Load file into $data
 		if ($foundintocache) // Cache file found and is not too old
-{
+		{
 			dol_syslog(get_class($this) . '::' . __FUNCTION__ . " read data from cache file " . $newpathofdestfile . " " . $filedate . ".");
 			$data = dol_json_decode(file_get_contents($newpathofdestfile), true);
 		} else {
@@ -333,7 +344,34 @@ class LeadStats extends Stats {
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
 	
-		$res = $this->_getAmountByMonth($year, $sql);
+		$res_total = $this->_getNbByMonth($year, $sql);
+		
+		$this->status=6;
+		
+		$sql = "SELECT date_format(t.datec,'%m') as dm, count(t.amount_prosp)";
+		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
+		if (! $user->rights->societe->client->voir && ! $user->societe_id)
+			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
+		$sql .= $this->buildWhere();
+		$sql .= " GROUP BY dm";
+		$sql .= $this->db->order('dm', 'DESC');
+		
+		$this->status=0;
+		$this->yearmonth=0;
+		
+		$res_only_wined = $this->_getNbByMonth($year, $sql);
+		
+		$res=array();
+		
+		foreach($res_total as $key=>$total_row) {
+			//var_dump($total_row);
+			if (!empty($total_row[1])) {
+				$res[$key]=array($total_row[0],(100*$res_only_wined[$key][1])/$total_row[1]);
+			} else {
+				$res[$key]=array($total_row[0],0);
+			}
+			
+		}
 		// var_dump($res);print '<br>';
 		return $res;
 	}
