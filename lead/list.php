@@ -207,8 +207,8 @@ if (!empty($socid)) {
 	$societe = new Societe($db);
 	$societe->fetch($socid);
 	$head = societe_prepare_head($societe);
-	
-	dol_fiche_head($head, 'tabLead', $langs->trans("Module103111Name"),0,dol_buildpath('/lead/img/object_lead.png', 1));
+
+	dol_fiche_head($head, 'tabLead', $langs->trans("Module103111Name"),0,dol_buildpath('/lead/img/object_lead.png', 1),1);
 }
 /*if (! empty($search_invoiceid) || ! empty($search_invoiceref)) {
 	require_once DOL_DOCUMENT_ROOT . '/core/lib/invoice.lib.php';
