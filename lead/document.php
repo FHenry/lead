@@ -133,6 +133,7 @@ if ($id > 0 || ! empty($ref))
 		$modulepart = 'lead';
 		$permission = $user->rights->lead->write;
 		$param = '&id=' . $object->id;
+		$relativepathwithnofile=$object->id.'/';
 		include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
 
 	}
