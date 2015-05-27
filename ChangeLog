@@ -1,5 +1,8 @@
 English Lead ChangeLog
 
+***** ChangeLog for 1.3 compared to 1.2 *****
+FIX : problem on tab File attached
+
 ***** ChangeLog for 1.2 compared to 1.1 *****
 NEW : Can link to lead directly from proposal/order/invoice/contract
 NEW : close lead (status lost) will update all proposal to status not signed
