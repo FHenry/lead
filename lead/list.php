@@ -204,9 +204,9 @@ llxHeader('', $title);
 if (!empty($socid)) {
 	require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-	$societe = new Societe($db);
-	$societe->fetch($socid);
-	$head = societe_prepare_head($societe);
+	$soc = new Societe($db);
+	$soc->fetch($socid);
+	$head = societe_prepare_head($soc);
 
 	dol_fiche_head($head, 'tabLead', $langs->trans("Module103111Name"),0,dol_buildpath('/lead/img/object_lead.png', 1),1);
 }

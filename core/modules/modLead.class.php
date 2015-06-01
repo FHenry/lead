@@ -62,7 +62,7 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '1.3';
+		$this->version = '1.4';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -177,7 +177,7 @@ class modLead extends DolibarrModules
 		// Array to add new pages in new tabs
 		// Example:
 		$this->tabs = array(
-			'thirdparty:+tabLead:Module103111Name:lead@lead:$user->rights->lead->read:/lead/lead/list.php?socid=__ID__',
+			'thirdparty:+tabLead:Module103111Name:lead@lead:$user->rights->lead->read && ($object->client > 0 || $soc->client > 0):/lead/lead/list.php?socid=__ID__',
 			//'invoice:+tabAgefodd:AgfMenuSess:agefodd@agefodd:/lead/lead/list.php?search_invoiceid=__ID__',
 			//'propal:+tabAgefodd:AgfMenuSess:agefodd@agefodd:/lead/lead/list.php?search_propalid=__ID__',
 		// // To add a new tab identified by code tabname1
