@@ -143,3 +143,8 @@ LeadAmountOfLead=Montant des affaires
 LeadAmountOfLeadsByMonth=Montant des affaires par mois
 LeadTransRateOfLead=Taux de transformation
 LeadTransRateOfLeadsByMonth=Taux de transformation par mois
+
+#
+# Boxes
+#
+LastN=%s dernières

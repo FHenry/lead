@@ -257,7 +257,10 @@ class modLead extends DolibarrModules
 		// Example:
 		
 		$this->boxes[$r][1] = "box_lead@lead";
-		// $r ++;
+		$r ++;
+		$this->boxes[$r][1] = "box_lead_current@lead";
+		$r ++;
+		$this->boxes[$r][1] = "box_lead_late@lead";
 		/*
 		 * $this->boxes[$r][1] = "myboxb.php"; $r++;
 		 */

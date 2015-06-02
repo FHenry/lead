@@ -143,3 +143,8 @@ LeadAmountOfLead=Lead amount
 LeadAmountOfLeadsByMonth=lead amount by month
 LeadTransRateOfLead=Transformation rate
 LeadTransRateOfLeadsByMonth=Transformation rate by month
+
+#
+# Boxes
+#
+LastN=Last %s
