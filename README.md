@@ -1,10 +1,11 @@
-Lead
+LEAD
 =========
 
 Module LEAD
 
 Licence
 -------
+
 GPLv3 or (at your option) any later version.
 
 See COPYING for more information.
@@ -12,64 +13,73 @@ See COPYING for more information.
 INSTALL
 -------
 
-To install this module, Dolibarr (v >= 3.4) have to be already installed and configured on your server.
+- Make sure Dolibarr (v >= 3.7) is already installed and configured on your server.
 
-- In your Dolibarr installation directory: edit the htdocs/conf/conf.php file
+- In your Dolibarr installation directory, edit the htdocs/conf/conf.php file
+
 - Find the following lines:
 
-	\#$=dolibarr_main_url_root_alt ...
+		//$=dolibarr_main_url_root_alt ...
+		//$=dolibarr_main_document_root_alt ...
 
-	\#$=dolibarr_main_document_root_alt ...
+- Uncomment these lines (delete the leading "//") and assign a sensible value according to your Dolibarr installation
 
-	or
+	For example :
 
-	//$=dolibarr_main_url_root_alt ...
+	- UNIX:
 
-	//$=dolibarr_main_document_root_alt ...
+			$dolibarr_main_url_root = 'http://localhost/Dolibarr/htdocs';
+			$dolibarr_main_document_root = '/var/www/Dolibarr/htdocs';
+			$dolibarr_main_url_root_alt = '/custom';
+			$dolibarr_main_document_root_alt = '/var/www/Dolibarr/htdocs/custom';
 
-- Delete the first "#" (or "//") of these lines and assign a value consistent with your Dolibarr installation
+	- Windows:
 
-	$dolibarr_main_url_root = ...
+			$dolibarr_main_url_root = 'http://localhost/Dolibarr/htdocs';
+			$dolibarr_main_document_root = 'C:/My Web Sites/Dolibarr/htdocs';
+			$dolibarr_main_url_root_alt = '/custom';
+			$dolibarr_main_document_root_alt = 'C:/My Web Sites/Dolibarr/htdocs/custom';
 
-	and
 
-	$dolibarr_main_document_root = ...
+- Clone the repository in $dolibarr\_main\_document\_root\_alt/mymodule
 
-for example on UNIX systems:
+	*(You may have to create the custom directory first if it doesn't exist yet.)*
 
-	$dolibarr_main_url_root = 'http://localhost/Dolibarr/htdocs';
+	```
+	git clone --recursive git@github.com:FHenry/lead.git lead
+	```
 
-	$dolibarr_main_document_root = '/var/www/Dolibarr/htdocs';
+	**The template now uses a git submodule to fetch the PHP Markdown library.**
 
-	$dolibarr_main_url_root_alt = 'http://localhost/Dolibarr/htdocs/custom';
+	If your git version is less than 1.6.5, the --recursive parameter won't work.
 
-	$dolibarr_main_document_root_alt = '/var/www/Dolibarr/htdocs/custom';
+	Please use this instead to fetch the latest version:
 
-for example on a Windows system:
+		git clone git@github.com:FHenry/lead.git lead
+		cd lead
+		git submodule update --init
+		php composer.php install
+		php composer.php update
 
-	$dolibarr_main_url_root = 'http://localhost/Dolibarr/htdocs';
+- From your browser:
 
-	$dolibarr_main_document_root = 'C:/My Web Sites/Dolibarr/htdocs';
+	- log in as a Dolibarr administrator
 
-	$dolibarr_main_url_root_alt = 'http://localhost/Dolibarr/htdocs/custom';
+	- go to "Setup" -> "Modules"
 
-	$dolibarr_main_document_root_alt = 'C:/My Web Sites/Dolibarr/htdocs/custom';
+	- the module is under tabs "module interface"
 
-For more information about the conf.php file take a look at the conf.php.example file.
+	- Find module Lead and activate it
 
-- Extract the module's files in the $dolibarr_main_document_root_alt directory.
-(You may have to create the custom directory first if it doesn't exist yet.)
+	- Go to module configuration and set it up
 
-for example on UNIX systems: /var/www/Dolibarr/htdocs/custom
 
-for example on a Windows system: C:/My Web Sites/Dolibarr/htdocs/custom
+Contributions
+-------------
 
-From your browser:
-- log in as a Dolibarr administrator
-- go to "Setup" -> "Modules"
-- the module is under one of the tabs
-- you should now be able to enable the new module
+Feel free to contribute and report defects at <https://github.com/FHenry/lead>
 
 Other Licences
 --------------
-Uses Michel Fortin's PHP Markdown Licensed under BSD to display this README.
+
+Uses [Michel Fortin's PHP Markdown](http://michelf.ca/projets/php-markdown/) Licensed under BSD to display this README in the module's about page.
