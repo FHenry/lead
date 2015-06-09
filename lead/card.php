@@ -711,7 +711,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 				
 				print '<tr class="liste_total">';
 				print '<td>&nbsp;</td>';
-				print '<td colspan="3">' . $langs->trans("Number") . ': ' . $i . '</td>';
+				print '<td colspan="3">' . $langs->trans("Number") . ': ' . $num . '</td>';
 				if (empty($value['disableamount']))
 					print '<td align="right" width="100">' . $langs->trans("TotalHT") . ' : ' . price($total_ht) . '</td>';
 				if (empty($value['disableamount']))
