@@ -91,7 +91,7 @@ $userstatic = new User($db);
 				'add-customer-contact' => 'disabled'
 			)
 		);
-		print $form->select_company($object->socid, 'socid', '', 1, 0, 0, $events);
+		print $form->select_thirdparty_list($object->socid, 'socid', '', 1, 0, 0, $events);
 		?>
 		</div>
 		<div class="tagtd maxwidthonsmartphone">

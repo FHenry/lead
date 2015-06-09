@@ -55,11 +55,18 @@ function leadAdminPrepareHead()
 	// $this->tabs = array(
 	// 'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
 	// ); // to remove a tab
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead_admin');
+	complete_head_from_modules($conf, $langs, null, $head, $h, 'lead_admin');
 	
 	return $head;
 }
 
+/**
+ * Prepare page head
+ *
+ * @param Lead $object The lead
+ *
+ * @return array Header contents (tabs)
+ */
 function lead_prepare_head($object)
 {
 	global $langs, $conf;

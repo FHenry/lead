@@ -34,12 +34,12 @@ class LeadStats extends Stats {
 	}
 	
 	/**
-	 * Return count, and sum of products
+	 * Returns all leads grouped by type
 	 *
-	 * @param int $dt_start
-	 * @param int $dt_end
-	 * @param int $cachedelay accept for cache file (0=No read, no save of cache, -1=No read but save)
-	 * @return array of values
+	 * @param int $limit Limit results
+	 *
+	 * @return array|int
+	 * @throws Exception
 	 */
 	function getAllLeadByType($limit = 5) {
 		global $conf, $user, $langs;
@@ -88,12 +88,12 @@ class LeadStats extends Stats {
 	}
 	
 	/**
-	 * Return count, and sum of products
+	 * Return all leads grouped by status
 	 *
-	 * @param int $dt_start
-	 * @param int $dt_end
-	 * @param int $cachedelay accept for cache file (0=No read, no save of cache, -1=No read but save)
-	 * @return array of values
+	 * @param int $limit Limit results
+	 *
+	 * @return array|int
+	 * @throws Exception
 	 */
 	function getAllLeadByStatus($limit = 5) {
 		global $conf, $user, $langs;

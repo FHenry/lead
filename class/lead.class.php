@@ -23,8 +23,8 @@
  */
 
 // Put here all includes required by your class file
-require_once (DOL_DOCUMENT_ROOT . "/core/class/commonobject.class.php");
-require_once (DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php');
+require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 
 /**
  * Put here description of your class
@@ -74,8 +74,8 @@ class Lead extends CommonObject {
 		$this->db = $db;
 		
 		if (! empty($load_dict)) {
-			$result_status = $this->_load_status();
-			$result_type = $this->_load_type();
+			$result_status = $this->loadStatus();
+			$result_type = $this->loadType();
 		} else {
 			$result_status = 1;
 			$result_type = 1;
@@ -123,7 +123,7 @@ class Lead extends CommonObject {
 	/**
 	 * Load status array
 	 */
-	private function _load_status() {
+	private function loadStatus() {
 		global $langs;
 		
 		$sql = "SELECT rowid, code, label, active FROM " . MAIN_DB_PREFIX . "c_lead_status WHERE active=1";
@@ -152,7 +152,7 @@ class Lead extends CommonObject {
 	/**
 	 * Load type array
 	 */
-	private function _load_type() {
+	private function loadType() {
 		global $langs;
 		
 		$sql = "SELECT rowid, code, label FROM " . MAIN_DB_PREFIX . "c_lead_type  WHERE active=1";
@@ -234,7 +234,7 @@ class Lead extends CommonObject {
 		}
 		if (empty($this->fk_c_status)) {
 			$error ++;
-			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadStep'));
+			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadStatus'));
 		}
 		if (empty($this->fk_c_type)) {
 			$error ++;
@@ -424,8 +424,9 @@ class Lead extends CommonObject {
 	 * @param string $sortorder order
 	 * @param string $sortfield field
 	 * @param int $limit page
-	 * @param int $offset
+	 * @param int $offset Offset results
 	 * @param array $filter output
+	 *
 	 * @return int <0 if KO, >0 if OK
 	 */
 	function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = array()) {
@@ -592,7 +593,7 @@ class Lead extends CommonObject {
 		}
 		if (empty($this->fk_c_status)) {
 			$error ++;
-			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadStep'));
+			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadStatus'));
 		}
 		if (empty($this->fk_c_type)) {
 			$error ++;
@@ -1026,7 +1027,7 @@ class Lead extends CommonObject {
 	/**
 	 * Load properties id_previous and id_next
 	 *
-	 * @param string $filter
+	 * @param string $filter Filter results
 	 * @param int $fieldid of field to use for the select MAX and MIN
 	 * @return int <0 if KO, >0 if OK
 	 */
@@ -1103,11 +1104,12 @@ class Lead extends CommonObject {
 	/**
 	 * Load object in memory from database
 	 *
-	 * @param int $id
+	 * @param int $id ID
 	 * @param string $tablename Source table
+	 *
 	 * @return int if KO, >0 if OK
 	 */
-	public function fetch_document_link($id, $tablename) {
+	public function fetchDocumentLink($id, $tablename) {
 		global $langs;
 		
 		$this->doclines = array ();
@@ -1126,7 +1128,7 @@ class Lead extends CommonObject {
 		}
 		$sql .= " ORDER BY t.sourcetype";
 		
-		dol_syslog(get_class($this) . "::fetch_document_link sql=" . $sql, LOG_DEBUG);
+		dol_syslog(get_class($this) . "::fetchDocumentLink sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			while ( $obj = $this->db->fetch_object($resql) ) {
@@ -1145,7 +1147,7 @@ class Lead extends CommonObject {
 			return 1;
 		} else {
 			$this->error = "Error " . $this->db->lasterror();
-			dol_syslog(get_class($this) . "::fetch_document_link " . $this->error, LOG_ERR);
+			dol_syslog(get_class($this) . "::fetchDocumentLink " . $this->error, LOG_ERR);
 			
 			return - 1;
 		}
@@ -1154,10 +1156,12 @@ class Lead extends CommonObject {
 	/**
 	 * Load object in memory from database
 	 *
-	 * @param int $id
+	 * @param int $id ID
+	 * @param string $tablename Name of the table
+	 *
 	 * @return int if KO, >0 if OK
 	 */
-	public function fetch_lead_link($id, $tablename) {
+	public function fetchLeadLink($id, $tablename) {
 		global $langs;
 		
 		$this->doclines = array ();
@@ -1176,7 +1180,7 @@ class Lead extends CommonObject {
 		}
 		$sql .= " ORDER BY t.sourcetype";
 		
-		dol_syslog(get_class($this) . "::fetch_document_link sql=" . $sql, LOG_DEBUG);
+		dol_syslog(get_class($this) . "::fetchDocumentLink sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			while ( $obj = $this->db->fetch_object($resql) ) {
@@ -1189,16 +1193,17 @@ class Lead extends CommonObject {
 			return 1;
 		} else {
 			$this->error = "Error " . $this->db->lasterror();
-			dol_syslog(get_class($this) . "::fetch_document_link " . $this->error, LOG_ERR);
+			dol_syslog(get_class($this) . "::fetchDocumentLink " . $this->error, LOG_ERR);
 			
 			return - 1;
 		}
 	}
 	
 	/**
-	 * Load object in memory from database
+	 * Return name with link
 	 *
-	 * @param int $id
+	 * @param int $withpicto Add image
+	 *
 	 * @return int if KO, >0 if OK
 	 */
 	public function getNomUrl($withpicto = 0) {
@@ -1221,9 +1226,11 @@ class Lead extends CommonObject {
 	}
 	
 	/**
+	 * Return status
 	 *
-	 * @param number $mode
-	 * @return multitype:|string
+	 * @param int $mode Not implemented
+	 *
+	 * @return string
 	 */
 	public function getLibStatut($mode = 0) {
 		
@@ -1234,10 +1241,12 @@ class Lead extends CommonObject {
 		}
 	}
 	/**
+	 * Return formatted status
 	 * 
-	 * @param unknown $statut
-	 * @param unknown $mode
-	 * @return multitype:|string
+	 * @param int $statut Status step
+	 * @param int $mode Format mode
+	 *
+	 * @return string
 	 */
 	public function LibStatut ($statut,$mode) {
 		
@@ -1255,12 +1264,17 @@ class Lead extends CommonObject {
 			elseif ($statut==7) return img_picto($this->status[$statut],'statut8');
 			else return img_picto($this->status[$statut],'statut1');
 		}
+		// Unsupported mode
+		return '';
 	}
 	/**
 	 * Close proposal link to lead
-	 * @param unknown $user
+	 *
+	 * @param User $user The user doing the action
+	 *
+	 * @return int <0 if KO
 	 */
-	public function closeAllProposal($user) {
+	public function closeAllProposal(User $user) {
 		global $langs;
 		
 		$error=0;
@@ -1272,7 +1286,7 @@ class Lead extends CommonObject {
 		
 		if (empty($error)) {
 			
-			$ret = $this->fetch_document_link($this->id, $this->listofreferent['propal']['table']);
+			$ret = $this->fetchDocumentLink($this->id, $this->listofreferent['propal']['table']);
 			if ($result<0) {
 				$this->errors[]=$this->error;
 				$error++;
@@ -1308,7 +1322,10 @@ class Lead extends CommonObject {
 		
 		if (empty($error)) {
 			$this->db->commit();
-		} else {
+			return null;
+		}
+
+		// Error
 			foreach ( $this->errors as $errmsg ) {
 				dol_syslog(get_class($this) . "::".__METHOD__." ". $errmsg, LOG_ERR);
 				$this->error .= ($this->error ? ', ' . $errmsg : $errmsg);
@@ -1316,9 +1333,11 @@ class Lead extends CommonObject {
 			$this->db->rollback();
 			return - 1 * $error;
 		}
-		
-	}
 }
+		
+/**
+ * Class DocLink
+ */
 class DocLink {
 	public $id;
 	public $fk_source;

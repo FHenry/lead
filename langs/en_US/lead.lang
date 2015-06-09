@@ -57,8 +57,8 @@ Permission1031114=Export Lead
 #
 # Dictionnaires
 #
-LeadStatus=Module Lead - Steps
-LeadType=Module Lead - Types
+LeadStatusDict=Module Lead - Steps
+LeadTypeDict=Module Lead - Types
 
 #
 # Menu
@@ -75,6 +75,7 @@ LeadListLate = Late Lead
 #
 # Status
 #
+LeadStatus=Selling step
 LeadStatus_PROSP=Prospect
 LeadStatus_CHIFF=Budget
 LeadStatus_PROPO=Proposal
@@ -86,6 +87,7 @@ LeadStatus_LOST=Lost
 #
 # Type
 #
+LeadType=Type
 LeadType_SUPP=Support
 LeadType_TRAIN = Training
 LeadType_ADVI=Consulting
@@ -94,7 +96,6 @@ LeadType_ADVI=Consulting
 # Card
 #
 LeadCommercial=Commercial
-LeadStep=Steps
 LeadAmountGuess = Budget w/o VAT
 LeadDeadLine=Deadline
 LeadDelete=Delete Lead

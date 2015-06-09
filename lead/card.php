@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-$res = @include ("../../main.inc.php"); // For root directory
+$res = @include '../../main.inc.php'; // For root directory
 if (! $res)
-	$res = @include ("../../../main.inc.php"); // For "custom" directory
+	$res = @include '../../../main.inc.php'; // For "custom" directory
 if (! $res)
 	die("Include of main fails");
 
 require_once '../class/lead.class.php';
 require_once '../class/html.formlead.class.php';
 require_once '../lib/lead.lib.php';
-require_once (DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php');
-require_once (DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php');
-require_once (DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php');
+require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
 if (! empty($conf->propal->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 if (! empty($conf->facture->enabled))
@@ -81,7 +81,7 @@ if (!empty($conf->global->LEAD_GRP_USER_AFFECT)) {
 	$usergroup=new UserGroup($db);
 	$result=$usergroup->fetch($conf->global->LEAD_GRP_USER_AFFECT);
 	if ($result < 0)
-		setEventMessage($usergroup->error, 'errors');
+		setEventMessages(null, $usergroup->errors, 'errors');
 
 	$includeuserlisttmp=$usergroup->listUsersForGroup();
 	if (is_array($includeuserlisttmp) && count($includeuserlisttmp)>0) {
@@ -100,11 +100,11 @@ $extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
 if ($id > 0) {
 	$ret = $object->fetch($id);
 	if ($ret < 0)
-		setEventMessage($object->error, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 	if ($ret > 0)
 		$ret = $object->fetch_thirdparty();
 	if ($ret < 0)
-		setEventMessage($object->error, 'errors');	
+		setEventMessages(null, $object->errors, 'errors');
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
@@ -138,7 +138,7 @@ if ($action == "add") {
 	$result = $object->create($user);
 	if ($result < 0) {
 		$action = 'create';
-		setEventMessage($object->error, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 		$error++;
 	} 
 	
@@ -148,7 +148,7 @@ if ($action == "add") {
 		$elementselectid = $propalid;
 		$result = $object->add_object_linked($tablename, $elementselectid);
 		if ($result < 0) {
-			setEventMessage($object->error, 'errors');
+			setEventMessages(null, $object->errors, 'errors');
 			$error++;
 		}
 	}
@@ -171,14 +171,14 @@ if ($action == "add") {
 	$result = $object->update($user);
 	if ($result < 0) {
 		$action = 'edit';
-		setEventMessage($object->error, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 	} else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 	}
 } elseif ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->lead->delete) {
 	$result = $object->delete($user);
 	if ($result < 0) {
-		setEventMessage($object->errors, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 	} else {
 		header('Location:' . dol_buildpath('/lead/lead/list.php', 1));
 	}
@@ -187,7 +187,7 @@ if ($action == "add") {
 	$elementselectid = GETPOST("elementselect");
 	$result = $object->add_object_linked($tablename, $elementselectid);
 	if ($result < 0) {
-		setEventMessage($object->error, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 	}
 } elseif ($action == "unlink") {
 	
@@ -196,7 +196,7 @@ if ($action == "add") {
 	
 	$result = $object->deleteObjectLinked($sourceid, $sourcetype);
 	if ($result < 0) {
-		setEventMessage($object->error, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 	}
 } elseif ($action == "confirm_clone" && $confirm=='yes') {
 	
@@ -204,7 +204,7 @@ if ($action == "add") {
 	$object_clone->ref_int=GETPOST('ref_interne');
 	$result = $object_clone->createFromClone($object->id);
 	if ($result < 0) {
-		setEventMessage($object_clone->error, 'errors');
+		setEventMessages(null, $object_clone->errors, 'errors');
 	} else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $result);
 	}
@@ -213,7 +213,7 @@ if ($action == "add") {
 	$object->fk_c_status=7;
 	$result=$object->update($user);
 	if ($result < 0) {
-		setEventMessage($object->error, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 	}else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 	}
@@ -262,7 +262,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
-	print $langs->trans('LeadStep');
+	print $langs->trans('LeadStatus');
 	print '</td>';
 	print '<td>';
 	print $formlead->select_lead_status($leadstatus, 'leadstatus', 0);
@@ -284,7 +284,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print '</td>';
 	print '<td>';
 	$events = array();
-	print $form->select_company($socid, 'socid', 'client<>0', 1, 1, 0, $events);
+	print $form->select_thirdparty_list($socid, 'socid', 'client<>0', 1, 1, 0, $events);
 	print '</td>';
 	print '</tr>';
 	
@@ -330,10 +330,10 @@ if ($action == 'create' && $user->rights->lead->write) {
 	
 	print '</table>';
 	
-	print '<center>';
+	print '<div class="center">';
 	print '<input type="submit" class="button" value="' . $langs->trans("Create") . '">';
 	print '&nbsp;<input type="button" class="button" value="' . $langs->trans("Cancel") . '" onClick="javascript:history.go(-1)">';
-	print '</center>';
+	print '</div>';
 	
 	print '</form>';
 } elseif ($action == 'edit') {
@@ -351,7 +351,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_users($object->fk_user_resp, 'userid', 0, array(),0,$includeuserlist);
+	print $form->select_dolusers($object->fk_user_resp, 'userid', 0, array(),0,$includeuserlist);
 	print '</td>';
 	print '</tr>';
 	
@@ -366,7 +366,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
-	print $langs->trans('LeadStep');
+	print $langs->trans('LeadStatus');
 	print '</td>';
 	print '<td>';
 	print $formlead->select_lead_status($object->fk_c_status, 'leadstatus', 0);
@@ -388,7 +388,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print '</td>';
 	print '<td>';
 	$events = array();
-	print $form->select_company($object->thirdparty->id, 'socid', 'client<>0', 1, 1, 0, $events);
+	print $form->select_thirdparty_list($object->thirdparty->id, 'socid', 'client<>0', 1, 1, 0, $events);
 	print '</td>';
 	print '</tr>';
 	
@@ -429,10 +429,10 @@ if ($action == 'create' && $user->rights->lead->write) {
 	
 	print '</table>';
 	
-	print '<center>';
+	print '<div class="center">';
 	print '<input type="submit" class="button" value="' . $langs->trans("Save") . '">';
 	print '&nbsp;<input type="button" class="button" value="' . $langs->trans("Cancel") . '" onClick="javascript:history.go(-1)">';
-	print '</center>';
+	print '</div>';
 	
 	print '</form>';
 } else {
@@ -501,7 +501,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	$userstatic = new User($db);
 	$result = $userstatic->fetch($object->fk_user_resp);
 	if ($result < 0) {
-		setEventMessage($userstatic->error, 'errors');
+		setEventMessages($userstatic->errors, 'errors');
 	}
 	print $userstatic->getFullName($langs);
 	print '</td>';
@@ -518,7 +518,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	
 	print '<tr>';
 	print '<td>';
-	print $langs->trans('LeadStep');
+	print $langs->trans('LeadStatus');
 	print '</td>';
 	print '<td>';
 	print $object->status_label;
@@ -593,8 +593,8 @@ if ($action == 'create' && $user->rights->lead->write) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
 		}
 	} else {
-		print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("Edit") . "</font></div>";
-		print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("Clone") . "</font></div>";
+		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("anoughPermissions")) . '">' . $langs->trans("Edit") . "</a></div>";
+		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("anoughPermissions")) . '">' . $langs->trans("Clone") . "</a></div>";
 		//print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("LeadLost") . "</font></div>";
 	}
 	
@@ -602,7 +602,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	if ($user->rights->lead->delete) {
 		print '<div class="inline-block divButAction"><a class="butActionDelete" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . "</a></div>\n";
 	} else {
-		print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("Delete") . "</font></div>";
+		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("anoughPermissions")) . '">' . $langs->trans("Delete") . "</a></div>";
 	}
 	print '</div>';
 	
@@ -617,7 +617,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 		if ($qualified) {
 			print '<br>';
 			
-			print_titre($langs->trans($title));
+			print_fiche_titre($langs->trans($title));
 			
 			$selectList = $formlead->select_element($tablename, $object);
 			if ($selectList) {
@@ -644,9 +644,9 @@ if ($action == 'create' && $user->rights->lead->write) {
 			print '<td align="right" width="200">' . $langs->trans("Status") . '</td>';
 			print '</tr>';
 			
-			$ret = $object->fetch_document_link($id, $tablename);
+			$ret = $object->fetchDocumentLink($id, $tablename);
 			if ($ret < 0) {
-				setEventMessage($object->error, 'errors');
+				setEventMessages(null, $object->errors, 'errors');
 			}
 			
 			$elementarray = array();
@@ -657,6 +657,9 @@ if ($action == 'create' && $user->rights->lead->write) {
 				$total_ttc = 0;
 				$num = count($elementarray);
 				foreach ($elementarray as $line) {
+					/**
+					 * @var CommonObject $element
+					 */
 					$element = new $classname($db);
 					$element->fetch($line->fk_source);
 					$element->fetch_thirdparty();

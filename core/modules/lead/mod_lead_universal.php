@@ -41,12 +41,12 @@ class mod_lead_universal extends ModeleNumRefLead
 	 */
 	function info()
 	{
-		global $conf, $langs;
+		global $conf, $db, $langs;
 		
 		$langs->load("lead@lead");
 		$langs->load("admin");
 		
-		$form = new Form($this->db);
+		$form = new Form($db);
 		
 		$texte = $langs->trans('GenericNumRefModelDesc') . "<br>\n";
 		$texte .= '<form action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
@@ -84,9 +84,9 @@ class mod_lead_universal extends ModeleNumRefLead
 	{
 		global $conf, $langs, $mysoc, $user;
 		
-		$old_code_client = $mysoc->code_client;
+		// $old_code_client = $mysoc->code_client;
 		// $mysoc->code_client='CCCCCCCCCC';
-		$numExample = $this->getNextValue($user->id, $mysoc, '');
+		$numExample = $this->getNextValue($user->id, $mysoc, null);
 		// $mysoc->code_client=$old_code_client;
 		
 		if (! $numExample) {
@@ -98,18 +98,16 @@ class mod_lead_universal extends ModeleNumRefLead
 	/**
 	 * Return next value
 	 *
-	 * @param int $fk_user
-	 *        	user creating
-	 * @param Societe $objsoc
-	 *        	party
-	 * @param Lead $lead        	
+	 * @param int $fk_user User creating
+	 * @param Societe $objsoc Party
+	 * @param Lead $lead Lead
 	 * @return string Valeur
 	 */
 	function getNextValue($fk_user, $objsoc, $lead)
 	{
 		global $db, $conf;
 		
-		require_once (DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
+		require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
 		
 		// On defini critere recherche compteur
 		$mask = $conf->global->LEAD_UNIVERSAL_MASK;

@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-$res = @include ("../main.inc.php"); // For root directory
+
+$res = @include '../main.inc.php'; // For root directory
 if (! $res)
-	$res = @include ("../../main.inc.php"); // For "custom" directory
+	$res = @include '../../main.inc.php'; // For "custom" directory
 if (! $res)
 	die("Include of main fails");
 
@@ -86,7 +87,7 @@ if (! count($arrayyears)) $arrayyears[$nowyear]=$nowyear;
 
 $data1 = $stats_lead->getAllLeadByType();
 if (!is_array($data1) && $data1<0) {
-	setEventMessage($stats_lead->error,'errors');
+	setEventMessages($stats_lead->error, null, 'errors');
 }
 if (empty($data1))
 {
@@ -135,10 +136,10 @@ if (empty($mesg)) {
 		$px->SetTitle($langs->trans('LeadNbLeadByType'));
 		$result=$px->draw($filenamenb, $fileurlnb);
 		if ($result<0) {
-			setEventMessage($px->error,'errors');
+			setEventMessages($px->error, null, 'errors');
 		}
 } else {
-	setEventMessage($mesgs, 'errors');
+	setEventMessages(null, $mesgs, 'errors');
 }
 
 
@@ -150,7 +151,7 @@ $stringtoshow .= '</div>';
 
 $data1 = $stats_lead->getAllLeadByStatus();
 if (!is_array($data1) && $data1<0) {
-	setEventMessage($stats_lead->error,'errors');
+	setEventMessages($stats_lead->error, null, 'errors');
 }
 if (empty($data1))
 {
@@ -199,10 +200,10 @@ if (empty($mesg)) {
 		$px->SetTitle($langs->trans('LeadNbLeadByStatus'));
 		$result=$px->draw($filenamenb, $fileurlnb);
 		if ($result<0) {
-			setEventMessage($px->error,'errors');
+			setEventMessages($px->error, null, 'errors');
 		}
 } else {
-	setEventMessage($mesgs, 'errors');
+	setEventMessages(null, $mesgs, 'errors');
 }
 
 
@@ -415,4 +416,3 @@ print '<table class="noborder" width="100%">';
 print '</table>';
 llxFooter();
 $db->close();
-?>

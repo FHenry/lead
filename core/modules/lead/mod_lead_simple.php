@@ -95,11 +95,9 @@ class mod_lead_simple extends ModeleNumRefLead
 	/**
 	 * Return next value
 	 *
-	 * @param int $fk_user
-	 *        	user creating
-	 * @param Societe $objsoc
-	 *        	party
-	 * @param Lead $lead        	
+	 * @param int $fk_user User creating
+	 * @param Societe $objsoc Party
+	 * @param Lead $lead Lead
 	 * @return string Valeur
 	 */
 	function getNextValue($fk_user, $objsoc, $lead)
@@ -124,7 +122,7 @@ class mod_lead_simple extends ModeleNumRefLead
 			return - 1;
 		}
 		
-		$date = empty($agf->datec) ? dol_now() : $lead->datec;
+		$date = empty($lead->datec) ? dol_now() : $lead->datec;
 		
 		// $yymm = strftime("%y%m",time());
 		$yymm = strftime("%y%m", $date);

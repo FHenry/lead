@@ -20,9 +20,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$res = @include ("../../main.inc.php"); // For root directory
+$res = @include '../../main.inc.php'; // For root directory
 if (! $res)
-	$res = @include ("../../../main.inc.php"); // For "custom" directory
+	$res = @include '../../../main.inc.php'; // For "custom" directory
 if (! $res)
 	die("Include of main fails");
 

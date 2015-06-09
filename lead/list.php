@@ -21,20 +21,20 @@
  * \ingroup lead
  * \brief list of lead
  */
-$res = @include ("../../main.inc.php"); // For root directory
+$res = @include '../../main.inc.php'; // For root directory
 if (! $res)
-	$res = @include ("../../../main.inc.php"); // For "custom" directory
+	$res = @include '../../../main.inc.php'; // For "custom" directory
 if (! $res)
 	die("Include of main fails");
 
-require_once (DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php');
-require_once ('../class/lead.class.php');
-require_once ('../lib/lead.lib.php');
-require_once ('../class/html.formlead.class.php');
+require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
+require_once '../class/lead.class.php';
+require_once '../lib/lead.lib.php';
+require_once '../class/html.formlead.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
-require_once (DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php');
-require_once (DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php');
-require_once (DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php');
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
+require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
 
 // Security check
 if (! $user->rights->lead->read)
@@ -210,20 +210,6 @@ if (!empty($socid)) {
 
 	dol_fiche_head($head, 'tabLead', $langs->trans("Module103111Name"),0,dol_buildpath('/lead/img/object_lead.png', 1),1);
 }
-/*if (! empty($search_invoiceid) || ! empty($search_invoiceref)) {
-	require_once DOL_DOCUMENT_ROOT . '/core/lib/invoice.lib.php';
-	$head = facture_prepare_head($invoice);
-	dol_fiche_head($head, 'tabLead', $langs->trans('LeadOnInvoice'), 0, 'bill');
-	$element_type = 'invoice';
-	$element_id = $search_invoiceid;
-}
-if (! empty($search_propalref) || ! empty($search_propalid)) {
-	require_once DOL_DOCUMENT_ROOT . '/core/lib/propal.lib.php';
-	$head = propal_prepare_head($propal);
-	dol_fiche_head($head, 'tabLead', $langs->trans('LeadOnPropal'), 0, 'propal');
-	$element_type = 'propal';
-	$element_id = $search_propalid;
-}*/
 
 // Count total nb of records
 $nbtotalofrecords = 0;
@@ -236,7 +222,7 @@ $resql = $object->fetch_all($sortorder, $sortfield, $conf->liste_limit, $offset,
 if ($resql != - 1) {
 	$num = $resql;
 		
-	print_barre_liste($title, $page, $_SERVEUR['PHP_SELF'], $option, $sortfield, $sortorder, '', $num, $nbtotalofrecords);
+	print_barre_liste($title, $page, $_SERVER['PHP_SELF'], $option, $sortfield, $sortorder, '', $num, $nbtotalofrecords);
 	
 	print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" name="search_form">' . "\n";
 	
@@ -268,7 +254,7 @@ if ($resql != - 1) {
 	print_liste_field_titre($langs->trans("LeadRefInt"), $_SERVEUR['PHP_SELF'], "t.ref_int", "", $option, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("Customer"), $_SERVEUR['PHP_SELF'], "so.nom", "", $option, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadCommercial"), $_SERVEUR['PHP_SELF'], "usr.lastname", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadStep"), $_SERVEUR['PHP_SELF'], "leadsta.label", "", $option, '', $sortfield, $sortorder);
+	print_liste_field_titre($langs->trans("LeadStatus"), $_SERVEUR['PHP_SELF'], "leadsta.label", "", $option, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadType"), $_SERVEUR['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
@@ -319,17 +305,20 @@ if ($resql != - 1) {
 	$totalamountreal = 0;
 	
 	foreach ($object->lines as $line) {
+		/**
+		 * @var Lead $line
+		 */
 		
 		// Affichage tableau des lead
 		$var = ! $var;
-		print "<tr $bc[$var]>";
+		print '<tr ' . $bc[$var] . '>';
 		
 		// Ref
 		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref . '</a>';
 		if ($line->fk_c_status!=6) {
 			$result=$line->isObjectSignedExists();
 			if ($result<0) {
-				setEventMessage($line->error,'errors');
+				setEventMessages($line->error, null, 'errors');
 			}elseif ($result>0) {
 				print img_warning($langs->trans('LeadObjectWindExists'));
 			}
@@ -395,7 +384,7 @@ if ($resql != - 1) {
 			});';
 	print "\n" . '</script>' . "\n";
 } else {
-	setEventMessage($object->error, 'errors');
+	setEventMessages(null, $object->errors, 'errors');
 }
 
 if (!empty($socid)) {

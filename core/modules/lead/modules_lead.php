@@ -79,11 +79,9 @@ abstract class ModeleNumRefLead
 	/**
 	 * Renvoi prochaine valeur attribuee
 	 *
-	 * @param int $fk_user
-	 *        	user creating
-	 * @param Societe $objsoc
-	 *        	party
-	 * @param Lead $lead        	
+	 * @param int $fk_user User creating
+	 * @param Societe $objsoc party
+	 * @param Lead $lead Lead
 	 * @return string Valeur
 	 */
 	function getNextValue($fk_user, $objsoc, $lead)
@@ -92,6 +90,11 @@ abstract class ModeleNumRefLead
 		return $langs->trans("NotAvailable");
 	}
 
+	/**
+	 * Module version
+	 *
+	 * @return string The module version
+	 */
 	function getVersion()
 	{
 		global $langs;

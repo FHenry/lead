@@ -62,7 +62,7 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '1.4';
+		$this->version = '1.5';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -126,7 +126,7 @@ class modLead extends DolibarrModules
 		// Minimum version of Dolibarr required by module
 		$this->need_dolibarr_version = array(
 			3,
-			4
+			7
 		);
 		$this->langfiles = array(
 			"lead@lead"
@@ -217,8 +217,8 @@ class modLead extends DolibarrModules
 				MAIN_DB_PREFIX . "c_lead_type"
 			),
 			'tablib' => array(
-				"LeadStatus",
-				"LeadType"
+				"LeadStatusDict",
+				"LeadTypeDict"
 			),
 			'tabsql' => array(
 				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_lead_status as f',
@@ -256,8 +256,6 @@ class modLead extends DolibarrModules
 		$r = 0;
 		// Example:
 		
-		$this->boxes[$r][1] = "box_lead@lead";
-		$r ++;
 		$this->boxes[$r][1] = "box_lead_current@lead";
 		$r ++;
 		$this->boxes[$r][1] = "box_lead_late@lead";
@@ -592,8 +590,7 @@ class modLead extends DolibarrModules
 	 * (defined in constructor) into Dolibarr database.
 	 * It also creates data directories
 	 *
-	 * @param string $options
-	 *        	enabling module ('', 'noboxes')
+	 * @param string $options Enabling module ('', 'noboxes')
 	 * @return int if OK, 0 if KO
 	 */
 	public function init($options = '')
@@ -610,8 +607,7 @@ class modLead extends DolibarrModules
 	 * Remove from database constants, boxes and permissions from Dolibarr database.
 	 * Data directories are not deleted
 	 *
-	 * @param string $options
-	 *        	enabling module ('', 'noboxes')
+	 * @param string $options Enabling module ('', 'noboxes')
 	 * @return int if OK, 0 if KO
 	 */
 	public function remove($options = '')

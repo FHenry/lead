@@ -56,8 +56,8 @@ Permission1031114=Exporter les affaires
 #
 # Dictionnaires
 #
-LeadStatus = Module Affaires — Étapes
-LeadType = Module Affaires — Types
+LeadStatusDict = Module Affaires — Étapes
+LeadTypeDict = Module Affaires — Types
 
 
 #
@@ -75,6 +75,7 @@ LeadListLate=Affaires en retard
 #
 # Status
 #
+LeadStatus = Étape de vente
 LeadStatus_PROSP=Prospection
 LeadStatus_CHIFF=Chiffrage
 LeadStatus_PROPO=Proposition
@@ -86,6 +87,7 @@ LeadStatus_LOST=Perdu
 #
 # Type
 #
+LeadType = Type
 LeadType_SUPP = Assistance
 LeadType_TRAIN=Formation
 LeadType_ADVI=Conseil
@@ -94,7 +96,6 @@ LeadType_ADVI=Conseil
 # Card
 #
 LeadCommercial=Responsable
-LeadStep = Étape de vente
 LeadAmountGuess=Montant annoncé HT
 LeadDeadLine=Date de clôture
 LeadDelete=Supprimer l'affaire

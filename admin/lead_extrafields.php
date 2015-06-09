@@ -23,12 +23,12 @@
  */
 
 // Dolibarr environment
-$res = @include ("../../main.inc.php"); // From htdocs directory
+$res = @include '../../main.inc.php'; // From htdocs directory
 if (! $res) {
-	$res = @include ("../../../main.inc.php"); // From "custom" directory
+	$res = @include '../../../main.inc.php'; // From "custom" directory
 }
 require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
-require_once "../lib/lead.lib.php";
+require_once '../lib/lead.lib.php';
 
 if (! $user->admin)
 	accessforbidden();
@@ -42,7 +42,7 @@ $extrafields = new ExtraFields($db);
 $form = new Form($db);
 
 // List of supported format
-$tmptype2label = getStaticMember(get_class($extrafields), 'type2label');
+$tmptype2label = ExtraFields::$type2label;
 $type2label = array(
 	''
 );
@@ -153,4 +153,3 @@ if ($action == 'edit' && ! empty($attrname)) {
 llxFooter();
 
 $db->close();
-?>

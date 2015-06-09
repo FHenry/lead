@@ -21,9 +21,9 @@
  * \ingroup propal
  * \brief Onglet de gestion des contacts de propal
  */
-$res = @include ("../../main.inc.php"); // For root directory
+$res = @include '../../main.inc.php'; // For root directory
 if (! $res)
-	$res = @include ("../../../main.inc.php"); // For "custom" directory
+	$res = @include '../../../main.inc.php'; // For "custom" directory
 if (! $res)
 	die("Include of main fails");
 require_once '../class/lead.class.php';
@@ -45,9 +45,8 @@ $lineid = GETPOST('lineid', 'int');
 $action = GETPOST('action', 'alpha');
 
 // Security check
-if ($user->societe_id)
-	$socid = $user->societe_id;
-$result = restrictedArea($user, 'lead', $id);
+if (! $user->rights->lead->read)
+	accessforbidden();
 
 $object = new Lead($db);
 
@@ -56,10 +55,10 @@ if ($id > 0) {
 	$ret = $object->fetch($id);
 	if ($ret == 0) {
 		$langs->load("errors");
-		setEventMessage($langs->trans('ErrorRecordNotFound'), 'errors');
+		setEventMessages($langs->trans('ErrorRecordNotFound'), null, 'errors');
 		$error ++;
 	} else if ($ret < 0) {
-		setEventMessage($object->error, 'errors');
+		setEventMessages(null, $object->errors, 'errors');
 		$error ++;
 	}
 }
@@ -86,9 +85,9 @@ if ($action == 'addcontact' && $user->rights->lead->write) {
 	} else {
 		if ($object->error == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 			$langs->load("errors");
-			setEventMessage($langs->trans("ErrorThisContactIsAlreadyDefinedAsThisType"), 'errors');
+			setEventMessages($langs->trans("ErrorThisContactIsAlreadyDefinedAsThisType"), null, 'errors');
 		} else {
-			setEventMessage($object->error, 'errors');
+			setEventMessages(null, $object->errors, 'errors');
 		}
 	}
 } 
@@ -147,7 +146,7 @@ if ($object->id > 0) {
 	$userstatic = new User($db);
 	$result = $userstatic->fetch($object->fk_user_resp);
 	if ($result < 0) {
-		setEventMessage($userstatic->error, 'errors');
+		setEventMessages(null, $userstatic->errors, 'errors');
 	}
 	print $userstatic->getFullName($langs);
 	print '</td>';
@@ -164,7 +163,7 @@ if ($object->id > 0) {
 	
 	print '<tr>';
 	print '<td>';
-	print $langs->trans('LeadStep');
+	print $langs->trans('LeadStatus');
 	print '</td>';
 	print '<td>';
 	print $object->status_label;

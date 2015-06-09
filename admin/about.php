@@ -23,13 +23,13 @@
  * Put some comments here
  */
 // Dolibarr environment
-$res = @include ("../../main.inc.php"); // From htdocs directory
+$res = @include '../../main.inc.php'; // From htdocs directory
 if (! $res) {
-	$res = @include ("../../../main.inc.php"); // From "custom" directory
+	$res = @include '../../../main.inc.php'; // From "custom" directory
 }
 
 // Libraries
-require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 require_once '../lib/lead.lib.php';
 
 dol_include_once('/lead/lib/php-markdown/markdown.php');

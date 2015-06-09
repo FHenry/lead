@@ -33,14 +33,13 @@ class FormLead extends Form
 	/**
 	 * Build Select List of element associable to a businesscase
 	 *
-	 * @param object $tablename
-	 *        	to parse
-	 * @param object $lead        	
-	 * @param string $htmlname
-	 *        	name of the component
+	 * @param string $tablename To parse
+	 * @param Lead $lead The lead
+	 * @param string $htmlname Name of the component
+	 *
 	 * @return string HTML select list of element
 	 */
-	function select_element($tablename, $lead, $htmlname = 'elementselect', $filter=array())
+	function select_element($tablename, $lead, $htmlname = 'elementselect')
 	{
 		global $langs, $conf;
 		
@@ -96,29 +95,24 @@ class FormLead extends Form
 			return $sellist;
 		}
 		$this->db->free($resql);
+
+		return null;
 	}
 
 	/**
 	 * Return a HTML area with the reference of object and a navigation bar for a business object
 	 * To add a particular filter on select, you must set $object->next_prev_filter to SQL criteria.
 	 *
-	 * @param object $object
-	 *        	show
-	 * @param string $paramid
-	 *        	of parameter to use to name the id into the URL link
-	 * @param string $morehtml
-	 *        	html content to output just before the nav bar
-	 * @param int $shownav
-	 *        	Condition (navigation is shown if value is 1)
-	 * @param string $fieldid
-	 *        	du champ en base a utiliser pour select next et previous
-	 * @param string $fieldref
-	 *        	du champ objet ref (object->ref) a utiliser pour select next et previous
-	 * @param string $morehtmlref
-	 *        	html supplementaire a afficher apres ref
-	 * @param string $moreparam
-	 *        	param to add in nav link url.
-	 * @return tring Portion HTML avec ref + boutons nav
+	 * @param object $object Show
+	 * @param string $paramid ID off parameter to use to name the id into the URL link
+	 * @param string $morehtml HTML content to output just before the nav bar
+	 * @param int $shownav Condition (navigation is shown if value is 1)
+	 * @param string $fieldid ID du champ en base a utiliser pour select next et previous
+	 * @param string $fieldref Ref du champ objet ref (object->ref) a utiliser pour select next et previous
+	 * @param string $morehtmlref HTML supplementaire a afficher apres ref
+	 * @param string $moreparam Param to add in nav link url.
+	 *
+	 * @return string Portion HTML avec ref + boutons nav
 	 */
 	function showrefnav($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '')
 	{
@@ -161,12 +155,10 @@ class FormLead extends Form
 	/**
 	 * Return combo list of differents status
 	 *
-	 * @param string $selected
-	 *        	value
-	 * @param string $htmlname
-	 *        	name of the component
-	 * @param int $showempty
-	 *        	row
+	 * @param string $selected Value
+	 * @param string $htmlname Name of the component
+	 * @param int $showempty Row
+	 *
 	 * @return string HTML select
 	 */
 	function select_lead_status($selected = '', $htmlname = 'leadstatus', $showempty = 1)
@@ -180,12 +172,10 @@ class FormLead extends Form
 	/**
 	 * Return combo list of differents type
 	 *
-	 * @param string $selected
-	 *        	value
-	 * @param string $htmlname
-	 *        	name of the component
-	 * @param int $showempty
-	 *        	row
+	 * @param string $selected Value
+	 * @param string $htmlname Name of the component
+	 * @param int $showempty Row
+	 *
 	 * @return string HTML select
 	 */
 	function select_lead_type($selected = '', $htmlname = 'leadtype', $showempty = 1)
@@ -199,13 +189,12 @@ class FormLead extends Form
 	/**
 	 * Return combo list of differents type
 	 *
-	 * @param string $selected
-	 *        	value
-	 * @param string $htmlname
-	 *        	name of the component
-	 * @param int $showempty
-	 *        	row
-	 * @return void
+	 * @param string $selected Value
+	 * @param string $htmlname Name of the component
+	 * @param int $showempty Row
+	 * @param array $filter Filter results
+	 *
+	 * @return string HTML select
 	 */
 	function select_lead($selected = '', $htmlname = 'leadid', $showempty = 1, $filter=array())
 	{
@@ -216,7 +205,7 @@ class FormLead extends Form
 
 		$result = $lead->fetch_all('DESC', 't.ref', 0, 0, $filter);
 		if ($result<0) {
-			setEventMessage($lead->error,'errors');
+			setEventMessages(null, $lead->errors, 'errors');
 		}
 		foreach($lead->lines as $line) {
 			$lead_array[$line->id] = $line->ref . '-'.$line->ref_int.' ('.$line->status_label.'-'.$line->type_label.')';
@@ -224,5 +213,6 @@ class FormLead extends Form
 		if (count($lead_array)>0) {
 			return $this->selectarray($htmlname, $lead_array, $selected, $showempty);
 		}
+		return null;
 	}
 }
