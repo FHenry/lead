@@ -1,0 +1,151 @@
+# Manage Lead
+# Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
+# Copyright (C) 2015 Raphaël Doursenaud <rdoursenaud@gpcsolutions.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+
+# Module label 'ModuleXXXName'
+# (where XXX is value of numeric property 'numero' of module)
+Module103111Name = Lead
+LeadLead= Lead
+# Module description 'ModuleXXXDesc'
+# (where XXX is value of numeric property 'numero' of module)
+Module103111Desc = Manages Lead
+LeadSimpleNumRefModelDesc=Return reference like LEA-yymm-nnnn where yy is the year, mm the month and nnnn a counter sequancial without reset
+
+#
+# Admin page
+#
+LeadSetup = Lead setup
+SettingsLead = Settings
+LeadSetupPage = Lead setup page
+LeadNbDayDefaultClosure = Number of days to add to the current date for closure's default
+LeadAdmVar=Admin value
+LeadUserGroupAffect = Limit user list assignable on lead to user group
+
+#
+# About page
+#
+About = About
+LeadAbout = About Lead
+LeadAboutPage = Lead about page
+
+
+#
+# Permissions
+#
+Permission1031111=Abilitazione modulo 
+Permission1031112=Aggiornamento Lead
+Permission1031113=Elimina Lead
+Permission1031114=Esporta Lead
+
+#
+# Dictionnaires
+#
+LeadStatusDict=Module Lead - Steps
+LeadTypeDict=Module Lead - Types
+
+#
+# Menu
+#
+LeadList = Tutti i lead
+LeadInfo = Lead Info
+LeadCreate = Nuovo
+LeadContact=Lead Contact
+LeadListCurrent=Tutti i lead aperti
+LeadListMyLead=Lead personali
+LeadListLate = Lead scaduti
+
+
+#
+# Status
+#
+LeadStatus=Stadio di vendita
+LeadStatus_PROSP=In Prospettiva
+LeadStatus_CHIFF=Ammontare
+LeadStatus_PROPO=Proposto il valore
+LeadStatus_NEGO=Trattativa o preventivo
+LeadStatus_RECOND=Rinnovo
+LeadStatus_WIN=Chiuso VINTO
+LeadStatus_LOST=Chiuso PERSO
+
+#
+# Type
+#
+LeadType=Tipo
+LeadType_SUPP=Supporto
+LeadType_TRAIN =Formazione
+LeadType_ADVI=Consulenza
+
+#
+# Card
+#
+LeadCommercial=Commerciale
+LeadAmountGuess =Ammontare stimato
+LeadDeadLine=Scadenza
+LeadDelete=Elimina lead
+LeadConfirmDelete = Sicuro di voler eliminare il lead?
+LeadRefInt = Riferimento interno
+LeadRealAmount = Importo offerto (link preventivi)
+LeadDescription=Descrizione
+LeadDocuments=Collegamento ai documenti
+LeadAddElement=Link
+LeadLate=Lead scaduto
+ConfirmCloneLead=Sicuro di voler duplicare il lead?
+LeadShowLead=Display lead
+SelectElement=Select element
+LeadLink=Link(ed) Lead
+LeadLost=Chiudi Lead
+LeadConfirmLost=Sicuro divoler chiudere il lead?
+LeadPropalCloseByLead=Proposal close by lost lead %s
+LeadObjectWindExists=Proposal signed or invoice exist (lead status should be win)
+LeadLastLeadUpdated=Last %s lead updated
+
+#
+# Export
+#
+ExportDataset_lead=Lead
+LeadRefExt=Ref. Ext
+LeadStepCode=Steps Code
+LeadStepLabel=Steps Label
+LeadTypeCode=Type code
+LeadTypeLabel=Types Label
+lead@lead=Leads
+
+#
+# List
+#
+LeadDateDebut = Start Date
+
+#
+# Graph
+#
+LeadNbLeadByType=Numero di Lead per tipo
+LeadNbLeadByStatus=Numero di Lead per stadio di vendita
+LeadStats=Lead statistiche
+LeadNbLead=Numero di lead
+LeadNbLeadByMonth=Numero di Lead per mese
+LeadAmountOfLead=Ammontare finanziario per Lead
+LeadAmountOfLeadsByMonth=Ammontare finanziario mese per Lead
+LeadTransRateOfLead=Transformation rate
+LeadTransRateOfLeadsByMonth=Percentuale di chiusura mese con esito positivo
+
+#
+# Boxes
+#
+LastN=Last %s
