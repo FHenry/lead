@@ -193,7 +193,7 @@ class ActionsLead // extends CommonObject
 				$langs->load("lead@lead");
 				
 				if ($user->rights->lead->write) {
-					$html = '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/lead/lead/card.php', 1) . '?action=create&amp;socid=' . $object->socid . '&amp;amount_guess=' . $object->total_ttc . '&amp;propalid=' . $object->id . '">' . $langs->trans('LeadCreate') . '</a></div>';
+					$html = '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/lead/lead/card.php', 1) . '?action=create&amp;socid=' . $object->socid . '&amp;amount_guess=' . $object->total_ht . '&amp;propalid=' . $object->id . '">' . $langs->trans('LeadCreate') . '</a></div>';
 				} else {
 					$html = '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('LeadCreate') . '</a></div>';
 				}
