@@ -87,8 +87,8 @@ LeadStatus_LOST=Perdu
 #
 # Type
 #
-LeadType = Type
-LeadType_SUPP = Assistance
+LeadType=Type
+LeadType_SUPP=Support 
 LeadType_TRAIN=Formation
 LeadType_ADVI=Conseil
 
