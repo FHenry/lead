@@ -142,7 +142,7 @@ class modLead extends DolibarrModules
 				'mod_lead_simple',
 				'Numbering lead rule',
 				0,
-				'allentities',
+				'current',
 				1
 			),
 			1 => array(
@@ -151,7 +151,7 @@ class modLead extends DolibarrModules
 				'',
 				'Numbering lead rule',
 				0,
-				'allentities',
+				'current',
 				1
 			),
 			2 => array(
@@ -160,7 +160,7 @@ class modLead extends DolibarrModules
 				'30',
 				'Numbering lead rule',
 				0,
-				'allentities',
+				'current',
 				1
 			),
 			3 => array(
@@ -169,7 +169,7 @@ class modLead extends DolibarrModules
 				'',
 				'User Group that can affected',
 				0,
-				'allentities',
+				'current',
 				1
 			),
 			4 => array(
@@ -178,7 +178,7 @@ class modLead extends DolibarrModules
 				'1',
 				'force LEad to use customer',
 				0,
-				'allentities',
+				'current',
 				1
 			)
 		);

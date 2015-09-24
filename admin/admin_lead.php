@@ -35,6 +35,7 @@ require_once '../class/lead.class.php';
 
 // Translations
 $langs->load("lead@lead");
+$langs->load("admin");
 
 // Access control
 if (! $user->admin) {
@@ -84,11 +85,44 @@ else if ($action == 'setmod') {
 	if (! $res > 0)
 		$error ++;
 	
-	
-	$setvar = GETPOST('LEAD_FORCE_USE_THIRDPARTY', 'int');
-	$res = dolibarr_set_const($db, 'LEAD_FORCE_USE_THIRDPARTY', $setvar, 'yesno', 0, '', $conf->entity);
+	$force_use_thirdparty = GETPOST('LEAD_FORCE_USE_THIRDPARTY', 'int');
+	$res = dolibarr_set_const($db, 'LEAD_FORCE_USE_THIRDPARTY', $force_use_thirdparty, 'yesno', 0, '', $conf->entity);
 	if (! $res > 0)
 		$error ++;
+	
+	$errordb=0;
+	$errors=array();
+	if ($force_use_thirdparty==1) {
+		$sql='ALTER TABLE llx_lead ADD INDEX idx_llx_lead_fk_soc (fk_soc)';
+		$resql=$db->query($sql);
+		if (!$resql) {
+			$errordb ++;
+			$errors[]=$db->lasterror;
+		}
+		
+		$sql='ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_3 FOREIGN KEY (fk_soc) REFERENCES llx_societe (rowid)';
+		$resql=$db->query($sql);
+		if (!$resql) {
+			$errordb ++;
+			$errors[]=$db->lasterror;
+		}
+	} else {
+		$sql='ALTER TABLE llx_lead DROP FOREIGN KEY llx_lead_ibfk_3';
+		$resql=$db->query($sql);
+		if (!$resql) {
+			$errordb ++;
+			$errors[]=$db->lasterror;
+		}
+		$sql='ALTER TABLE llx_lead DROP INDEX idx_llx_lead_fk_soc';
+		$resql=$db->query($sql);
+		if (!$resql) {
+			$errordb ++;
+			$errors[]=$db->lasterror;
+		}
+	}
+	if (!empty($errordb)) {
+		setEventMessage(null,$errors,'errors');
+	}
 
 	
 	if (! $error) {
@@ -237,23 +271,19 @@ print '<input type="text" name="LEAD_NB_DAY_COSURE_AUTO" value="' . $conf->globa
 print '</tr>';
 
 // User Group
-print '<tr class="pair"><td>' . $langs->trans("LeadUserGroupAffect") . '</td>';
+print '<tr class="impair"><td>' . $langs->trans("LeadUserGroupAffect") . '</td>';
 print '<td align="left">';
-print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array(), 0, '', '', $object->entity);
+print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array(), 0, '', '', $conf->entity);
 print '</tr>';
 
 // Force use thirdparty
 print '<tr class="pair"><td>' . $langs->trans("LeadForceUseThirdparty") . '</td>';
 print '<td align="left">';
-if ($conf->use_javascript_ajax) {
-	print ajax_constantonoff('LEAD_FORCE_USE_THIRDPARTY');
-} else {
-	$arrval = array (
-			'0' => $langs->trans("No"),
-			'1' => $langs->trans("Yes") 
-	);
-	print $form->selectarray("LEAD_FORCE_USE_THIRDPARTY", $arrval, $conf->global->LEAD_FORCE_USE_THIRDPARTY);
-}
+$arrval = array (
+		'0' => $langs->trans("No"),
+		'1' => $langs->trans("Yes") 
+);
+print $form->selectarray("LEAD_FORCE_USE_THIRDPARTY", $arrval, $conf->global->LEAD_FORCE_USE_THIRDPARTY);
 print '</tr>';
 print '</table>';
 
