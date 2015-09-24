@@ -62,7 +62,7 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '1.5.1';
+		$this->version = '1.6';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -168,6 +168,15 @@ class modLead extends DolibarrModules
 				'chaine',
 				'',
 				'User Group that can affected',
+				0,
+				'allentities',
+				1
+			),
+			4 => array(
+				'LEAD_FORCE_USE_THIRDPARTY',
+				'yesno',
+				'1',
+				'force LEad to use customer',
 				0,
 				'allentities',
 				1

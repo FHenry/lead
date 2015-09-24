@@ -81,9 +81,15 @@ else if ($action == 'setmod') {
 	if ($user_goup==-1) $user_goup='';
 
 	$res = dolibarr_set_const($db, 'LEAD_GRP_USER_AFFECT', $user_goup, 'chaine', 0, '', $conf->entity);
-
 	if (! $res > 0)
 		$error ++;
+	
+	
+	$setvar = GETPOST('LEAD_FORCE_USE_THIRDPARTY', 'int');
+	$res = dolibarr_set_const($db, 'LEAD_FORCE_USE_THIRDPARTY', $setvar, 'yesno', 0, '', $conf->entity);
+	if (! $res > 0)
+		$error ++;
+
 	
 	if (! $error) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
@@ -234,8 +240,20 @@ print '</tr>';
 print '<tr class="pair"><td>' . $langs->trans("LeadUserGroupAffect") . '</td>';
 print '<td align="left">';
 print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array(), 0, '', '', $object->entity);
-/*$form->select_
-*/
+print '</tr>';
+
+// Force use thirdparty
+print '<tr class="pair"><td>' . $langs->trans("LeadForceUseThirdparty") . '</td>';
+print '<td align="left">';
+if ($conf->use_javascript_ajax) {
+	print ajax_constantonoff('LEAD_FORCE_USE_THIRDPARTY');
+} else {
+	$arrval = array (
+			'0' => $langs->trans("No"),
+			'1' => $langs->trans("Yes") 
+	);
+	print $form->selectarray("LEAD_FORCE_USE_THIRDPARTY", $arrval, $conf->global->LEAD_FORCE_USE_THIRDPARTY);
+}
 print '</tr>';
 print '</table>';
 

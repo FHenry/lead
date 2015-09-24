@@ -279,7 +279,11 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print '</tr>';
 	
 	print '<tr>';
-	print '<td class="fieldrequired">';
+	if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
+		print '<td class="fieldrequired">';
+	} else {
+		print '<td>';
+	}
 	print $langs->trans('Customer');
 	print '</td>';
 	print '<td>';

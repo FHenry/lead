@@ -220,9 +220,11 @@ class Lead extends CommonObject {
 			// Check parameters
 			// Put here code to add control on parameters values
 		
-		if (empty($this->fk_soc)) {
-			$error ++;
-			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Customer'));
+		if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
+			if (empty($this->fk_soc)) {
+				$error ++;
+				$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Customer'));
+			}
 		}
 		if (empty($this->ref_int)) {
 			$error ++;

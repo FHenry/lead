@@ -37,6 +37,7 @@ LeadSetupPage = Lead setup page
 LeadNbDayDefaultClosure = Number of days to add to the current date for closure's default
 LeadAdmVar=Admin value
 LeadUserGroupAffect = Limit user list assignable on lead to user group
+LeadForceUseThirdparty = Force use thirdparty on Lead
 
 #
 # About page
