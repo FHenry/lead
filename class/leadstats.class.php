@@ -17,12 +17,36 @@
  */
 include_once DOL_DOCUMENT_ROOT . '/core/class/stats.class.php';
 include_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
-class LeadStats extends Stats {
+
+/**
+ * Class LeadStats
+ *
+ * Lead statistics
+ */
+class LeadStats extends Stats
+{
+	/** @var DoliDB Database handler */
 	protected $db;
+	/** @var Lead Current lead */
 	private $lead;
+	/** @var int User ID */
 	public $userid;
+	/** @var int Company ID */
 	public $socid;
+	/** @var int Year */
 	public $year;
+	/** @var int Month of the year */
+	public $yearmonth;
+	/** @var int Status ID */
+	public $status;
+	/** @var string Error message */
+	public $error;
+
+	/**
+	 * Instanciate a new lead stat
+	 *
+	 * @param DoliDB $db Database handler
+	 */
 	function __construct($db) {
 		global $conf, $user;
 		
@@ -32,7 +56,7 @@ class LeadStats extends Stats {
 		
 		$this->lead = new Lead($this->db);
 	}
-	
+
 	/**
 	 * Returns all leads grouped by type
 	 *
@@ -51,10 +75,10 @@ class LeadStats extends Stats {
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY t.fk_c_type";
-		
+
 		$result = array ();
 		$res = array ();
-		
+
 		dol_syslog(get_class($this) . '::' . __METHOD__ . "", LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -83,10 +107,10 @@ class LeadStats extends Stats {
 			dol_syslog(get_class($this) . '::' . __METHOD__ . ' ' . $this->error, LOG_ERR);
 			return - 1;
 		}
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * Return all leads grouped by status
 	 *
@@ -97,18 +121,18 @@ class LeadStats extends Stats {
 	 */
 	function getAllLeadByStatus($limit = 5) {
 		global $conf, $user, $langs;
-		
+
 		$datay = array ();
-		
+
 		$sql = "SELECT";
 		$sql .= " count(DISTINCT t.rowid), t.fk_c_status";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY t.fk_c_status";
-		
+
 		$result = array ();
 		$res = array ();
-		
+
 		dol_syslog(get_class($this) . '::' . __METHOD__ . "", LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -137,22 +161,17 @@ class LeadStats extends Stats {
 			dol_syslog(get_class($this) . '::' . __METHOD__ . ' ' . $this->error, LOG_ERR);
 			return - 1;
 		}
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * Return count, and sum of products
 	 *
-	 * @param int $dt_start
-	 * @param int $dt_end
-	 * @param int $cachedelay accept for cache file (0=No read, no save of cache, -1=No read but save)
 	 * @return array of values
 	 */
 	function getAllByYear() {
 		global $conf, $user, $langs;
-		
-		$datay = array ();
 		
 		$sql = "SELECT date_format(t.datec,'%Y') as year, COUNT(t.rowid) as nb, SUM(t.amount_prosp) as total, AVG(t.amount_prosp) as avg";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
@@ -164,9 +183,11 @@ class LeadStats extends Stats {
 		
 		return $this->_getAllByYear($sql);
 	}
+
 	/**
-	 * 
-	 * @return string
+	 * Build a where SQL snippet
+	 *
+	 * @return string SQL snippet
 	 */
 	public function buildWhere() {
 		$sqlwhere_str = '';
@@ -192,7 +213,7 @@ class LeadStats extends Stats {
 		
 		return $sqlwhere_str;
 	}
-	
+
 	/**
 	 * Return Lead number by month for a year
 	 *
@@ -218,7 +239,7 @@ class LeadStats extends Stats {
 		// var_dump($res);print '<br>';
 		return $res;
 	}
-	
+
 	/**
 	 * Return the Lead amount by month for a year
 	 *
@@ -243,12 +264,12 @@ class LeadStats extends Stats {
 		// var_dump($res);print '<br>';
 		return $res;
 	}
-	
+
 	/**
 	 * Return amount of elements by month for several years
 	 *
-	 * @param int $endyear
-	 * @param int $startyear
+	 * @param int $endyear End year
+	 * @param int $startyear Start year
 	 * @param int $cachedelay accept for cache file (0=No read, no save of cache, -1=No read but save)
 	 * @return array of values
 	 */
@@ -265,7 +286,7 @@ class LeadStats extends Stats {
 			include_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 			include_once DOL_DOCUMENT_ROOT . '/core/lib/json.lib.php';
 		}
-		
+
 		$newpathofdestfile = $conf->user->dir_temp . '/' . get_class($this) . '_' . __FUNCTION__ . '_' . (empty($this->cachefilesuffix) ? '' : $this->cachefilesuffix . '_') . $langs->defaultlang . '_user' . $user->id . '.cache';
 		$newmask = '0644';
 		
@@ -282,7 +303,7 @@ class LeadStats extends Stats {
 				dol_syslog(get_class($this) . '::' . __FUNCTION__ . " cache file " . $newpathofdestfile . " is not found or older than now - cachedelay (" . $nowgmt . " - " . $cachedelay . ") so we can't use it.");
 			}
 		}
-		
+
 		// Load file into $data
 		if ($foundintocache) // Cache file found and is not too old
 		{
@@ -294,7 +315,7 @@ class LeadStats extends Stats {
 				$datay[$year] = $this->getTransformRateByMonth($year);
 				$year ++;
 			}
-			
+
 			$data = array ();
 			// $data = array('xval'=>array(0=>xlabel,1=>yval1,2=>yval2...),...)
 			for($i = 0; $i < 12; $i ++) {
@@ -306,7 +327,7 @@ class LeadStats extends Stats {
 				}
 			}
 		}
-		
+
 		// Save cache file
 		if (empty($foundintocache) && ($cachedelay > 0 || $cachedelay == - 1)) {
 			dol_syslog(get_class($this) . '::' . __FUNCTION__ . " save cache file " . $newpathofdestfile . " onto disk.");
@@ -321,10 +342,10 @@ class LeadStats extends Stats {
 			
 			$this->_lastfetchdate[get_class($this) . '_' . __FUNCTION__] = $nowgmt;
 		}
-		
+
 		return $data;
 	}
-	
+
 	/**
 	 * Return the Lead transformation rate by month for a year
 	 *
@@ -333,9 +354,9 @@ class LeadStats extends Stats {
 	 */
 	function getTransformRateByMonth($year) {
 		global $user;
-	
+
 		$this->yearmonth = $year;
-	
+
 		$sql = "SELECT date_format(t.datec,'%m') as dm, count(t.amount_prosp)";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		if (! $user->rights->societe->client->voir && ! $user->societe_id)
@@ -343,7 +364,7 @@ class LeadStats extends Stats {
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
-	
+
 		$res_total = $this->_getNbByMonth($year, $sql);
 		
 		$this->status=6;

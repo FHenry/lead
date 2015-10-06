@@ -734,4 +734,3 @@ if ($action == 'create' && $user->rights->lead->write) {
 
 llxFooter();
 $db->close();
-?>
