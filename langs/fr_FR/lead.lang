@@ -26,14 +26,14 @@ LeadLead = Affaires
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
 Module103111Desc = Gestion d'affaires
-LeadSimpleNumRefModelDesc = Retourne le numéro sous la forme LEA-yymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0
+LeadSimpleNumRefModelDesc = Retourne un numéro sous la forme LEA-yymm-nnnn où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0
 
 #
 # Page d'administration
 #
 LeadSetup = Configuration du module Affaires
 SettingsLead = Réglages
-LeadSetupPage = Page de réglages de Affaires
+LeadSetupPage = Page de réglages des Affaires
 LeadNbDayDefaultClosure = Nombre de jours à ajouter à la date du jour pour obtenir la date de clôture par défaut
 LeadAdmVar=Administration
 LeadUserGroupAffect = Limiter les utilisateurs affectables à une affaire au groupe
@@ -102,28 +102,28 @@ LeadDeadLine=Date de clôture
 LeadDelete=Supprimer l'affaire
 LeadRefInt=Référence interne
 LeadRealAmount=Montant réel HT
-LeadConfirmDelete = Êtes-vous sur de vouloir supprimer l'affaire ?
+LeadConfirmDelete = Êtes-vous sur de vouloir supprimer l'affaire ?
 LeadDescription=Description
 LeadDocuments = Documents associés
 LeadAddElement=Associer
 LeadLate=Affaire en retard
-ConfirmCloneLead=Etes vous sur de cloné le lead
-LeadShowLead=Affiché le lead
+ConfirmCloneLead=Êtes-vous certain de vouloir cloner l'affaire ?
+LeadShowLead=Afficher l'affaire
 SelectElement=Selectionner l'élément
-LeadLink=Lead associé(s)
+LeadLink=Affaire(s) associé(s)
 LeadLost=Affaire perdue
-LeadConfirmLost=Toute les proposition commerciale associer a cette affaire seront mises au status "Clos/Non signé" ?
-LeadPropalCloseByLead=Proposition cloturé par l'affaire %s perdue
-LeadObjectWindExists=Des propostions signée ou des factures existes (le statuts de l'affaire devrait êter gagné)
+LeadConfirmLost=Toute les proposition commerciales associées à cette affaire seront mises au statut « Perdu ».
+LeadPropalCloseByLead=Proposition cloturée par l'affaire %s perdue
+LeadObjectWindExists=Des propositions signées ou des factures existent (Le statut de l'affaire devrait être « Gagné »)
 LeadLastLeadUpdated=Les %s derniéres affaires modifiées
 
 #
 # Export
 #
-ExportDataset_lead=Lead
+ExportDataset_lead=Affaires
 LeadRefExt=Ref. Ext
-LeadStepCode=Etape de vente Code
-LeadStepLabel=Etape de vente Libellé
+LeadStepCode=Étape de vente Code
+LeadStepLabel=Étape de vente Libellé
 LeadTypeCode=Type code
 LeadTypeLabel=Types Libellé
 lead@lead=Affaires
@@ -131,7 +131,7 @@ lead@lead=Affaires
 #
 # List
 #
-LeadDateDebut = Date de Debut
+LeadDateDebut = Date de début
 
 #
 # Graph

@@ -26,7 +26,7 @@ LeadLead= Lead
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
 Module103111Desc = Manages Lead
-LeadSimpleNumRefModelDesc=Return reference like LEA-yymm-nnnn where yy is the year, mm the month and nnnn a counter sequancial without reset
+LeadSimpleNumRefModelDesc=Return a reference like LEA-yymm-nnnn where yy is the year, mm the month and nnnn a sequencial counter without reset
 
 #
 # Admin page
@@ -36,7 +36,7 @@ SettingsLead = Settings
 LeadSetupPage = Lead setup page
 LeadNbDayDefaultClosure = Number of days to add to the current date for closure's default
 LeadAdmVar=Admin value
-LeadUserGroupAffect = Limit user list assignable on lead to user group
+LeadUserGroupAffect = Limit list of users assignable to lead to user group
 LeadForceUseThirdparty = Force use thirdparty on Lead
 
 #
