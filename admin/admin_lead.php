@@ -121,7 +121,7 @@ else if ($action == 'setmod') {
 		}
 	}
 	if (!empty($errordb)) {
-		setEventMessage(null,$errors,'errors');
+		setEventMessages(null,$errors,'errors');
 	}
 
 	
