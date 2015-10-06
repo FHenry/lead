@@ -29,7 +29,7 @@ class ActionsLead // extends CommonObject
 	 * @param string[] $parameters meta datas of the hook (context, etc...)
 	 * @param Lead $object the object you want to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
 	 * @param string $action current action (if set). Generally create or edit or null
-	 * @return void
+	 * @return int Hook status
 	 */
 	function showLinkedObjectBlock($parameters, $object, $action) {
 		global $conf, $langs, $db;
@@ -105,6 +105,9 @@ class ActionsLead // extends CommonObject
 				print "</form>";
 			}
 		}
+
+		// Always OK
+		return 0;
 	}
 	
 	/**
@@ -114,7 +117,7 @@ class ActionsLead // extends CommonObject
 	 * @param CommonObject $object Object to use hooks on
 	 * @param string $action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
 	 * @param HookManager $hookmanager class instance
-	 * @return void
+	 * @return int Hook status
 	 */
 	function addMoreActionsButtons($parameters, &$object, &$action, $hookmanager) {
 		global $langs, $conf, $user, $db ,$bc;
@@ -202,5 +205,8 @@ class ActionsLead // extends CommonObject
 				print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
 			}
 		}
+
+		// Always OK
+		return 0;
 	}
 }
