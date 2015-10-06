@@ -121,6 +121,11 @@ function lead_prepare_head($object)
 	return $head;
 }
 
+/**
+ * Prepare head for statistics page
+ *
+ * @return array Header contents (tabs)
+ */
 function lead_stats_prepare_head()
 {
 	global $langs, $conf;
@@ -143,7 +148,7 @@ function lead_stats_prepare_head()
 	// $this->tabs = array(
 	// 'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
 	// ); // to remove a tab
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead_stats');
+	complete_head_from_modules($conf, $langs, null, $head, $h, 'lead_stats');
 
 	return $head;
 }
