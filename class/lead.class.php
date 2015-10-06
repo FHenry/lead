@@ -29,7 +29,8 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 /**
  * Put here description of your class
  */
-class Lead extends CommonObject {
+class Lead extends CommonObject
+{
 	var $db; // !< To store db handler
 	var $error; // !< To return error code (or message)
 	var $errors = array (); // !< To return several error codes (or messages)
@@ -1342,7 +1343,8 @@ class Lead extends CommonObject {
 /**
  * Class DocLink
  */
-class DocLink {
+class DocLink
+{
 	public $id;
 	public $fk_source;
 	public $fk_target;
