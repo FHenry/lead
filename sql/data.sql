@@ -14,13 +14,13 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (1,'PROSP','Prospection',1);
-INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (2,'CHIFF','Chiffrage',1);
-INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (3,'PROPO','Proposition',1);
-INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (4,'NEGO','Négociation',1);
-INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (5,'RECOND','Reconduction',1);
-INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (6,'WIN','Gagné',1);
-INSERT INTO llx_c_lead_status(rowid,code,label,active) VALUES (7,'LOST','Perdu',1);
+INSERT INTO llx_c_lead_status(rowid,code,label,position,percent,active) VALUES (1,'PROSP'  ,'Prospection', 10, 0,1);
+INSERT INTO llx_c_lead_status(rowid,code,label,position,percent,active) VALUES (2,'QUAL'   ,'Chiffrage',20, 20,1);
+INSERT INTO llx_c_lead_status(rowid,code,label,position,percent,active) VALUES (3,'PROPO'  ,'Proposition', 30, 40,1);
+INSERT INTO llx_c_lead_status(rowid,code,label,position,percent,active) VALUES (4,'NEGO'   ,'Négociation', 40, 60,1);
+INSERT INTO llx_c_lead_status(rowid,code,label,position,percent,active) VALUES (5,'PENDING','Reconduction', 50, 50,0);
+INSERT INTO llx_c_lead_status(rowid,code,label,position,percent,active) VALUES (6,'WON'    ,'Gagné', 60, 100,1);
+INSERT INTO llx_c_lead_status(rowid,code,label,position,percent,active) VALUES (7,'LOST'   ,'Perdu', 70, 0,1);
 
 INSERT INTO llx_c_lead_type(rowid,code,label,active) VALUES (1,'SUPP','Support',1);
 INSERT INTO llx_c_lead_type(rowid,code,label,active) VALUES (2,'TRAIN','Formation',1);

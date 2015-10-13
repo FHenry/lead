@@ -1,5 +1,5 @@
 -- ========================================================================
--- Copyright (C) 2014 Florian HENRY	<florian.henry@open-concept.pro>
+-- Copyright (C) 2015 	   Florian Henry  <florian.henry@open-concept.pro>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -16,11 +16,4 @@
 --
 -- ========================================================================
 
-CREATE TABLE IF NOT EXISTS llx_lead_extrafields
-(
-  rowid                     integer AUTO_INCREMENT PRIMARY KEY,
-  tms                       timestamp,
-  fk_object                 integer NOT NULL,
-  import_key                varchar(14)                          		-- import key
-) ENGINE=innodb;
-
+ALTER TABLE llx_c_lead_type ADD UNIQUE INDEX uk_c_lead_type_code(code);
