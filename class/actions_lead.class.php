@@ -134,7 +134,14 @@ class ActionsLead // extends CommonObject
 			}
 			
 			$html = str_replace('"', '\"', $html);
-			print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
+			
+			$js= '<script type="text/javascript">'."\n";
+			$js.= '	$(document).ready('."\n";
+			$js.= '		function () {'."\n";
+			$js.= '			$(".tabsAction").append("' . $html . '");'."\n";
+			$js.= '		});'."\n";
+			$js.= '</script>';
+			print $js;
 			
 			if ($user->rights->lead->read) {
 				
@@ -180,7 +187,13 @@ class ActionsLead // extends CommonObject
 				
 				$html .= '</table>';
 				$html = str_replace('"', '\"', $html);
-				print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".ficheaddleft").append("' . $html . '");});});</script>';
+				$js= '<script type="text/javascript">'."\n";
+				$js.= '	$(document).ready('."\n";
+				$js.= '		function () {'."\n";
+				$js.= '			$(".ficheaddleft").append("' . $html . '");'."\n";
+				$js.= '		});'."\n";
+				$js.= '</script>';
+				print $js;
 			}
 		}
 		if (in_array('propalcard', $current_context)) {
@@ -202,7 +215,13 @@ class ActionsLead // extends CommonObject
 				}
 				
 				$html = str_replace('"', '\"', $html);
-				print '<script type="text/javascript">jQuery(document).ready(function () {jQuery(function() {jQuery(".tabsAction").append("' . $html . '");});});</script>';
+				$js= '<script type="text/javascript">'."\n";
+				$js.= '	$(document).ready('."\n";
+				$js.= '		function () {'."\n";
+				$js.= '			$(".tabsAction").append("' . $html . '");'."\n";
+				$js.= '		});'."\n";
+				$js.= '</script>';
+				print $js;
 			}
 		}
 
