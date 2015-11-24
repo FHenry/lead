@@ -1118,43 +1118,44 @@ class Lead extends CommonObject
 		global $langs;
 		
 		$this->doclines = array ();
-		
-		$sql = "SELECT";
-		$sql .= " t.rowid,";
-		$sql .= " t.fk_source,";
-		$sql .= " t.sourcetype,";
-		$sql .= " t.fk_target,";
-		$sql .= " t.targettype";
-		$sql .= " FROM " . MAIN_DB_PREFIX . "element_element as t";
-		$sql .= " WHERE t.fk_target = " . $id;
-		$sql .= " AND t.targettype='lead'";
-		if (! empty($tablename)) {
-			$sql .= " AND t.sourcetype='" . $tablename . "'";
-		}
-		$sql .= " ORDER BY t.sourcetype";
-		
-		dol_syslog(get_class($this) . "::fetchDocumentLink sql=" . $sql, LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			while ( $obj = $this->db->fetch_object($resql) ) {
-				$line = new DocLink($this->db);
-				
-				$line->id = $obj->rowid;
-				$line->fk_source = $obj->fk_source;
-				$line->sourcetype = $obj->sourcetype;
-				$line->fk_target = $obj->fk_target;
-				$line->targettype = $obj->targettype;
-				
-				$this->doclines[] = $line;
+		if (!empty($id)) {
+			$sql = "SELECT";
+			$sql .= " t.rowid,";
+			$sql .= " t.fk_source,";
+			$sql .= " t.sourcetype,";
+			$sql .= " t.fk_target,";
+			$sql .= " t.targettype";
+			$sql .= " FROM " . MAIN_DB_PREFIX . "element_element as t";
+			$sql .= " WHERE t.fk_target = " . $id;
+			$sql .= " AND t.targettype='lead'";
+			if (! empty($tablename)) {
+				$sql .= " AND t.sourcetype='" . $tablename . "'";
 			}
-			$this->db->free($resql);
+			$sql .= " ORDER BY t.sourcetype";
 			
-			return 1;
-		} else {
-			$this->error = "Error " . $this->db->lasterror();
-			dol_syslog(get_class($this) . "::fetchDocumentLink " . $this->error, LOG_ERR);
-			
-			return - 1;
+			dol_syslog(get_class($this) . "::fetchDocumentLink sql=" . $sql, LOG_DEBUG);
+			$resql = $this->db->query($sql);
+			if ($resql) {
+				while ( $obj = $this->db->fetch_object($resql) ) {
+					$line = new DocLink($this->db);
+					
+					$line->id = $obj->rowid;
+					$line->fk_source = $obj->fk_source;
+					$line->sourcetype = $obj->sourcetype;
+					$line->fk_target = $obj->fk_target;
+					$line->targettype = $obj->targettype;
+					
+					$this->doclines[] = $line;
+				}
+				$this->db->free($resql);
+				
+				return 1;
+			} else {
+				$this->error = "Error " . $this->db->lasterror();
+				dol_syslog(get_class($this) . "::fetchDocumentLink " . $this->error, LOG_ERR);
+				
+				return - 1;
+			}
 		}
 	}
 	
