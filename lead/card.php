@@ -247,7 +247,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_dolusers(empty($userid) ? $user->id : $userid, 'userid', 0, array(),0,$includeuserlist);
+	print $form->select_dolusers(empty($userid) ? $user->id : $userid, 'userid', 0, array(),0,$includeuserlist,'',0,0,0,'',0,'','',1);
 	print '</td>';
 	print '</tr>';
 	
@@ -355,7 +355,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_dolusers($object->fk_user_resp, 'userid', 0, array(),0,$includeuserlist);
+	print $form->select_dolusers($object->fk_user_resp, 'userid', 0, array(),0,$includeuserlist,'',0,0,0,'',0,'','',1);
 	print '</td>';
 	print '</tr>';
 	
