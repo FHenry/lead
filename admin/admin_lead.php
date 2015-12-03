@@ -17,9 +17,9 @@
  */
 
 /**
- * \file		admin/lead.php
- * \ingroup	lead
- * \brief		This file is an example module setup page
+ * \file admin/lead.php
+ * \ingroup lead
+ * \brief This file is an example module setup page
  * Put some comments here
  */
 // Dolibarr environment
@@ -66,8 +66,7 @@ if ($action == 'updateMask') {
 	} else {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
-} 
-else if ($action == 'setmod') {
+} else if ($action == 'setmod') {
 	dolibarr_set_const($db, "LEAD_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } else if ($action == 'setvar') {
 	
@@ -75,55 +74,64 @@ else if ($action == 'setmod') {
 	if (! empty($nb_day)) {
 		$res = dolibarr_set_const($db, 'LEAD_NB_DAY_COSURE_AUTO', $nb_day, 'chaine', 0, '', $conf->entity);
 	}
-	if (! $res > 0)
+	if (! $res > 0) {
 		$error ++;
+	}
 	
 	$user_goup = GETPOST('LEAD_GRP_USER_AFFECT', 'int');
-	if ($user_goup==-1) $user_goup='';
-
+	if ($user_goup == - 1)
+		$user_goup = '';
+	
 	$res = dolibarr_set_const($db, 'LEAD_GRP_USER_AFFECT', $user_goup, 'chaine', 0, '', $conf->entity);
-	if (! $res > 0)
+	if (! $res > 0) {
 		$error ++;
+	}
 	
 	$force_use_thirdparty = GETPOST('LEAD_FORCE_USE_THIRDPARTY', 'int');
 	$res = dolibarr_set_const($db, 'LEAD_FORCE_USE_THIRDPARTY', $force_use_thirdparty, 'yesno', 0, '', $conf->entity);
-	if (! $res > 0)
+	if (! $res > 0) {
 		$error ++;
+	}
 	
-	$errordb=0;
-	$errors=array();
-	if ($force_use_thirdparty==1) {
-		$sql='ALTER TABLE llx_lead ADD INDEX idx_llx_lead_fk_soc (fk_soc)';
-		$resql=$db->query($sql);
-		if (!$resql) {
+	$allow_multiple = GETPOST('LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT', 'int');
+	$res = dolibarr_set_const($db, 'LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT', $allow_multiple, 'yesno', 0, '', $conf->entity);
+	if (! $res > 0) {
+		$error ++;
+	}
+	
+	$errordb = 0;
+	$errors = array ();
+	if ($force_use_thirdparty == 1) {
+		$sql = 'ALTER TABLE llx_lead ADD INDEX idx_llx_lead_fk_soc (fk_soc)';
+		$resql = $db->query($sql);
+		if (! $resql) {
 			$errordb ++;
-			$errors[]=$db->lasterror;
+			$errors[] = $db->lasterror;
 		}
 		
-		$sql='ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_3 FOREIGN KEY (fk_soc) REFERENCES llx_societe (rowid)';
-		$resql=$db->query($sql);
-		if (!$resql) {
+		$sql = 'ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_3 FOREIGN KEY (fk_soc) REFERENCES llx_societe (rowid)';
+		$resql = $db->query($sql);
+		if (! $resql) {
 			$errordb ++;
-			$errors[]=$db->lasterror;
+			$errors[] = $db->lasterror;
 		}
 	} else {
-		$sql='ALTER TABLE llx_lead DROP FOREIGN KEY llx_lead_ibfk_3';
-		$resql=$db->query($sql);
-		if (!$resql) {
+		$sql = 'ALTER TABLE llx_lead DROP FOREIGN KEY llx_lead_ibfk_3';
+		$resql = $db->query($sql);
+		if (! $resql && ($db->errno()!='DB_ERROR_NOSUCHFIELD' && $db->errno()!='DB_ERROR_NO_INDEX_TO_DROP')) {
 			$errordb ++;
-			$errors[]=$db->lasterror;
+			$errors[] = $db->lasterror;
 		}
-		$sql='ALTER TABLE llx_lead DROP INDEX idx_llx_lead_fk_soc';
-		$resql=$db->query($sql);
-		if (!$resql) {
+		$sql = 'ALTER TABLE llx_lead DROP INDEX idx_llx_lead_fk_soc';
+		$resql = $db->query($sql);
+		if (! $resql  && ($db->errno()!='DB_ERROR_NOSUCHFIELD' && $db->errno()!='DB_ERROR_NO_INDEX_TO_DROP')) {
 			$errordb ++;
-			$errors[]=$db->lasterror;
+			$errors[] = $db->lasterror;
 		}
 	}
-	if (!empty($errordb)) {
-		setEventMessages(null,$errors,'errors');
+	if (! empty($errordb)) {
+		setEventMessages(null, $errors, 'errors');
 	}
-
 	
 	if (! $error) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
@@ -151,9 +159,9 @@ dol_fiche_head($head, 'settings', $langs->trans("Module103111Name"), 0, "lead@le
  */
 print_fiche_titre($langs->trans("LeadSetupPage"));
 
-$dirmodels = array_merge(array(
-	'/'
-), (array) $conf->modules_parts['models']);
+$dirmodels = array_merge(array (
+		'/' 
+), ( array ) $conf->modules_parts['models']);
 
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
@@ -168,7 +176,7 @@ clearstatcache();
 
 $form = new Form($db);
 
-foreach ($dirmodels as $reldir) {
+foreach ( $dirmodels as $reldir ) {
 	$dir = dol_buildpath($reldir . "core/modules/lead/");
 	
 	if (is_dir($dir)) {
@@ -176,12 +184,13 @@ foreach ($dirmodels as $reldir) {
 		if (is_resource($handle)) {
 			$var = true;
 			
-			while (($file = readdir($handle)) !== false) {
+			while ( ($file = readdir($handle)) !== false ) {
 				if ((substr($file, 0, 9) == 'mod_lead_') && substr($file, dol_strlen($file) - 3, 3) == 'php') {
 					$file = substr($file, 0, dol_strlen($file) - 4);
 					require_once $dir . $file . '.php';
 					
 					/**
+					 *
 					 * @var ModeleNumRefLead $module
 					 */
 					$module = new $file();
@@ -226,8 +235,8 @@ foreach ($dirmodels as $reldir) {
 						$htmltooltip = '';
 						$htmltooltip .= '' . $langs->trans("Version") . ': <b>' . $module->getVersion() . '</b><br>';
 						$nextval = $module->getNextValue($user->id, $mysoc, $businesscase);
-						if ("$nextval" != $langs->trans("NotAvailable")) 						// Keep " on nextval
-						{
+						if ("$nextval" != $langs->trans("NotAvailable")) // Keep " on nextval
+{
 							$htmltooltip .= '' . $langs->trans("NextValue") . ': ';
 							if ($nextval) {
 								$htmltooltip .= $nextval . '<br>';
@@ -273,7 +282,7 @@ print '</tr>';
 // User Group
 print '<tr class="impair"><td>' . $langs->trans("LeadUserGroupAffect") . '</td>';
 print '<td align="left">';
-print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array(), 0, '', '', $conf->entity);
+print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array (), 0, '', '', $conf->entity);
 print '</tr>';
 
 // Force use thirdparty
@@ -284,6 +293,17 @@ $arrval = array (
 		'1' => $langs->trans("Yes") 
 );
 print $form->selectarray("LEAD_FORCE_USE_THIRDPARTY", $arrval, $conf->global->LEAD_FORCE_USE_THIRDPARTY);
+print '</tr>';
+
+
+// Allow multiple lead on contract
+print '<tr class="impair"><td>' . $langs->trans("LeadAllowMultipleOnContract") . '</td>';
+print '<td align="left">';
+$arrval = array (
+		'0' => $langs->trans("No"),
+		'1' => $langs->trans("Yes") 
+);
+print $form->selectarray("LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT", $arrval, $conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT);
 print '</tr>';
 print '</table>';
 

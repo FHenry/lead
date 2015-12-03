@@ -38,6 +38,7 @@ LeadNbDayDefaultClosure = Number of days to add to the current date for closure'
 LeadAdmVar=Admin value
 LeadUserGroupAffect = Limit list of users assignable to lead to user group
 LeadForceUseThirdparty = Force use thirdparty on Lead
+LeadAllowMultipleOnContract=Allow users to attach several leads to a single contract
 
 #
 # About page

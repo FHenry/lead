@@ -38,6 +38,7 @@ LeadNbDayDefaultClosure = Nombre de jours à ajouter à la date du jour pour obt
 LeadAdmVar=Administration
 LeadUserGroupAffect = Limiter les utilisateurs affectables à une affaire au groupe
 LeadForceUseThirdparty = Forcer l'utilisation des client sur les Affaires
+LeadAllowMultipleOnContract=Autoriser l'association plusieurs affaire sur un contrat
 
 #
 # Page À propos

@@ -60,20 +60,20 @@ class FormLead extends Form
 		
 		$sql .= " FROM " . MAIN_DB_PREFIX . $tablename;
 		//TODO Fix sourcetype can be different from tablename (exemple project/projet)
-		$sql .= " WHERE rowid NOT IN (SELECT fk_source FROM " . MAIN_DB_PREFIX . "element_element WHERE targettype='" . $lead->element . "' AND sourcetype='".$tablename."')";
+		$sqlwhere=array();
+		if ($tablename!='contrat' || empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT)) {
+			$sql_inner='  rowid NOT IN (SELECT fk_source FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
+			$sql_inner.=' AND sourcetype=\''.$this->db->escape($tablename).'\')';
+			$sqlwhere[]= $sql_inner;
+		} 
+		
 		// Manage filter
-		/*if (count($filter) > 0) {
-			foreach ( $filter as $key => $value ) {
-				if (($key == 's.fk_session_place') || ($key == 'f.rowid') || ($key == 's.type_session') || ($key == 's.status') || ($key == 'sale.fk_user_com')) {
-					$sql .= ' AND ' . $key . ' = ' . $value;
-				} else {
-					$sql .= ' AND ' . $key . ' LIKE \'%' . $this->db->escape($value) . '%\'';
-				}
-			}
-		}*/
-		$sql .= " AND fk_soc=" . $lead->fk_soc;
-		$sql .= " AND entity=" . $conf->entity;
-		// $sql.= " AND entity IN (".getEntity($object->element,1).")";
+		$sqlwhere[]= ' fk_soc=' . $this->db->escape($lead->fk_soc);
+		$sqlwhere[]= ' entity IN ('.getEntity($tablename,1).')';
+		
+		if (count($sqlwhere)>0) {
+			$sql .= ' WHERE ' . implode(' AND ', $sqlwhere);
+		}
 		$sql .= " ORDER BY ref DESC";
 		
 		dol_syslog(get_class($this) . "::select_element sql=" . $sql, LOG_DEBUG);

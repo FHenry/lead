@@ -180,6 +180,15 @@ class modLead extends DolibarrModules
 				0,
 				'current',
 				1
+			),
+			5 => array(
+				'LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT',
+				'yesno',
+				'0',
+				'Allow to attach several leads to a single contract',
+				0,
+				'current',
+				1
 			)
 		);
 		
