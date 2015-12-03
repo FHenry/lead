@@ -2,6 +2,7 @@ English Lead ChangeLog
 
 ***** ChangeLog for 1.8 compared to 1.7 *****
 NEW : Add setting to disabeld thirdparty mandatory field
+NEW : Add option to link multiple lead on contract
 FIX : Shouldn't propose disabled users #13 
 
 ***** ChangeLog for 1.7 compared to 1.6 *****
