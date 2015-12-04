@@ -1,5 +1,8 @@
 English Lead ChangeLog
 
+***** ChangeLog for 1.9 compared to 1.8 *****
+FIX : Add option to link multiple lead on contract (from contract card)
+
 ***** ChangeLog for 1.8 compared to 1.7 *****
 NEW : Add setting to disabeld thirdparty mandatory field
 NEW : Add option to link multiple lead on contract
