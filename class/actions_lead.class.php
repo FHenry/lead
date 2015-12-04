@@ -61,7 +61,7 @@ class ActionsLead // extends CommonObject
 			
 			print '<br>';
 			print_fiche_titre($langs->trans('Lead'));
-			if (count($lead->doclines) == 0) {
+			if (count($lead->doclines) == 0 || ($object->table_element=='contrat' && !empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT))) {
 				print '<form action="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '" method="POST">';
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 				print '<input type="hidden" name="redirect" value="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '">';
@@ -80,7 +80,7 @@ class ActionsLead // extends CommonObject
 				$filter['t.rowid !IN'] = implode($array_exclude_lead, ',');
 			}
 			$selectList = $formlead->select_lead('', 'leadid', 1, $filter);
-			if (! empty($selectList) && count($lead->doclines) == 0) {
+			if (! empty($selectList) && (count($lead->doclines) == 0  || ($object->table_element=='contrat' && !empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT)))) {
 				print '<tr>';
 				print '<td>';
 				print $selectList;
@@ -101,7 +101,7 @@ class ActionsLead // extends CommonObject
 				print '</tr>';
 			}
 			print "</table>";
-			if (count($lead->doclines) == 0) {
+			if (count($lead->doclines) == 0  || ($object->table_element=='contrat' && !empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT))) {
 				print "</form>";
 			}
 		}
