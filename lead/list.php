@@ -401,5 +401,6 @@ if (!empty($socid)) {
 	print '</div>';
 }
 
+dol_fiche_end();
 llxFooter();
 $db->close();

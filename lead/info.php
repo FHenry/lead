@@ -55,5 +55,6 @@ dol_print_object_info($object);
 print '</td></tr></table>';
 print '</div>';
 
+dol_fiche_end();
 llxFooter();
 $db->close();

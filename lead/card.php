@@ -732,5 +732,6 @@ if ($action == 'create' && $user->rights->lead->write) {
 	}
 }
 
+dol_fiche_end();
 llxFooter();
 $db->close();

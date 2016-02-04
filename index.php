@@ -414,5 +414,7 @@ print '<div style="clear:both"></div>';
 print '<table class="noborder" width="100%">';
 
 print '</table>';
+
+dol_fiche_end();
 llxFooter();
 $db->close();

@@ -313,6 +313,8 @@ print '</tr>';
 print '</table><br>';
 print '</form>';
 
+dol_fiche_end();
+
 llxFooter();
 
 $db->close();
