@@ -130,7 +130,7 @@ if ($action == 'updateMask') {
 		}
 	}
 	if (! empty($errordb)) {
-		setEventMessages(null, $errors, 'errors');
+		setEventMessages(null, $errors, 'warnings');
 	}
 	
 	if (! $error) {
