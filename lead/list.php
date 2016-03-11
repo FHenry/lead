@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -170,7 +170,7 @@ if (! empty($search_propalid)) {
 }*/
 
 /*
-if (!empty($user->rights->societe->client->voir)) { 
+if (!empty($user->rights->societe->client->voir)) {
 	$filter['userlimitviewsoc'] = 1;
 } else {
 	$filter['userlimitviewsoc'] = 0;
@@ -221,11 +221,11 @@ $resql = $object->fetch_all($sortorder, $sortfield, $conf->liste_limit, $offset,
 
 if ($resql != - 1) {
 	$num = $resql;
-		
+
 	print_barre_liste($title, $page, $_SERVER['PHP_SELF'], $option, $sortfield, $sortorder, '', $num, $nbtotalofrecords);
-	
+
 	print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" name="search_form">' . "\n";
-	
+
 	if (! empty($sortfield))
 		print '<input type="hidden" name="sortfield" value="' . $sortfield . '"/>';
 	if (! empty($sortorder))
@@ -236,17 +236,17 @@ if ($resql != - 1) {
 		print '<input type="hidden" name="viewtype" value="' . $viewtype . '"/>';
 	if (! empty($socid))
 		print '<input type="hidden" name="socid" value="' . $socid . '"/>';
-	
+
 	$moreforfilter = $langs->trans('Period') . '(' . $langs->trans("LeadDateDebut") . ')' . ': ';
 	$moreforfilter .= $langs->trans('Month') . ':<input class="flat" type="text" size="4" name="search_month" value="' . $search_month . '">';
 	$moreforfilter .= $langs->trans('Year') . ':' . $formother->selectyear($search_year ? $search_year : - 1, 'search_year', 1, 20, 5);
-	
+
 	if ($moreforfilter) {
 		print '<div class="liste_titre">';
 		print $moreforfilter;
 		print '</div>';
 	}
-	
+
 	$i = 0;
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
@@ -259,60 +259,81 @@ if ($resql != - 1) {
 	print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
+
+
+	$extrafields = new ExtraFields($db);
+	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
+	if (count($extralabels) > 0) {
+		foreach($extralabels as $code_extra=>$label_extra) {
+			print_liste_field_titre($label_extra, $_SERVEUR['PHP_SELF'], "leadextra.".$code_extra, "", $option, 'align="right"', $sortfield, $sortorder);
+		}
+	}
+
+
 	print '<td align="center"></td>';
-	
+
 	print "</tr>\n";
-	
+
 	print '<tr class="liste_titre">';
-	
+
 	print '<td><input type="text" class="flat" name="search_ref" value="' . $search_ref . '" size="5"></td>';
-	
+
 	print '<td><input type="text" class="flat" name="search_ref_int" value="' . $search_ref_int . '" size="5"></td>';
-	
+
 	print '<td class="liste_titre">';
 	print '<input type="text" class="flat" name="search_soc" value="' . $search_soc . '" size="20">';
 	print '</td>';
-	
+
 	print '<td class="liste_titre">';
 	print $formother->select_salesrepresentatives($search_commercial, 'search_commercial', $user);
 	print '</td>';
-	
+
 	print '<td class="liste_titre">';
 	print $formlead->select_lead_status($search_status, 'search_status', 1);
 	print '</td>';
-	
+
 	print '<td class="liste_titre">';
 	print $formlead->select_lead_type($search_type, 'search_type', 1);
 	print '</td>';
-	
+
 	// amount guess
 	print '<td id="totalamountguess" align="right"></td>';
 	// amount real
 	print '<td id="totalamountreal" align="right"></td>';
 	// dt closure
 	print '<td></td>';
+
+
+	$extrafields = new ExtraFields($db);
+	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
+	if (count($extralabels) > 0) {
+		foreach($extralabels as $code_extra=>$label_extra) {
+			print '<td></td>';
+		}
+	}
+
 	// edit button
 	print '<td class="liste_titre" align="right"><input class="liste_titre" type="image" src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/search.png" value="' . dol_escape_htmltag($langs->trans("Search")) . '" title="' . dol_escape_htmltag($langs->trans("Search")) . '">';
 	print '&nbsp; ';
 	print '<input type="image" class="liste_titre" name="button_removefilter" src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/searchclear.png" value="' . dol_escape_htmltag($langs->trans("RemoveFilter")) . '" title="' . dol_escape_htmltag($langs->trans("RemoveFilter")) . '">';
 	print '</td>';
-	
+
 	print "</tr>\n";
 	print '</form>';
-	
+
 	$var = true;
 	$totalamountguess = 0;
 	$totalamountreal = 0;
-	
+
 	foreach ($object->lines as $line) {
 		/**
 		 * @var Lead $line
 		 */
-		
+
 		// Affichage tableau des lead
 		$var = ! $var;
 		print '<tr ' . $bc[$var] . '>';
-		
+
 		// Ref
 		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref . '</a>';
 		if ($line->fk_c_status!=6) {
@@ -324,10 +345,10 @@ if ($resql != - 1) {
 			}
 		}
 		print '</td>';
-		
+
 		// RefInt
 		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref_int . '</a></td>';
-		
+
 		// Societe
 		print '<td>';
 		if (! empty($line->fk_soc) && $line->fk_soc != - 1) {
@@ -338,7 +359,7 @@ if ($resql != - 1) {
 			print '&nbsp;';
 		}
 		print '</td>';
-		
+
 		// Commercial
 		print '<td>';
 		if (! empty($line->fk_user_resp)) {
@@ -349,34 +370,42 @@ if ($resql != - 1) {
 			}
 		}
 		print '</td>';
-		
+
 		// Status
 		print '<td>' . $line->status_label . '</td>';
-		
+
 		// Type
 		print '<td>' . $line->type_label . '</td>';
-		
+
 		// Amount prosp
 		print '<td align="right">' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		$totalamountguess += $line->amount_prosp;
-		
+
 		// Amount real
 		$amount = $line->getRealAmount();
 		print '<td  align="right">' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		$totalamountreal += $amount;
-		
+
 		// Closure date
 		print '<td  align="right">' . dol_print_date($line->date_closure, 'daytextshort') . '</td>';
-		
+
+		$extrafields = new ExtraFields($db);
+		$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
+		if (count($extralabels) > 0) {
+			foreach($extralabels as $code_extra=>$label_extra) {
+				print '<td>'.$line->array_options['options_'.$code_extra].'</td>';
+			}
+		}
+
 		print '<td align="center"><a href="card.php?id=' . $line->id . '&action=edit">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
-		
+
 		print "</tr>\n";
-		
+
 		$i ++;
 	}
-	
+
 	print "</table>";
-	
+
 	print '<script type="text/javascript" language="javascript">' . "\n";
 	print '$(document).ready(function() {
 					$("#totalamountguess").append("' . price($totalamountguess) . $langs->getCurrencySymbol($conf->currency) . '");
