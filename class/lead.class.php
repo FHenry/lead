@@ -314,10 +314,10 @@ class Lead extends CommonObject
 				// want this action calls a trigger.
 
 				// // Call triggers
-				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-				// $interface=new Interfaces($this->db);
-				// $result=$interface->run_triggers('MYOBJECT_CREATE',$this,$user,$langs,$conf);
-				// if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+				$interface=new Interfaces($this->db);
+				$result=$interface->run_triggers('LEAD_CREATE',$this,$user,$langs,$conf);
+				if ($result < 0) { $error++; $this->errors=$interface->errors; }
 				// // End call triggers
 			}
 		}
@@ -651,10 +651,10 @@ class Lead extends CommonObject
 				// want this action calls a trigger.
 
 				// // Call triggers
-				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-				// $interface=new Interfaces($this->db);
-				// $result=$interface->run_triggers('MYOBJECT_MODIFY',$this,$user,$langs,$conf);
-				// if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+				$interface=new Interfaces($this->db);
+				$result=$interface->run_triggers('LEAD_MODIFY',$this,$user,$langs,$conf);
+				if ($result < 0) { $error++; $this->errors=$interface->errors; }
 				// // End call triggers
 			}
 		}
@@ -712,10 +712,10 @@ class Lead extends CommonObject
 				// want this action calls a trigger.
 
 				// // Call triggers
-				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-				// $interface=new Interfaces($this->db);
-				// $result=$interface->run_triggers('MYOBJECT_DELETE',$this,$user,$langs,$conf);
-				// if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+				$interface=new Interfaces($this->db);
+				$result=$interface->run_triggers('LEAD_DELETE',$this,$user,$langs,$conf);
+				if ($result < 0) { $error++; $this->errors=$interface->errors; }
 				// // End call triggers
 			}
 		}
