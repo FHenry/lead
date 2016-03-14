@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -35,21 +35,21 @@ class modLead extends DolibarrModules
 	 * Constructor.
 	 * Define names, constants, directories, boxes, permissions
 	 *
-	 * @param DoliDB $db        	
+	 * @param DoliDB $db
 	 */
 	public function __construct($db)
 	{
 		global $langs, $conf;
-		
+
 		$this->db = $db;
-		
+
 		// Id for module (must be unique).
 		// Use a free id here
 		// (See in Home -> System information -> Dolibarr for list of used modules id).
 		$this->numero = 103111;
 		// Key text used to identify module (for permissions, menus, etc...)
 		$this->rights_class = 'lead';
-		
+
 		// Family can be 'crm','financial','hr','projects','products','ecm','technic','other'
 		// It is used to group modules in module setup page
 		$this->family = "crm";
@@ -99,20 +99,20 @@ class modLead extends DolibarrModules
 		// Set here all workflow context managed by module
 		// 'workflow' => array('order' => array('WORKFLOW_ORDER_AUTOCREATE_INVOICE'))
 				);
-		
+
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/lead/temp");
 		$this->dirs = array(
 			'/lead',
 			'/lead/stats'
 		);
-		
+
 		// Config pages. Put here list of php pages
 		// stored into lead/admin directory, used to setup module.
 		$this->config_page_url = array(
 			"admin_lead.php@lead"
 		);
-		
+
 		// Dependencies
 		// List of modules id that must be enabled if this module is enabled
 		$this->depends = array();
@@ -191,7 +191,7 @@ class modLead extends DolibarrModules
 				1
 			)
 		);
-		
+
 		// Array to add new pages in new tabs
 		// Example:
 		$this->tabs = array(
@@ -227,7 +227,7 @@ class modLead extends DolibarrModules
 			$conf->lead = (object) array();
 			$conf->lead->enabled = 0;
 		}
-		
+
 		$this->dictionnaries = array(
 			'langs' => 'lead@lead',
 			'tabname' => array(
@@ -267,20 +267,20 @@ class modLead extends DolibarrModules
 				'$conf->lead->enabled'
 			)
 		);
-		
+
 		// Boxes
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.
 		$this->boxes = array(); // Boxes list
 		$r = 0;
 		// Example:
-		
+
 		$this->boxes[$r][1] = "box_lead_current@lead";
 		$r ++;
 		$this->boxes[$r][1] = "box_lead_late@lead";
 		/*
 		 * $this->boxes[$r][1] = "myboxb.php"; $r++;
 		 */
-		
+
 		// Permissions
 		$this->rights = array(); // Permission array used by this module
 		$r = 0;
@@ -289,30 +289,30 @@ class modLead extends DolibarrModules
 		$this->rights[$r][3] = 1;
 		$this->rights[$r][4] = 'read';
 		$r ++;
-		
+
 		$this->rights[$r][0] = 1031112;
 		$this->rights[$r][1] = 'Update Leads';
 		$this->rights[$r][3] = 1;
 		$this->rights[$r][4] = 'write';
 		$r ++;
-		
+
 		$this->rights[$r][0] = 1031113;
 		$this->rights[$r][1] = 'Delete Leads';
 		$this->rights[$r][3] = 1;
 		$this->rights[$r][4] = 'delete';
 		$r ++;
-		
+
 		$this->rights[$r][0] = 1031114;
 		$this->rights[$r][1] = 'Export Leads';
 		$this->rights[$r][3] = 1;
 		$this->rights[$r][4] = 'export';
 		$r ++;
-		
+
 		// $r++;
 		// Main menu entries
 		$this->menus = array(); // List of menus to add
 		$r = 0;
-		
+
 		$this->menu[$r] = array(
 			'fk_menu' => 0,
 			'type' => 'top',
@@ -328,7 +328,7 @@ class modLead extends DolibarrModules
 			'user' => 0
 		);
 		$r ++;
-		
+
 		$this->menu[$r] = array(
 			'fk_menu' => 'fk_mainmenu=lead',
 			'type' => 'left',
@@ -343,7 +343,7 @@ class modLead extends DolibarrModules
 			'user' => 0
 		);
 		$r ++;
-		
+
 		$this->menu[$r] = array(
 			'fk_menu' => 'fk_mainmenu=lead,fk_leftmenu=Module103111Name',
 			'type' => 'left',
@@ -357,7 +357,7 @@ class modLead extends DolibarrModules
 			'user' => 0
 		);
 		$r ++;
-		
+
 		$this->menu[$r] = array(
 			'fk_menu' => 'fk_mainmenu=lead,fk_leftmenu=Module103111Name',
 			'type' => 'left',
@@ -371,7 +371,7 @@ class modLead extends DolibarrModules
 			'user' => 0
 		);
 		$r ++;
-		
+
 		$this->menu[$r] = array(
 			'fk_menu' => 'fk_mainmenu=lead,fk_leftmenu=Module103111Name',
 			'type' => 'left',
@@ -385,7 +385,7 @@ class modLead extends DolibarrModules
 			'user' => 0
 		);
 		$r ++;
-		
+
 		$this->menu[$r] = array(
 			'fk_menu' => 'fk_mainmenu=lead,fk_leftmenu=Module103111Name',
 			'type' => 'left',
@@ -399,7 +399,7 @@ class modLead extends DolibarrModules
 			'user' => 0
 		);
 		$r ++;
-		
+
 		$this->menu[$r] = array(
 			'fk_menu' => 'fk_mainmenu=lead,fk_leftmenu=Module103111Name',
 			'type' => 'left',
@@ -413,7 +413,7 @@ class modLead extends DolibarrModules
 			'user' => 0
 		);
 		$r ++;
-		
+
 		// Exports
 		$r = 0;
 		$r ++;
@@ -423,8 +423,8 @@ class modLead extends DolibarrModules
 		$this->export_permission [$r] = array (
 				array (
 						"lead",
-						"export" 
-				) 
+						"export"
+				)
 		);
 		$this->export_fields_array [$r] = array (
 				'l.rowid' => 'Id',
@@ -468,7 +468,7 @@ class modLead extends DolibarrModules
 				'l.amount_prosp' => 'lead@lead',
 				'l.description' => 'lead@lead',
 		);
-		
+
 		$this->export_sql_start [$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end [$r] = ' FROM ' . MAIN_DB_PREFIX . 'lead as l';
 		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "societe as so ON so.rowid=l.fk_soc";
@@ -477,7 +477,7 @@ class modLead extends DolibarrModules
 		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_type as dicttype ON dicttype.rowid=l.fk_c_type";
 		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "lead_extrafields as extra ON extra.fk_object=l.rowid";
 		$this->export_sql_end [$r] .= ' WHERE l.entity IN (' . getEntity("lead", 1) . ')';
-		
+
 		// Add extra fields
 		$sql="SELECT name, label, type, param FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'lead'";
 		$resql=$this->db->query($sql);
@@ -511,7 +511,49 @@ class modLead extends DolibarrModules
 				$this->export_entities_array[$r][$fieldname]='lead';
 			}
 		}
-		
+
+
+
+		//Export propal not linked with lead
+		$r ++;
+		$this->export_code [$r] = $this->rights_class . '_' . $r;
+		$this->export_label [$r] = 'ExportDataset_leadPropal';
+		$this->export_icon [$r] = 'lead@lead';
+		$this->export_permission [$r] = array (
+				array (
+						"lead",
+						"export"
+				)
+		);
+		$this->export_fields_array [$r] = array (
+				'p.rowid' => 'Id',
+				'p.ref' => 'Ref',
+				'so.nom' => 'Company',
+				'p.total' => 'TotalTTC',
+				'p.fk_statut' => 'Status',
+		);
+		$this->export_TypeFields_array [$r] = array (
+				'p.rowid' => 'Text',
+				'p.ref' => 'Text',
+				'so.nom' => 'Text',
+				'p.total' => 'Numeric',
+				'p.fk_statut' => 'Status',
+		);
+		$this->export_entities_array [$r] = array (
+				'p.rowid' => 'propal',
+				'p.ref' => 'propal',
+				'so.nom' => 'company',
+				'p.total' => 'propal',
+				'p.fk_statut' => 'propal',
+		);
+
+		$this->export_sql_start [$r] = 'SELECT DISTINCT ';
+		$this->export_sql_end [$r] = ' FROM ' . MAIN_DB_PREFIX . 'propal as p';
+		$this->export_sql_end [$r] .=  " INNER JOIN " . MAIN_DB_PREFIX . "societe as so ON so.rowid=p.fk_soc";
+		$this->export_sql_end [$r] .= ' WHERE so.entity IN (' . getEntity("societe", 1) . ')';
+		$this->export_sql_end [$r] .= '  AND p.rowid NOT IN (SELECT t.fk_source FROM ' . MAIN_DB_PREFIX . 'element_element as t WHERE t.sourcetype=\'propal\' AND t.targettype=\'lead\')';
+
+
 		// Example:
 		// $this->export_code[$r]=$this->rights_class.'_'.$r;
 		// // Translation key (used only if key ExportDataset_xxx_z not found)
@@ -615,9 +657,9 @@ class modLead extends DolibarrModules
 	public function init($options = '')
 	{
 		$sql = array();
-		
+
 		$result = $this->loadTables();
-		
+
 		return $this->_init($sql, $options);
 	}
 
@@ -632,7 +674,7 @@ class modLead extends DolibarrModules
 	public function remove($options = '')
 	{
 		$sql = array();
-		
+
 		return $this->_remove($sql, $options);
 	}
 
