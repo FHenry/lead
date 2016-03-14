@@ -1,5 +1,9 @@
 English Lead ChangeLog
 
+***** ChangeLog for 1.10 compared to 1.9 *****
+NEW : Add more information into lead box under contract/propal/etc...
+NEW : Add export on Propal not linked to Lead
+
 ***** ChangeLog for 1.9 compared to 1.8 *****
 FIX : Add option to link multiple lead on contract (from contract card)
 

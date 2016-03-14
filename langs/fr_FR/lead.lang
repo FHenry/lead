@@ -128,6 +128,7 @@ LeadStepLabel=Étape de vente Libellé
 LeadTypeCode=Type code
 LeadTypeLabel=Types Libellé
 lead@lead=Affaires
+ExportDataset_leadPropal=Proposition commercial non liée à un Lead
 
 #
 # List

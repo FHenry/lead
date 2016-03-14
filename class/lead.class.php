@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -62,7 +62,7 @@ class Lead extends CommonObject
 	var $status = array ();
 	var $type = array ();
 	var $listofreferent = array ();
-	
+
 	/**
 	 * Constructor
 	 *
@@ -71,9 +71,9 @@ class Lead extends CommonObject
 	 */
 	function __construct($db, $load_dict = 1) {
 		global $conf, $user;
-		
+
 		$this->db = $db;
-		
+
 		if (! empty($load_dict)) {
 			$result_status = $this->loadStatus();
 			$result_type = $this->loadType();
@@ -81,16 +81,16 @@ class Lead extends CommonObject
 			$result_status = 1;
 			$result_type = 1;
 		}
-		
+
 		if (! empty($conf->propal->enabled)) {
 			$this->listofreferent['propal'] = array (
 					'title' => "Proposal",
 					'class' => 'Propal',
 					'table' => 'propal',
 					'filter' => array (
-							'fk_statut' => '0,1,2' 
+							'fk_statut' => '0,1,2'
 					),
-					'test' => $conf->propal->enabled && $user->rights->propale->lire 
+					'test' => $conf->propal->enabled && $user->rights->propale->lire
 			);
 		}
 		if (! empty($conf->facture->enabled)) {
@@ -98,7 +98,7 @@ class Lead extends CommonObject
 					'title' => "Bill",
 					'class' => 'Facture',
 					'table' => 'facture',
-					'test' => $conf->facture->enabled && $user->rights->facture->lire 
+					'test' => $conf->facture->enabled && $user->rights->facture->lire
 			);
 		}
 		if (! empty($conf->contrat->enabled)) {
@@ -106,7 +106,7 @@ class Lead extends CommonObject
 					'title' => "Contrat",
 					'class' => 'Contrat',
 					'table' => 'contrat',
-					'test' => $conf->contrat->enabled && $user->rights->contrat->lire 
+					'test' => $conf->contrat->enabled && $user->rights->contrat->lire
 			);
 		}
 		if (! empty($conf->commande->enabled)) {
@@ -117,31 +117,31 @@ class Lead extends CommonObject
 					'test' => $conf->commande->enabled && $user->rights->commande->lire
 			);
 		}
-		
+
 		return ($result_status && $result_type);
 	}
-	
+
 	/**
 	 * Load status array
 	 */
 	private function loadStatus() {
 		global $langs;
-		
+
 		$sql = "SELECT rowid, code, label, active FROM " . MAIN_DB_PREFIX . "c_lead_status WHERE active=1";
 		dol_syslog(get_class($this) . "::_load_status sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			while ( $obj = $this->db->fetch_object($resql) ) {
-				
+
 				$label = $langs->trans('LeadStatus_' . $obj->code);
 				if ($label == 'LeadStatus_' . $obj->code) {
 					$label = $obj->label;
 				}
-				
+
 				$this->status[$obj->rowid] = $label;
 			}
 			$this->db->free($resql);
-			
+
 			return 1;
 		} else {
 			$this->error = "Error " . $this->db->lasterror();
@@ -149,13 +149,13 @@ class Lead extends CommonObject
 			return - 1;
 		}
 	}
-	
+
 	/**
 	 * Load type array
 	 */
 	private function loadType() {
 		global $langs;
-		
+
 		$sql = "SELECT rowid, code, label FROM " . MAIN_DB_PREFIX . "c_lead_type  WHERE active=1";
 		dol_syslog(get_class($this) . "::_load_type sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
@@ -165,11 +165,11 @@ class Lead extends CommonObject
 				if ($label == 'LeadType_' . $obj->code) {
 					$label = $obj->label;
 				}
-				
+
 				$this->type[$obj->rowid] = $label;
 			}
 			$this->db->free($resql);
-			
+
 			return 1;
 		} else {
 			$this->error = "Error " . $this->db->lasterror();
@@ -177,7 +177,7 @@ class Lead extends CommonObject
 			return - 1;
 		}
 	}
-	
+
 	/**
 	 * Create object into database
 	 *
@@ -188,9 +188,9 @@ class Lead extends CommonObject
 	function create($user, $notrigger = 0) {
 		global $conf, $langs;
 		$error = 0;
-		
+
 		// Clean parameters
-		
+
 		if (isset($this->ref))
 			$this->ref = trim($this->ref);
 		if (isset($this->ref_ext))
@@ -217,10 +217,10 @@ class Lead extends CommonObject
 			$this->note_private = trim($this->note_private);
 		if (isset($this->note_public))
 			$this->note_public = trim($this->note_public);
-			
+
 			// Check parameters
 			// Put here code to add control on parameters values
-		
+
 		if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
 			if (empty($this->fk_soc)) {
 				$error ++;
@@ -251,11 +251,11 @@ class Lead extends CommonObject
 			$error ++;
 			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadDeadLine'));
 		}
-		
+
 		if (! $error) {
 			// Insert request
 			$sql = "INSERT INTO " . MAIN_DB_PREFIX . "lead(";
-			
+
 			$sql .= "entity,";
 			$sql .= "ref,";
 			$sql .= "ref_ext,";
@@ -273,9 +273,9 @@ class Lead extends CommonObject
 			$sql .= "datec,";
 			$sql .= "fk_user_mod,";
 			$sql .= "tms";
-			
+
 			$sql .= ") VALUES (";
-			
+
 			$sql .= " " . $conf->entity . ",";
 			$sql .= " " . (! isset($this->ref) ? 'NULL' : "'" . $this->db->escape($this->ref) . "'") . ",";
 			$sql .= " " . (! isset($this->ref_ext) ? 'NULL' : "'" . $this->db->escape($this->ref_ext) . "'") . ",";
@@ -293,11 +293,11 @@ class Lead extends CommonObject
 			$sql .= " '" . $this->db->idate(dol_now()) . "',";
 			$sql .= " " . $user->id . ",";
 			$sql .= " '" . $this->db->idate(dol_now()) . "'";
-			
+
 			$sql .= ")";
-			
+
 			$this->db->begin();
-			
+
 			dol_syslog(get_class($this) . "::create sql=" . $sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if (! $resql) {
@@ -305,14 +305,14 @@ class Lead extends CommonObject
 				$this->errors[] = "Error " . $this->db->lasterror();
 			}
 		}
-		
+
 		if (! $error) {
 			$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX . "lead");
-			
+
 			if (! $notrigger) {
 				// Uncomment this and change MYOBJECT to your own tag if you
 				// want this action calls a trigger.
-				
+
 				// // Call triggers
 				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				// $interface=new Interfaces($this->db);
@@ -321,9 +321,9 @@ class Lead extends CommonObject
 				// // End call triggers
 			}
 		}
-		
+
 		if (! $error) {
-			
+
 			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) {
 				$result = $this->insertExtraFields();
 				if ($result < 0) {
@@ -331,7 +331,7 @@ class Lead extends CommonObject
 				}
 			}
 		}
-		
+
 		// Commit or rollback
 		if ($error) {
 			foreach ( $this->errors as $errmsg ) {
@@ -345,7 +345,7 @@ class Lead extends CommonObject
 			return $this->id;
 		}
 	}
-	
+
 	/**
 	 * Load object in memory from the database
 	 *
@@ -356,7 +356,7 @@ class Lead extends CommonObject
 		global $langs;
 		$sql = "SELECT";
 		$sql .= " t.rowid,";
-		
+
 		$sql .= " t.ref,";
 		$sql .= " t.ref_ext,";
 		$sql .= " t.ref_int,";
@@ -373,19 +373,19 @@ class Lead extends CommonObject
 		$sql .= " t.datec,";
 		$sql .= " t.fk_user_mod,";
 		$sql .= " t.tms";
-		
+
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		$sql .= " WHERE t.rowid = " . $id;
 		$sql .= " AND t.entity IN (" . getEntity('lead', 1).")";
-		
+
 		dol_syslog(get_class($this) . "::fetch sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			if ($this->db->num_rows($resql)) {
 				$obj = $this->db->fetch_object($resql);
-				
+
 				$this->id = $obj->rowid;
-				
+
 				$this->ref = $obj->ref;
 				$this->ref_ext = $obj->ref_ext;
 				$this->ref_int = $obj->ref_int;
@@ -404,7 +404,7 @@ class Lead extends CommonObject
 				$this->tms = $this->db->jdate($obj->tms);
 				$this->status_label = $this->status[$this->fk_c_status];
 				$this->type_label = $this->type[$this->fk_c_type];
-				
+
 				$extrafields = new ExtraFields($this->db);
 				$extralabels = $extrafields->fetch_name_optionals_label($this->table_element, true);
 				if (count($extralabels) > 0) {
@@ -412,7 +412,7 @@ class Lead extends CommonObject
 				}
 			}
 			$this->db->free($resql);
-			
+
 			return 1;
 		} else {
 			$this->error = "Error " . $this->db->lasterror();
@@ -420,7 +420,7 @@ class Lead extends CommonObject
 			return - 1;
 		}
 	}
-	
+
 	/**
 	 * Load object in memory from the database
 	 *
@@ -436,7 +436,7 @@ class Lead extends CommonObject
 		global $langs;
 		$sql = "SELECT";
 		$sql .= " t.rowid,";
-		
+
 		$sql .= " t.ref,";
 		$sql .= " t.ref_ext,";
 		$sql .= " t.ref_int,";
@@ -453,15 +453,16 @@ class Lead extends CommonObject
 		$sql .= " t.datec,";
 		$sql .= " t.fk_user_mod,";
 		$sql .= " t.tms";
-		
+
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as so ON so.rowid=t.fk_soc";
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "user as usr ON usr.rowid=t.fk_user_resp";
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_status as leadsta ON leadsta.rowid=t.fk_c_status";
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_type as leadtype ON leadtype.rowid=t.fk_c_type";
-		
+		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "lead_extrafields as leadextra ON leadextra.fk_object=t.rowid";
+
 		$sql .= " WHERE t.entity IN (" . getEntity('lead') . ")";
-		
+
 		if (is_array($filter)) {
 			foreach ( $filter as $key => $value ) {
 				if (($key == 't.fk_c_status') || ($key == 't.rowid') || ($key == 'so.rowid') || ($key == 't.fk_c_type') || ($key == 't.fk_user_resp')) {
@@ -481,26 +482,26 @@ class Lead extends CommonObject
 				}
 			}
 		}
-		
+
 		if (! empty($sortfield)) {
 			$sql .= " ORDER BY " . $sortfield . ' ' . $sortorder;
 		}
-		
+
 		if (! empty($limit)) {
 			$sql .= ' ' . $this->db->plimit($limit + 1, $offset);
 		}
-		
+
 		dol_syslog(get_class($this) . "::fetch_all sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			$this->lines = array ();
-			
+
 			$num = $this->db->num_rows($resql);
-			
+
 			while ( $obj = $this->db->fetch_object($resql) ) {
-				
+
 				$line = new Lead($this->db, 1);
-				
+
 				$line->id = $obj->rowid;
 				$line->ref = $obj->ref;
 				$line->ref_ext = $obj->ref_ext;
@@ -520,17 +521,17 @@ class Lead extends CommonObject
 				$line->tms = $this->db->jdate($obj->tms);
 				$line->status_label = $this->status[$line->fk_c_status];
 				$line->type_label = $this->type[$line->fk_c_type];
-				
+
 				$extrafields = new ExtraFields($this->db);
 				$extralabels = $extrafields->fetch_name_optionals_label($this->table_element, true);
 				if (count($extralabels) > 0) {
 					$line->fetch_optionals($line->id, $extralabels);
 				}
-				
+
 				$this->lines[] = $line;
 			}
 			$this->db->free($resql);
-			
+
 			return $num;
 		} else {
 			$this->error = "Error " . $this->db->lasterror();
@@ -538,7 +539,7 @@ class Lead extends CommonObject
 			return - 1;
 		}
 	}
-	
+
 	/**
 	 * Update object into database
 	 *
@@ -549,9 +550,9 @@ class Lead extends CommonObject
 	function update($user = null, $notrigger = 0) {
 		global $conf, $langs;
 		$error = 0;
-		
+
 		// Clean parameters
-		
+
 		if (isset($this->ref))
 			$this->ref = trim($this->ref);
 		if (isset($this->ref_ext))
@@ -578,10 +579,10 @@ class Lead extends CommonObject
 			$this->note_private = trim($this->note_private);
 		if (isset($this->note_public))
 			$this->note_public = trim($this->note_public);
-			
+
 			// Check parameters
 			// Put here code to add a control on parameters values
-		
+
 		if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
 			if (empty($this->fk_soc)) {
 				$error ++;
@@ -612,11 +613,11 @@ class Lead extends CommonObject
 			$error ++;
 			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadDeadLine'));
 		}
-		
+
 		if (! $error) {
 			// Update request
 			$sql = "UPDATE " . MAIN_DB_PREFIX . "lead SET";
-			
+
 			$sql .= " ref=" . (isset($this->ref) ? "'" . $this->db->escape($this->ref) . "'" : "null") . ",";
 			$sql .= " ref_ext=" . (isset($this->ref_ext) ? "'" . $this->db->escape($this->ref_ext) . "'" : "null") . ",";
 			$sql .= " ref_int=" . (isset($this->ref_int) ? "'" . $this->db->escape($this->ref_int) . "'" : "null") . ",";
@@ -631,11 +632,11 @@ class Lead extends CommonObject
 			$sql .= " note_public=" . (! empty($this->note_public) ? "'" . $this->db->escape($this->note_public) . "'" : "null") . ",";
 			$sql .= " fk_user_mod=" . $user->id . ",";
 			$sql .= " tms='" . $this->db->idate(dol_now()) . "'";
-			
+
 			$sql .= " WHERE rowid=" . $this->id;
-			
+
 			$this->db->begin();
-			
+
 			dol_syslog(get_class($this) . "::update sql=" . $sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if (! $resql) {
@@ -643,12 +644,12 @@ class Lead extends CommonObject
 				$this->errors[] = "Error " . $this->db->lasterror();
 			}
 		}
-		
+
 		if (! $error) {
 			if (! $notrigger) {
 				// Uncomment this and change MYOBJECT to your own tag if you
 				// want this action calls a trigger.
-				
+
 				// // Call triggers
 				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				// $interface=new Interfaces($this->db);
@@ -666,9 +667,9 @@ class Lead extends CommonObject
 				}
 			}
 		}
-		
+
 		if (! $error) {
-			
+
 			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
 			{
 				$result = $this->insertExtraFields();
@@ -677,7 +678,7 @@ class Lead extends CommonObject
 				}
 			}
 		}
-		
+
 		// Commit or rollback
 		if ($error) {
 			foreach ( $this->errors as $errmsg ) {
@@ -691,7 +692,7 @@ class Lead extends CommonObject
 			return 1;
 		}
 	}
-	
+
 	/**
 	 * Delete object in database
 	 *
@@ -702,14 +703,14 @@ class Lead extends CommonObject
 	function delete($user, $notrigger = 0) {
 		global $conf, $langs;
 		$error = 0;
-		
+
 		$this->db->begin();
-		
+
 		if (! $error) {
 			if (! $notrigger) {
 				// Uncomment this and change MYOBJECT to your own tag if you
 				// want this action calls a trigger.
-				
+
 				// // Call triggers
 				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				// $interface=new Interfaces($this->db);
@@ -718,11 +719,11 @@ class Lead extends CommonObject
 				// // End call triggers
 			}
 		}
-		
+
 		if (! $error) {
 			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "lead_extrafields";
 			$sql .= " WHERE fk_object=" . $this->id;
-			
+
 			dol_syslog(get_class($this) . "::delete sql=" . $sql);
 			$resql = $this->db->query($sql);
 			if (! $resql) {
@@ -730,11 +731,11 @@ class Lead extends CommonObject
 				$this->errors[] = "Error " . $this->db->lasterror();
 			}
 		}
-		
+
 		if (! $error) {
 			$sql = "DELETE FROM " . MAIN_DB_PREFIX . "lead";
 			$sql .= " WHERE rowid=" . $this->id;
-			
+
 			dol_syslog(get_class($this) . "::delete sql=" . $sql);
 			$resql = $this->db->query($sql);
 			if (! $resql) {
@@ -742,7 +743,7 @@ class Lead extends CommonObject
 				$this->errors[] = "Error " . $this->db->lasterror();
 			}
 		}
-		
+
 		// Commit or rollback
 		if ($error) {
 			foreach ( $this->errors as $errmsg ) {
@@ -756,7 +757,7 @@ class Lead extends CommonObject
 			return 1;
 		}
 	}
-	
+
 	/**
 	 * Load an object from its id and create a new one in database
 	 *
@@ -765,30 +766,30 @@ class Lead extends CommonObject
 	 */
 	function createFromClone($fromid) {
 		global $user, $langs;
-		
+
 		$error = 0;
-		
+
 		$object = new Lead($this->db);
-		
+
 		$this->db->begin();
-		
+
 		// Load source object
 		$object->fetch($fromid);
 		$object->ref = $object->getNextNumRef();
 		$object->ref_int = $this->ref_int;
-		
+
 		// Create clone
 		$result = $object->create($user);
-		
+
 		// Other options
 		if ($result < 0) {
 			$this->error = $object->error;
 			$error ++;
 		}
-		
+
 		if (! $error) {
 		}
-		
+
 		// End
 		if (! $error) {
 			$this->db->commit();
@@ -798,7 +799,7 @@ class Lead extends CommonObject
 			return - 1;
 		}
 	}
-	
+
 	/**
 	 * Initialise object with example values
 	 * Id must be 0 if object instance is a specimen
@@ -825,7 +826,7 @@ class Lead extends CommonObject
 		$this->fk_user_mod = '';
 		$this->tms = '';
 	}
-	
+
 	/**
 	 * Returns the reference to the following non used Lead used depending on the active numbering module
 	 * defined into LEAD_ADDON
@@ -837,11 +838,11 @@ class Lead extends CommonObject
 	function getNextNumRef($fk_user = null, Societe $objsoc = null) {
 		global $conf, $langs;
 		$langs->load("lead@lead");
-		
+
 		$dirmodels = array_merge(array (
-				'/' 
+				'/'
 		), ( array ) $conf->modules_parts['models']);
-		
+
 		if (! empty($conf->global->LEAD_ADDON)) {
 			foreach ( $dirmodels as $reldir ) {
 				$dir = dol_buildpath($reldir . "core/modules/lead/");
@@ -849,22 +850,22 @@ class Lead extends CommonObject
 					$handle = opendir($dir);
 					if (is_resource($handle)) {
 						$var = true;
-						
+
 						while ( ($file = readdir($handle)) !== false ) {
 							if ($file == $conf->global->LEAD_ADDON . '.php') {
 								$file = substr($file, 0, dol_strlen($file) - 4);
 								require_once $dir . $file . '.php';
-								
+
 								$module = new $file();
-								
+
 								// Chargement de la classe de numerotation
 								$classname = $conf->global->LEAD_ADDON;
-								
+
 								$obj = new $classname();
-								
+
 								$numref = "";
 								$numref = $obj->getNextValue($fk_user, $objsoc, $this);
-								
+
 								if ($numref != "") {
 									return $numref;
 								} else {
@@ -884,7 +885,7 @@ class Lead extends CommonObject
 
 		return null;
 	}
-	
+
 	/**
 	 * Give information on the object
 	 *
@@ -893,12 +894,12 @@ class Lead extends CommonObject
 	 */
 	function info($id) {
 		global $langs;
-		
+
 		$sql = "SELECT";
 		$sql .= " p.rowid, p.datec, p.tms, p.fk_user_mod, p.fk_user_author";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as p";
 		$sql .= " WHERE p.rowid = " . $id;
-		
+
 		dol_syslog(get_class($this) . "::info sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -918,22 +919,22 @@ class Lead extends CommonObject
 			return - 1;
 		}
 	}
-	
+
 	/**
 	 * Calculate the proposal signed amount versus invoiced amount
-	 * 
+	 *
 	 * @return number
 	 */
 	public function getRealAmount() {
 		$totalinvoiceamount = 0;
 		$totalproposalamount = 0;
-		
+
 		$sql = "SELECT SUM(fac.total) as totalamount ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "facture as fac";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
 		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='facture' AND elmt.fk_source=fac.rowid";
 		$sql .= " AND fac.fk_statut = 1";
-		
+
 		dol_syslog(get_class($this) . "::getRealAmount sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -948,13 +949,13 @@ class Lead extends CommonObject
 			dol_syslog(get_class($this) . "::getRealAmount " . $this->error, LOG_ERR);
 			return - 1;
 		}
-		
+
 		$sql = "SELECT SUM(propal.total_ht) as totalamount ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "propal as propal";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
 		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='propal' AND elmt.fk_source=propal.rowid";
 		$sql .= " AND propal.fk_statut = 1";
-		
+
 		dol_syslog(get_class($this) . "::getRealAmount sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -969,27 +970,27 @@ class Lead extends CommonObject
 			dol_syslog(get_class($this) . "::getRealAmount " . $this->error, LOG_ERR);
 			return - 1;
 		}
-		
+
 		return ($totalproposalamount - $totalinvoiceamount);
 	}
-	
+
 	/**
 	 * Find is a obejct (propal signed or invoice) exists for the lead
-	 * 
+	 *
 	 * @return int <0 if KO, >0 if OK
 	 */
 	public function isObjectSignedExists() {
-		
+
 		$nbobjectwined=0;
-		
-		
+
+
 		//Count nb propal wined for this lead
 		$sql = "SELECT COUNT(DISTINCT propal.rowid) as cnt ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "propal as propal";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
 		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='propal' AND elmt.fk_source=propal.rowid";
 		$sql .= " AND propal.fk_statut = 2";
-		
+
 		dol_syslog(get_class($this) . "::isObjectSignedExists sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -1003,14 +1004,14 @@ class Lead extends CommonObject
 			dol_syslog(get_class($this) . "::isProposalSignedExists " . $this->error, LOG_ERR);
 			return - 1;
 		}
-		
+
 		//Count nb invocie valid for this lead
 		$sql = "SELECT COUNT(DISTINCT fac.rowid) as totalamount ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "facture as fac";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
 		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='facture' AND elmt.fk_source=fac.rowid";
 		$sql .= " AND fac.fk_statut <> 0";
-		
+
 		dol_syslog(get_class($this) . "::isObjectSignedExists sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -1024,11 +1025,11 @@ class Lead extends CommonObject
 			dol_syslog(get_class($this) . "::isProposalSignedExists " . $this->error, LOG_ERR);
 			return - 1;
 		}
-		
+
 		return $nbobjectwined;
 	}
-	
-	
+
+
 	/**
 	 * Load properties id_previous and id_next
 	 *
@@ -1038,18 +1039,18 @@ class Lead extends CommonObject
 	 */
 	function load_previous_next_ref_custom($filter, $fieldid) {
 		global $conf, $user;
-		
+
 		if (! $this->table_element) {
 			dol_print_error(null, get_class ( $this ) . "::load_previous_next_ref was called on objet with property table_element not defined");
 			return - 1;
 		}
-		
+
 		// this->ismultientitymanaged contains
 		// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 		$alias = 's';
 		if ($this->element == 'societe')
 			$alias = 'te';
-		
+
 		$sql = "SELECT MAX(te." . $fieldid . ")";
 		$sql .= " FROM " . MAIN_DB_PREFIX . $this->table_element . " as te";
 		if (isset($this->ismultientitymanaged) && $this->ismultientitymanaged == 2 || ($this->element != 'societe' && empty($this->isnolinkedbythird) && empty($user->rights->societe->client->voir)))
@@ -1065,7 +1066,7 @@ class Lead extends CommonObject
 			$sql .= ' AND te.fk_soc = s.rowid';
 		if (isset($this->ismultientitymanaged) && $this->ismultientitymanaged == 1)
 			$sql .= ' AND te.entity IN (' . getEntity($this->element, 1) . ')';
-			
+
 			// print $sql."<br>";
 		$result = $this->db->query($sql);
 		if (! $result) {
@@ -1074,7 +1075,7 @@ class Lead extends CommonObject
 		}
 		$row = $this->db->fetch_row($result);
 		$this->ref_previous = $row[0];
-		
+
 		$sql = "SELECT MIN(te." . $fieldid . ")";
 		$sql .= " FROM " . MAIN_DB_PREFIX . $this->table_element . " as te";
 		if (isset($this->ismultientitymanaged) && $this->ismultientitymanaged == 2 || ($this->element != 'societe' && empty($this->isnolinkedbythird) && ! $user->rights->societe->client->voir))
@@ -1088,12 +1089,12 @@ class Lead extends CommonObject
 			$sql .= " AND " . $filter;
 		if (isset($this->ismultientitymanaged) && $this->ismultientitymanaged == 2 || ($this->element != 'societe' && empty($this->isnolinkedbythird) && ! $user->rights->societe->client->voir))
 			$sql .= ' AND te.fk_soc = s.rowid'; // If
-		
+
 		if (isset($this->ismultientitymanaged) && $this->ismultientitymanaged == 1)
 			$sql .= ' AND te.entity IN (' . getEntity($this->element, 1) . ')';
 			// Rem: Bug in some mysql version: SELECT MIN(rowid) FROM llx_socpeople WHERE rowid > 1 when one row in database with rowid=1, returns 1
 			// instead of null
-			
+
 		// print $sql."<br>";
 		$result = $this->db->query($sql);
 		if (! $result) {
@@ -1102,10 +1103,10 @@ class Lead extends CommonObject
 		}
 		$row = $this->db->fetch_row($result);
 		$this->ref_next = $row[0];
-		
+
 		return 1;
 	}
-	
+
 	/**
 	 * Load object in memory from database
 	 *
@@ -1116,7 +1117,7 @@ class Lead extends CommonObject
 	 */
 	public function fetchDocumentLink($id, $tablename) {
 		global $langs;
-		
+
 		$this->doclines = array ();
 		if (!empty($id)) {
 			$sql = "SELECT";
@@ -1132,33 +1133,33 @@ class Lead extends CommonObject
 				$sql .= " AND t.sourcetype='" . $tablename . "'";
 			}
 			$sql .= " ORDER BY t.sourcetype";
-			
+
 			dol_syslog(get_class($this) . "::fetchDocumentLink sql=" . $sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql) {
 				while ( $obj = $this->db->fetch_object($resql) ) {
 					$line = new DocLink($this->db);
-					
+
 					$line->id = $obj->rowid;
 					$line->fk_source = $obj->fk_source;
 					$line->sourcetype = $obj->sourcetype;
 					$line->fk_target = $obj->fk_target;
 					$line->targettype = $obj->targettype;
-					
+
 					$this->doclines[] = $line;
 				}
 				$this->db->free($resql);
-				
+
 				return 1;
 			} else {
 				$this->error = "Error " . $this->db->lasterror();
 				dol_syslog(get_class($this) . "::fetchDocumentLink " . $this->error, LOG_ERR);
-				
+
 				return - 1;
 			}
 		}
 	}
-	
+
 	/**
 	 * Load object in memory from database
 	 *
@@ -1169,9 +1170,9 @@ class Lead extends CommonObject
 	 */
 	public function fetchLeadLink($id, $tablename) {
 		global $langs;
-		
+
 		$this->doclines = array ();
-		
+
 		$sql = "SELECT";
 		$sql .= " t.rowid,";
 		$sql .= " t.fk_source,";
@@ -1179,13 +1180,14 @@ class Lead extends CommonObject
 		$sql .= " t.fk_target,";
 		$sql .= " t.targettype";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "element_element as t";
+		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "lead as l ON l.rowid=t.fk_target";
 		$sql .= " WHERE t.fk_source = " . $id;
 		$sql .= " AND t.targettype='lead'";
 		if (! empty($tablename)) {
 			$sql .= " AND t.sourcetype='" . $tablename . "'";
 		}
-		$sql .= " ORDER BY t.sourcetype";
-		
+		$sql .= " ORDER BY l.date_closure ASC";
+
 		dol_syslog(get_class($this) . "::fetchDocumentLink sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
@@ -1195,16 +1197,16 @@ class Lead extends CommonObject
 				$this->doclines[] = $line;
 			}
 			$this->db->free($resql);
-			
+
 			return 1;
 		} else {
 			$this->error = "Error " . $this->db->lasterror();
 			dol_syslog(get_class($this) . "::fetchDocumentLink " . $this->error, LOG_ERR);
-			
+
 			return - 1;
 		}
 	}
-	
+
 	/**
 	 * Return name with link
 	 *
@@ -1214,15 +1216,15 @@ class Lead extends CommonObject
 	 */
 	public function getNomUrl($withpicto = 0) {
 		global $langs;
-		
+
 		$result = '';
-		
+
 		$lien = '<a href="' . dol_buildpath('lead/lead/card.php', 1) . '?id=' . $this->id . '">';
 		$lienfin = '</a>';
-		
+
 		$picto = 'propal';
 		$label = $langs->trans("LeadShowLead") . ': ' . $this->ref;
-		
+
 		if ($withpicto)
 			$result .= ($lien . img_object($label, $picto) . $lienfin);
 		if ($withpicto && $withpicto != 2)
@@ -1230,7 +1232,7 @@ class Lead extends CommonObject
 		$result .= $lien . $this->ref . $lienfin;
 		return $result;
 	}
-	
+
 	/**
 	 * Return status
 	 *
@@ -1239,7 +1241,7 @@ class Lead extends CommonObject
 	 * @return string
 	 */
 	public function getLibStatut($mode = 0) {
-		
+
 		if (! empty($this->fk_c_status)) {
 			return $this->LibStatut($this->fk_c_status,$mode);
 		} else {
@@ -1248,14 +1250,14 @@ class Lead extends CommonObject
 	}
 	/**
 	 * Return formatted status
-	 * 
+	 *
 	 * @param int $statut Status step
 	 * @param int $mode Format mode
 	 *
 	 * @return string
 	 */
 	public function LibStatut ($statut,$mode) {
-		
+
 		if ($mode==0) {
 			return $this->status[$statut];
 		} elseif ($mode==1) {
@@ -1263,7 +1265,7 @@ class Lead extends CommonObject
 			elseif ($statut==6) return img_picto($this->status[$statut],'statut3').' '.$this->status[$statut];
 			elseif ($statut==7) return img_picto($this->status[$statut],'statut8').' '.$this->status[$statut];
 			else return img_picto($this->status[$statut],'statut1').' '.$this->status[$statut];
-		} 
+		}
 		elseif ($mode==2) {
 			if ($statut==1) return img_picto($this->status[$statut],'statut0');
 			elseif ($statut==6) return img_picto($this->status[$statut],'statut3');
@@ -1282,23 +1284,23 @@ class Lead extends CommonObject
 	 */
 	public function closeAllProposal(User $user) {
 		global $langs;
-		
+
 		$error=0;
-		
+
 		$this->db->begin();
-		
+
 		if (! empty($conf->propal->enabled))
 			require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
-		
+
 		if (empty($error)) {
-			
+
 			$ret = $this->fetchDocumentLink($this->id, $this->listofreferent['propal']['table']);
 			if ($result<0) {
 				$this->errors[]=$this->error;
 				$error++;
 			}
 		}
-		
+
 		if (empty($error)) {
 			//Close all propal linked
 			$elementarray = array();
@@ -1310,8 +1312,8 @@ class Lead extends CommonObject
 				$total_ttc = 0;
 				$num = count($elementarray);
 				foreach ($elementarray as $line) {
-					
-					
+
+
 					$element = new $classname($this->db);
 					$element->fetch($line->fk_source);
 					//Close only proposal not already close
@@ -1325,7 +1327,7 @@ class Lead extends CommonObject
 				}
 			}
 		}
-		
+
 		if (empty($error)) {
 			$this->db->commit();
 			return null;
@@ -1340,7 +1342,7 @@ class Lead extends CommonObject
 			return - 1 * $error;
 		}
 }
-		
+
 /**
  * Class DocLink
  */
