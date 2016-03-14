@@ -81,7 +81,7 @@ class modLead extends DolibarrModules
 		                            // for specific css file (eg: /lead/css/lead.css.php)
 		$this->module_parts = array(
 			// Set this to 1 if module has its own trigger directory
-			// 'triggers' => 1,
+			'triggers' => 1,
 			// Set this to 1 if module has its own login method directory
 			// 'login' => 0,
 			// Set this to 1 if module has its own substitution function file
