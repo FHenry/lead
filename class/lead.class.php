@@ -82,7 +82,7 @@ class Lead extends CommonObject
 			$result_type = 1;
 		}
 
-		if (! empty($conf->propal->enabled)) {
+		/*if (! empty($conf->propal->enabled)) {
 			$this->listofreferent['propal'] = array (
 					'title' => "Proposal",
 					'class' => 'Propal',
@@ -100,7 +100,7 @@ class Lead extends CommonObject
 					'table' => 'facture',
 					'test' => $conf->facture->enabled && $user->rights->facture->lire
 			);
-		}
+		}*/
 		if (! empty($conf->contrat->enabled)) {
 			$this->listofreferent['contract'] = array (
 					'title' => "Contrat",
@@ -109,14 +109,14 @@ class Lead extends CommonObject
 					'test' => $conf->contrat->enabled && $user->rights->contrat->lire
 			);
 		}
-		if (! empty($conf->commande->enabled)) {
+		/*if (! empty($conf->commande->enabled)) {
 			$this->listofreferent['orders'] = array (
 					'title' => "Commande",
 					'class' => 'Commande',
 					'table' => 'commande',
 					'test' => $conf->commande->enabled && $user->rights->commande->lire
 			);
-		}
+		}*/
 
 		return ($result_status && $result_type);
 	}

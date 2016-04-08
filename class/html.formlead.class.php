@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@ class FormLead extends Form
 	function select_element($tablename, $lead, $htmlname = 'elementselect')
 	{
 		global $langs, $conf;
-		
+
 		switch ($tablename) {
 			case "facture":
 				$sql = "SELECT rowid, facnumber as ref, total as total_ht, date_valid as date_element";
@@ -57,27 +57,27 @@ class FormLead extends Form
 				$sql = "SELECT rowid, ref, total_ht, datep as date_element";
 				break;
 		}
-		
+
 		$sql .= " FROM " . MAIN_DB_PREFIX . $tablename;
 		//TODO Fix sourcetype can be different from tablename (exemple project/projet)
 		$sqlwhere=array();
-		if ($tablename!='contrat' || empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT)) {
+		//if ($tablename!='contrat' || empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT)) {
 			$sql_inner='  rowid NOT IN (SELECT fk_source FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
 			$sql_inner.=' AND sourcetype=\''.$this->db->escape($tablename).'\')';
 			$sqlwhere[]= $sql_inner;
-		} 
-		
+		//}
+
 		// Manage filter
 		$sqlwhere[]= ' fk_soc=' . $this->db->escape($lead->fk_soc);
 		$sqlwhere[]= ' entity IN ('.getEntity($tablename,1).')';
-		
+
 		if (count($sqlwhere)>0) {
 			$sql .= ' WHERE ' . implode(' AND ', $sqlwhere);
 		}
-		$sql .= " ORDER BY ref DESC";
-		
-		dol_syslog(get_class($this) . "::select_element sql=" . $sql, LOG_DEBUG);
-		
+		$sql .= $this->db->order('ref','DESC');
+
+		dol_syslog(get_class($this) . "::".__METHOD__, LOG_DEBUG);
+
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			$num = $this->db->num_rows($resql);
@@ -117,28 +117,28 @@ class FormLead extends Form
 	function showrefnav($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '')
 	{
 		global $langs, $conf;
-		
+
 		$ret = '';
 		if (empty($fieldid))
 			$fieldid = 'rowid';
 		if (empty($fieldref))
 			$fieldref = 'ref';
-			
+
 			// print "paramid=$paramid,morehtml=$morehtml,shownav=$shownav,$fieldid,$fieldref,$morehtmlref,$moreparam";
 		$object->load_previous_next_ref_custom((isset($object->next_prev_filter) ? $object->next_prev_filter : ''), $fieldid);
 		$previous_ref = $object->ref_previous ? '<a data-role="button" data-icon="arrow-l" data-iconpos="left" href="' . $_SERVER["PHP_SELF"] . '?' . $paramid . '=' . urlencode($object->ref_previous) . $moreparam . '">' . (empty($conf->dol_use_jmobile) ? img_picto($langs->trans("Previous"), 'previous.png') : '&nbsp;') . '</a>' : '';
 		$next_ref = $object->ref_next ? '<a data-role="button" data-icon="arrow-r" data-iconpos="right" href="' . $_SERVER["PHP_SELF"] . '?' . $paramid . '=' . urlencode($object->ref_next) . $moreparam . '">' . (empty($conf->dol_use_jmobile) ? img_picto($langs->trans("Next"), 'next.png') : '&nbsp;') . '</a>' : '';
-		
+
 		// print "xx".$previous_ref."x".$next_ref;
 		if ($previous_ref || $next_ref || $morehtml) {
 			$ret .= '<table class="nobordernopadding" width="100%"><tr class="nobordernopadding"><td class="nobordernopadding">';
 		}
-		
+
 		$ret .= $object->$fieldref;
 		if ($morehtmlref) {
 			$ret .= ' ' . $morehtmlref;
 		}
-		
+
 		if ($morehtml) {
 			$ret .= '</td><td class="nobordernopadding" align="right">' . $morehtml;
 		}
@@ -165,7 +165,7 @@ class FormLead extends Form
 	{
 		require_once 'lead.class.php';
 		$lead = new Lead($this->db);
-		
+
 		return $this->selectarray($htmlname, $lead->status, $selected, $showempty);
 	}
 
@@ -182,10 +182,10 @@ class FormLead extends Form
 	{
 		require_once 'lead.class.php';
 		$lead = new Lead($this->db);
-		
+
 		return $this->selectarray($htmlname, $lead->type, $selected, $showempty);
 	}
-	
+
 	/**
 	 * Return combo list of differents type
 	 *
@@ -200,7 +200,7 @@ class FormLead extends Form
 	{
 		$lead_array=array();
 		require_once 'lead.class.php';
-		
+
 		$lead = new Lead($this->db);
 
 		$result = $lead->fetch_all('DESC', 't.ref', 0, 0, $filter);
