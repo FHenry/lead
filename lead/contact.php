@@ -188,6 +188,8 @@ if ($object->id > 0) {
 	$res = @include '../tpl/contacts.tpl.php';
 }
 
+dol_fiche_end();
+
 llxFooter();
 
 $db->close();

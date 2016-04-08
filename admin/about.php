@@ -74,6 +74,8 @@ echo Markdown($buffer);
 
 echo '<br>', '<a href="' . dol_buildpath('/lead/COPYING', 1) . '">', '<img src="' . dol_buildpath('/lead/img/gplv3.png', 1) . '"/>', '</a>';
 
+dol_fiche_end();
+
 llxFooter();
 
 $db->close();

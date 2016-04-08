@@ -148,4 +148,6 @@ else
 
 $db->close();
 
+dol_fiche_end();
+
 llxFooter();
