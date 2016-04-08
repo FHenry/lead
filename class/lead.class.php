@@ -221,7 +221,7 @@ class Lead extends CommonObject
 			// Check parameters
 			// Put here code to add control on parameters values
 
-		if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
+		if (! empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
 			if (empty($this->fk_soc)) {
 				$error ++;
 				$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Customer'));
@@ -243,7 +243,7 @@ class Lead extends CommonObject
 			$error ++;
 			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadType'));
 		}
-		if ($this->amount_prosp==='') {
+		if ($this->amount_prosp === '') {
 			$error ++;
 			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadAmountGuess'));
 		}
@@ -314,10 +314,13 @@ class Lead extends CommonObject
 				// want this action calls a trigger.
 
 				// // Call triggers
-				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-				// $interface=new Interfaces($this->db);
-				// $result=$interface->run_triggers('MYOBJECT_CREATE',$this,$user,$langs,$conf);
-				// if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+				$interface = new Interfaces($this->db);
+				$result = $interface->run_triggers('LEAD_CREATE', $this, $user, $langs, $conf);
+				if ($result < 0) {
+					$error ++;
+					$this->errors = $interface->errors;
+				}
 				// // End call triggers
 			}
 		}
@@ -376,7 +379,7 @@ class Lead extends CommonObject
 
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
 		$sql .= " WHERE t.rowid = " . $id;
-		$sql .= " AND t.entity IN (" . getEntity('lead', 1).")";
+		$sql .= " AND t.entity IN (" . getEntity('lead', 1) . ")";
 
 		dol_syslog(get_class($this) . "::fetch sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
@@ -583,7 +586,7 @@ class Lead extends CommonObject
 			// Check parameters
 			// Put here code to add a control on parameters values
 
-		if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
+		if (! empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
 			if (empty($this->fk_soc)) {
 				$error ++;
 				$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Customer'));
@@ -625,7 +628,7 @@ class Lead extends CommonObject
 			$sql .= " fk_c_type=" . (isset($this->fk_c_type) ? $this->fk_c_type : "null") . ",";
 			$sql .= " fk_soc=" . (isset($this->fk_soc) ? $this->fk_soc : "null") . ",";
 			$sql .= " date_closure=" . (dol_strlen($this->date_closure) != 0 ? "'" . $this->db->idate($this->date_closure) . "'" : 'null') . ",";
-			$sql .= " amount_prosp=" . (isset($this->amount_prosp) ? "'".price2num($this->amount_prosp)."'" : "null") . ",";
+			$sql .= " amount_prosp=" . (isset($this->amount_prosp) ? "'" . price2num($this->amount_prosp) . "'" : "null") . ",";
 			$sql .= " fk_user_resp=" . (isset($this->fk_user_resp) ? $this->fk_user_resp : "null") . ",";
 			$sql .= " description=" . (! empty($this->description) ? "'" . $this->db->escape($this->description) . "'" : "null") . ",";
 			$sql .= " note_private=" . (! empty($this->note_private) ? "'" . $this->db->escape($this->note_private) . "'" : "null") . ",";
@@ -651,18 +654,21 @@ class Lead extends CommonObject
 				// want this action calls a trigger.
 
 				// // Call triggers
-				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-				// $interface=new Interfaces($this->db);
-				// $result=$interface->run_triggers('MYOBJECT_MODIFY',$this,$user,$langs,$conf);
-				// if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+				$interface = new Interfaces($this->db);
+				$result = $interface->run_triggers('LEAD_MODIFY', $this, $user, $langs, $conf);
+				if ($result < 0) {
+					$error ++;
+					$this->errors = $interface->errors;
+				}
 				// // End call triggers
 			}
 		}
 		if (! $error) {
-			if ($this->fk_c_status==7) {
-				$result=$this->closeAllProposal($user);
-				if ($result<0) {
-					$this->errors[]=$this->error;
+			if ($this->fk_c_status == 7) {
+				$result = $this->closeAllProposal($user);
+				if ($result < 0) {
+					$this->errors[] = $this->error;
 					$error ++;
 				}
 			}
@@ -671,7 +677,7 @@ class Lead extends CommonObject
 		if (! $error) {
 
 			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
-			{
+{
 				$result = $this->insertExtraFields();
 				if ($result < 0) {
 					$error ++;
@@ -712,10 +718,13 @@ class Lead extends CommonObject
 				// want this action calls a trigger.
 
 				// // Call triggers
-				// include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-				// $interface=new Interfaces($this->db);
-				// $result=$interface->run_triggers('MYOBJECT_DELETE',$this,$user,$langs,$conf);
-				// if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+				$interface = new Interfaces($this->db);
+				$result = $interface->run_triggers('LEAD_DELETE', $this, $user, $langs, $conf);
+				if ($result < 0) {
+					$error ++;
+					$this->errors = $interface->errors;
+				}
 				// // End call triggers
 			}
 		}
@@ -980,11 +989,9 @@ class Lead extends CommonObject
 	 * @return int <0 if KO, >0 if OK
 	 */
 	public function isObjectSignedExists() {
+		$nbobjectwined = 0;
 
-		$nbobjectwined=0;
-
-
-		//Count nb propal wined for this lead
+		// Count nb propal wined for this lead
 		$sql = "SELECT COUNT(DISTINCT propal.rowid) as cnt ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "propal as propal";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
@@ -996,7 +1003,7 @@ class Lead extends CommonObject
 		if ($resql) {
 			if ($this->db->num_rows($resql)) {
 				$obj = $this->db->fetch_object($resql);
-				$nbobjectwined=$obj->cnt;
+				$nbobjectwined = $obj->cnt;
 			}
 			$this->db->free($resql);
 		} else {
@@ -1005,7 +1012,7 @@ class Lead extends CommonObject
 			return - 1;
 		}
 
-		//Count nb invocie valid for this lead
+		// Count nb invocie valid for this lead
 		$sql = "SELECT COUNT(DISTINCT fac.rowid) as totalamount ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "facture as fac";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
@@ -1017,7 +1024,7 @@ class Lead extends CommonObject
 		if ($resql) {
 			if ($this->db->num_rows($resql)) {
 				$obj = $this->db->fetch_object($resql);
-				$nbobjectwined+=$obj->cnt;
+				$nbobjectwined += $obj->cnt;
 			}
 			$this->db->free($resql);
 		} else {
@@ -1028,7 +1035,6 @@ class Lead extends CommonObject
 
 		return $nbobjectwined;
 	}
-
 
 	/**
 	 * Load properties id_previous and id_next
@@ -1041,7 +1047,7 @@ class Lead extends CommonObject
 		global $conf, $user;
 
 		if (! $this->table_element) {
-			dol_print_error(null, get_class ( $this ) . "::load_previous_next_ref was called on objet with property table_element not defined");
+			dol_print_error(null, get_class($this) . "::load_previous_next_ref was called on objet with property table_element not defined");
 			return - 1;
 		}
 
@@ -1119,7 +1125,7 @@ class Lead extends CommonObject
 		global $langs;
 
 		$this->doclines = array ();
-		if (!empty($id)) {
+		if (! empty($id)) {
 			$sql = "SELECT";
 			$sql .= " t.rowid,";
 			$sql .= " t.fk_source,";
@@ -1241,9 +1247,8 @@ class Lead extends CommonObject
 	 * @return string
 	 */
 	public function getLibStatut($mode = 0) {
-
 		if (! empty($this->fk_c_status)) {
-			return $this->LibStatut($this->fk_c_status,$mode);
+			return $this->LibStatut($this->fk_c_status, $mode);
 		} else {
 			return '';
 		}
@@ -1256,21 +1261,27 @@ class Lead extends CommonObject
 	 *
 	 * @return string
 	 */
-	public function LibStatut ($statut,$mode) {
-
-		if ($mode==0) {
+	public function LibStatut($statut, $mode) {
+		if ($mode == 0) {
 			return $this->status[$statut];
-		} elseif ($mode==1) {
-			if ($statut==1) return img_picto($this->status[$statut],'statut0').' '.$this->status[$statut];
-			elseif ($statut==6) return img_picto($this->status[$statut],'statut3').' '.$this->status[$statut];
-			elseif ($statut==7) return img_picto($this->status[$statut],'statut8').' '.$this->status[$statut];
-			else return img_picto($this->status[$statut],'statut1').' '.$this->status[$statut];
-		}
-		elseif ($mode==2) {
-			if ($statut==1) return img_picto($this->status[$statut],'statut0');
-			elseif ($statut==6) return img_picto($this->status[$statut],'statut3');
-			elseif ($statut==7) return img_picto($this->status[$statut],'statut8');
-			else return img_picto($this->status[$statut],'statut1');
+		} elseif ($mode == 1) {
+			if ($statut == 1)
+				return img_picto($this->status[$statut], 'statut0') . ' ' . $this->status[$statut];
+			elseif ($statut == 6)
+				return img_picto($this->status[$statut], 'statut3') . ' ' . $this->status[$statut];
+			elseif ($statut == 7)
+				return img_picto($this->status[$statut], 'statut8') . ' ' . $this->status[$statut];
+			else
+				return img_picto($this->status[$statut], 'statut1') . ' ' . $this->status[$statut];
+		} elseif ($mode == 2) {
+			if ($statut == 1)
+				return img_picto($this->status[$statut], 'statut0');
+			elseif ($statut == 6)
+				return img_picto($this->status[$statut], 'statut3');
+			elseif ($statut == 7)
+				return img_picto($this->status[$statut], 'statut8');
+			else
+				return img_picto($this->status[$statut], 'statut1');
 		}
 		// Unsupported mode
 		return '';
@@ -1285,7 +1296,7 @@ class Lead extends CommonObject
 	public function closeAllProposal(User $user) {
 		global $langs;
 
-		$error=0;
+		$error = 0;
 
 		$this->db->begin();
 
@@ -1295,33 +1306,32 @@ class Lead extends CommonObject
 		if (empty($error)) {
 
 			$ret = $this->fetchDocumentLink($this->id, $this->listofreferent['propal']['table']);
-			if ($result<0) {
-				$this->errors[]=$this->error;
-				$error++;
+			if ($result < 0) {
+				$this->errors[] = $this->error;
+				$error ++;
 			}
 		}
 
 		if (empty($error)) {
-			//Close all propal linked
-			$elementarray = array();
-			$classname=$this->listofreferent['propal']['class'];
+			// Close all propal linked
+			$elementarray = array ();
+			$classname = $this->listofreferent['propal']['class'];
 			$elementarray = $this->doclines;
 			if (count($elementarray) > 0 && is_array($elementarray)) {
 				$var = true;
 				$total_ht = 0;
 				$total_ttc = 0;
 				$num = count($elementarray);
-				foreach ($elementarray as $line) {
-
+				foreach ( $elementarray as $line ) {
 
 					$element = new $classname($this->db);
 					$element->fetch($line->fk_source);
-					//Close only proposal not already close
-					if ($element->statut!=3 && $element->statut!=2) {
-						$result=$element->cloture($user,3,$langs->trans('LeadPropalCloseByLead', $this->ref));
-						if ($result<0) {
-							$this->errors[]=$this->error;
-							$error++;
+					// Close only proposal not already close
+					if ($element->statut != 3 && $element->statut != 2) {
+						$result = $element->cloture($user, 3, $langs->trans('LeadPropalCloseByLead', $this->ref));
+						if ($result < 0) {
+							$this->errors[] = $this->error;
+							$error ++;
 						}
 					}
 				}
@@ -1334,13 +1344,89 @@ class Lead extends CommonObject
 		}
 
 		// Error
-			foreach ( $this->errors as $errmsg ) {
-				dol_syslog(get_class($this) . "::".__METHOD__." ". $errmsg, LOG_ERR);
-				$this->error .= ($this->error ? ', ' . $errmsg : $errmsg);
-			}
-			$this->db->rollback();
-			return - 1 * $error;
+		foreach ( $this->errors as $errmsg ) {
+			dol_syslog(get_class($this) . "::" . __METHOD__ . " " . $errmsg, LOG_ERR);
+			$this->error .= ($this->error ? ', ' . $errmsg : $errmsg);
 		}
+		$this->db->rollback();
+		return - 1 * $error;
+	}
+
+	/**
+	 * Return a link on thirdparty (with picto)
+	 *
+	 * @param int $withpicto Add picto into link (0=No picto, 1=Include picto with link, 2=Picto only)
+	 * @param string $option Target of link ('', 'customer', 'prospect', 'supplier')
+	 * @param int $maxlen Max length of name
+	 * @param integer $notooltip 1=Disable tooltip
+	 * @return string String with URL
+	 */
+	function getNomUrlCompany($withpicto = 0, $maxlen = 0, $notooltip = 0) {
+		global $conf, $langs;
+
+		$name = $this->thirdparty->name ? $this->thirdparty->name : $this->thirdparty->nom;
+
+		if (! empty($conf->dol_no_mouse_hover))
+			$notooltip = 1;
+
+		if ($conf->global->SOCIETE_ADD_REF_IN_LIST && (! empty($withpicto))) {
+			if (($this->client) && (! empty($this->code_client))) {
+				$code = $this->thirdparty->code_client . ' - ';
+			}
+			if (($this->thirdparty->fournisseur) && (! empty($this->thirdparty->code_fournisseur))) {
+				$code .= $this->thirdparty->code_fournisseur . ' - ';
+			}
+			$name = $code . ' ' . $name;
+		}
+
+		if (! empty($this->thirdparty->name_alias)) {
+			$name .= ' (' . $this->thirdparty->name_alias . ')';
+		}
+
+		$result = '';
+		$label = '';
+		$link = '';
+		$linkend = '';
+
+		$label .= '<div width="100%">';
+
+		$label .= '<u>' . $langs->trans("ShowCustomer") . '</u>';
+		$link = '<a href="' . dol_buildpath('/lead/lead/list.php', 1) . '?socid=' . $this->thirdparty->id;
+
+		if (! empty($this->thirdparty->name))
+			$label .= '<br><b>' . $langs->trans('Name') . ':</b> ' . $this->thirdparty->name;
+		if (! empty($this->thirdparty->code_client))
+			$label .= '<br><b>' . $langs->trans('CustomerCode') . ':</b> ' . $this->thirdparty->code_client;
+		if (! empty($this->thirdparty->code_fournisseur))
+			$label .= '<br><b>' . $langs->trans('SupplierCode') . ':</b> ' . $this->thirdparty->code_fournisseur;
+		if (! empty($this->thirdparty->phone))
+			$label .= '<br><b>' . $langs->trans('Phone') . ':</b> ' . $this->thirdparty->phone;
+		if (! empty($this->thirdparty->email))
+			$label .= '<br><b>' . $langs->trans('Email') . ':</b> ' . $this->thirdparty->email;
+
+		if (! empty($this->thirdparty->logo)) {
+			$label .= '</br><div class="photointooltip">';
+			// if (! is_object($form)) $form = new Form($db);
+			$label .= Form::showphoto('societe', $this->thirdparty, 80);
+			$label .= '</div><div style="clear: both;"></div>';
+		}
+		$label .= '</div>';
+
+		// Add type of canvas
+		$link .= (! empty($this->thirdparty->canvas) ? '&canvas=' . $this->thirdparty->canvas : '') . '"';
+		$link .= ($notooltip ? '' : ' title="' . dol_escape_htmltag($label, 1) . '" class="classfortooltip"');
+		$link .= '>';
+		$linkend = '</a>';
+
+		if ($withpicto)
+			$result .= ($link . img_object(($notooltip ? '' : $label), 'company', ($notooltip ? '' : 'class="classfortooltip"')) . $linkend);
+		if ($withpicto && $withpicto != 2)
+			$result .= ' ';
+		if ($withpicto != 2)
+			$result .= $link . ($maxlen ? dol_trunc($name, $maxlen) : $name) . $linkend;
+
+		return $result;
+	}
 }
 
 /**

@@ -265,7 +265,9 @@ if ($resql != - 1) {
 	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
 	if (count($extralabels) > 0) {
 		foreach($extralabels as $code_extra=>$label_extra) {
-			print_liste_field_titre($label_extra, $_SERVEUR['PHP_SELF'], "leadextra.".$code_extra, "", $option, 'align="right"', $sortfield, $sortorder);
+			if ($extrafields->attribute_list[$code_extra]) {
+				print_liste_field_titre($label_extra, $_SERVEUR['PHP_SELF'], "leadextra.".$code_extra, "", $option, ' align="right" ', $sortfield, $sortorder);
+			}
 		}
 	}
 
@@ -308,7 +310,9 @@ if ($resql != - 1) {
 	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
 	if (count($extralabels) > 0) {
 		foreach($extralabels as $code_extra=>$label_extra) {
-			print '<td></td>';
+			if ($extrafields->attribute_list[$code_extra]) {
+				print '<td></td>';
+			}
 		}
 	}
 
@@ -393,7 +397,9 @@ if ($resql != - 1) {
 		$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
 		if (count($extralabels) > 0) {
 			foreach($extralabels as $code_extra=>$label_extra) {
-				print '<td>'.$line->array_options['options_'.$code_extra].'</td>';
+				if ($extrafields->attribute_list[$code_extra]) {
+					print '<td align="right">'.$line->array_options['options_'.$code_extra].'</td>';
+				}
 			}
 		}
 
