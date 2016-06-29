@@ -118,6 +118,16 @@ class Lead extends CommonObject
 			);
 		}
 
+		if (! empty($conf->agenda->enabled)) {
+			$this->listofreferent['agenda'] = array (
+					'title' => "Event",
+					'class' => 'ActionComm',
+					'table' => 'action',
+					'test' => $conf->agenda->enabled && $user->rights->agenda->myactions->read
+					,'disableamount'=>true
+			);
+		}
+
 		return ($result_status && $result_type);
 	}
 
@@ -176,6 +186,36 @@ class Lead extends CommonObject
 			dol_syslog(get_class($this) . "::_load_type " . $this->error, LOG_ERR);
 			return - 1;
 		}
+	}
+
+	/*
+	 * Create a event "relance" "A réaliser"
+	 */
+
+	function addRelance($dateRelance) {
+		global $user,$db,$conf,$langs;
+		
+		if(empty($dateRelance)) return false;
+		
+		dol_include_once('/comm/action/class/actioncomm.class.php');
+	
+		$a=new ActionComm($db);
+		$a->percent = 0;
+		$a->label = $langs->trans('leadRelanceEvent');
+		$a->socid = $this->fk_soc;
+		$a->datep = $dateRelance;
+		$a->userownerid = $this->fk_user_author;
+		$a->type_code = empty($conf->global->AGENDA_USE_EVENT_TYPE) || empty($conf->global->LEAD_EVENT_RELANCE_TYPE) ? 'AC_OTH' : $conf->global->LEAD_EVENT_RELANCE_TYPE;
+		
+		if($a->add($user)<=0) {
+//			var_dump($a);
+			setEventMessage($langs->trans("ImpossibleToCreateEventLead"), "errors");
+			
+		}
+		
+		$result = $this->add_object_linked('action', $a->id);
+		
+		return $a->id;
 	}
 
 	/**
@@ -1123,7 +1163,6 @@ class Lead extends CommonObject
 	 */
 	public function fetchDocumentLink($id, $tablename) {
 		global $langs;
-
 		$this->doclines = array ();
 		if (! empty($id)) {
 			$sql = "SELECT";

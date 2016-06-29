@@ -35,6 +35,9 @@ if (! empty($conf->contrat->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/contrat/class/contrat.class.php';
 if (! empty($conf->commande->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
+
+if (! empty($conf->agenda->enabled)) dol_include_once('/comm/action/class/actioncomm.class.php');
+	
 if (!empty($conf->global->LEAD_GRP_USER_AFFECT))
 	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
 
@@ -67,6 +70,8 @@ $leadtype = GETPOST('leadtype', 'int');
 $amount_guess = GETPOST('amount_guess');
 $description = GETPOST('description');
 $deadline = dol_mktime(0, 0, 0, GETPOST('deadlinemonth'), GETPOST('deadlineday'), GETPOST('deadlineyear'));
+
+$date_relance = dol_mktime(0, 0, 0, GETPOST('date_relancemonth'), GETPOST('date_relanceday'), GETPOST('date_relanceyear'));
 
 $object = new Lead($db);
 $extrafields = new ExtraFields($db);
@@ -131,6 +136,7 @@ if ($action == "add") {
 	$object->date_closure = $deadline;
 	$object->fk_soc = $socid;
 	$object->fk_user_resp = $userid;
+	$object->fk_user_author = $userid;
 	$object->description = $description;
 
 	$extrafields->setOptionalsFromPost($extralabels, $object);
@@ -152,6 +158,13 @@ if ($action == "add") {
 			$error++;
 		}
 	}
+	
+	if($date_relance) {
+		
+		$object->addRelance($date_relance);
+		
+	}
+	
 
 	if (empty($error)) {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
@@ -232,6 +245,8 @@ $formlead = new FormLead($db);
 $now = dol_now();
 // Add new proposal
 if ($action == 'create' && $user->rights->lead->write) {
+	dol_fiche_head();
+
 	print_fiche_titre($langs->trans("LeadCreate"), '', dol_buildpath('/lead/img/object_lead.png', 1), 1);
 
 	print '<form name="addlead" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
@@ -316,6 +331,16 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print '</tr>';
 
 	print '<tr>';
+	print '<td width="20%">';
+	print $langs->trans('LeadDateRelance');
+	print '</td>';
+	print '<td>';
+
+	print $form->select_date(null, 'date_relance', 0, 0, 0, "addlead", 1, 1, 0, 0);
+	print '</td>';
+	print '</tr>';
+
+	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadDescription');
 	print '</td>';
@@ -340,7 +365,11 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print '</div>';
 
 	print '</form>';
-} elseif ($action == 'edit') {
+
+	dol_fiche_end();
+}
+
+elseif ($action == 'edit') {
 
 	$head = lead_prepare_head($object);
 	dol_fiche_head($head, 'card', $langs->trans('Module103111Name'), 0, dol_buildpath('/lead/img/object_lead.png', 1), 1);
@@ -477,8 +506,9 @@ if ($action == 'create' && $user->rights->lead->write) {
 	if (empty($formconfirm)) {
 		$parameters = array();
 		$formconfirm = $hookmanager->executeHooks('formConfirm', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
+		if(!empty($formconfirm))print $formconfirm;
 	}
-	print $formconfirm;
+	
 
 	$linkback = '<a href="' . dol_buildpath('/lead/lead/list.php', 1) . '">' . $langs->trans("BackToList") . '</a>';
 
@@ -624,7 +654,6 @@ if ($action == 'create' && $user->rights->lead->write) {
 
 		if ($qualified) {
 			print '<br>';
-
 			print_fiche_titre($langs->trans($title));
 
 			$selectList = $formlead->select_element($tablename, $object);
