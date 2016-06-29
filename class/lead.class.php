@@ -201,7 +201,7 @@ class Lead extends CommonObject
 	
 		$a=new ActionComm($db);
 		$a->percent = 0;
-		$a->label = $langs->trans('leadRelanceEvent');
+		$a->label = $langs->trans('leadRelanceEvent', $this->ref_int);
 		$a->socid = $this->fk_soc;
 		$a->datep = $dateRelance;
 		$a->userownerid = $this->fk_user_author;

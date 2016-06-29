@@ -232,6 +232,15 @@ if ($action == "add") {
 	}
 
 }
+else if($action === 'confirm_relance' && GETPOST('confirm')==='yes') {
+	
+	if($date_relance) {
+		$object->addRelance($date_relance);
+		setEventMessage($langs->trans('relanceAdded'));
+	}
+	
+}
+
 
 /*
  * View
@@ -243,6 +252,15 @@ $form = new Form($db);
 $formlead = new FormLead($db);
 
 $now = dol_now();
+
+if($action === 'create_relance' ) {
+	print $form->formconfirm("card.php?id=".$object->id,$langs->trans("CreateRelance"),$langs->trans("ConfirmCreateRelance"),"confirm_relance",array(array(
+		'type'=>'date'
+		,'name'=>'date_relance'
+	)),'',1);
+	
+}
+
 // Add new proposal
 if ($action == 'create' && $user->rights->lead->write) {
 	dol_fiche_head();
@@ -627,6 +645,7 @@ elseif ($action == 'edit') {
 	if ($user->rights->lead->write) {
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=edit">' . $langs->trans("Edit") . "</a></div>\n";
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("Clone") . "</a></div>\n";
+		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_relance">' . $langs->trans("CreateRelance") . "</a></div>\n";
 		if ($object->status[7]==$langs->trans('LeadStatus_LOST') && $object->fk_c_status!=7) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
 		}

@@ -154,8 +154,11 @@ LeadTransRateOfLeadsByMonth=Taux de transformation par mois
 LastN=%s dernières
 
 #relance
+relanceAdded=Relance ajoutée
+CreateRelance=Créer une relance
+ConfirmCreateRelance=Entrez la date de relance
 LeadTypeRelance=Type de l'évènement relance
 LeadDateRelance=Date de relance
-leadRelanceEvent=Relance sur une affaire
+leadRelanceEvent=Relance sur une affaire %s
 ImpossibleToCreateEventLead=Impossible de créer l'évènement de relance
 
