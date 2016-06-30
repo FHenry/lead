@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
+ * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '1.10';
+		$this->version = '1.11';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);

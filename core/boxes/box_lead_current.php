@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
+ * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  * Copyright (C) 2015 Raphaël Doursenaud <rdoursenaud@gpcsolutions.fr>
  *
  * This program is free software; you can redistribute it and/or modify

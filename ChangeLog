@@ -1,5 +1,8 @@
 English Lead ChangeLog
 
+***** ChangeLog for 1.11 compared to 1.10 *****
+NEW : Add feature to create event linked to lead
+
 ***** ChangeLog for 1.10 compared to 1.9 *****
 NEW : Add more information into lead box under contract/propal/etc...
 NEW : Add export on Propal not linked to Lead

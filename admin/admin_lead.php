@@ -1,6 +1,6 @@
 <?php
 /* 
- * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
+ * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,6 +95,12 @@ if ($action == 'updateMask') {
 	
 	$allow_multiple = GETPOST('LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT', 'int');
 	$res = dolibarr_set_const($db, 'LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT', $allow_multiple, 'yesno', 0, '', $conf->entity);
+	if (! $res > 0) {
+		$error ++;
+	}
+	
+	$LEAD_EVENT_RELANCE_TYPE = GETPOST('LEAD_EVENT_RELANCE_TYPE');
+	$res = dolibarr_set_const($db, 'LEAD_EVENT_RELANCE_TYPE', $LEAD_EVENT_RELANCE_TYPE, 'chaine', 0, '', $conf->entity);
 	if (! $res > 0) {
 		$error ++;
 	}
@@ -305,7 +311,21 @@ $arrval = array (
 );
 print $form->selectarray("LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT", $arrval, $conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT);
 print '</tr>';
+
+if (!empty($conf->global->AGENDA_USE_EVENT_TYPE)) {
+	
+	print '<tr class="impair"><td>' . $langs->trans("LeadTypeRelance") . '</td>';
+	print '<td align="left">';
+	dol_include_once('/core/class/html.formactions.class.php');
+	$formactions=new FormActions($db);
+	$formactions->select_type_actions($conf->global->LEAD_EVENT_RELANCE_TYPE, "LEAD_EVENT_RELANCE_TYPE", "systemauto", 0, -1);
+	print '</tr>';
+	
+}
+
 print '</table>';
+
+
 
 print '<tr class="impair"><td colspan="2" align="right"><input type="submit" class="button" value="' . $langs->trans("Save") . '"></td>';
 print '</tr>';

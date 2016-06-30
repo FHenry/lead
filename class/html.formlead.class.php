@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
+ * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,7 @@ class FormLead extends Form
 	 *
 	 * @return string Portion HTML avec ref + boutons nav
 	 */
-	function showrefnav($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '')
+	function showrefnav($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlright = '')
 	{
 		global $langs, $conf;
 
