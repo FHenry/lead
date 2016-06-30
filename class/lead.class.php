@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2014 Florian HENRY <florian.henry@open-concept.pro>
+ * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,11 +206,12 @@ class Lead extends CommonObject
 		$a->datep = $dateRelance;
 		$a->userownerid = $this->fk_user_author;
 		$a->type_code = empty($conf->global->AGENDA_USE_EVENT_TYPE) || empty($conf->global->LEAD_EVENT_RELANCE_TYPE) ? 'AC_OTH' : $conf->global->LEAD_EVENT_RELANCE_TYPE;
+		$a->fk_element = $this->id;
+		$a->elementtype = 'lead';
+		
 		
 		if($a->add($user)<=0) {
-//			var_dump($a);
 			setEventMessage($langs->trans("ImpossibleToCreateEventLead"), "errors");
-			
 		}
 		
 		$result = $this->add_object_linked('action', $a->id);

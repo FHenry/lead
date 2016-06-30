@@ -1,5 +1,5 @@
 -- ========================================================================
--- Copyright (C) 2015 	   Florian Henry  <florian.henry@open-concept.pro>
+-- Copyright (C) 2015 	   Florian Henry  <florian.henry@atm-consulting.fr>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by

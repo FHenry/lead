@@ -1,6 +1,6 @@
 <?php
 /* Lead
- * Copyright (C) 2014-2015 Florian HENRY <florian.henry@open-concept.pro>
+ * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,12 +36,13 @@ if (! empty($conf->contrat->enabled))
 if (! empty($conf->commande->enabled))
 	require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
 
-if (! empty($conf->agenda->enabled)) dol_include_once('/comm/action/class/actioncomm.class.php');
-	
-if (!empty($conf->global->LEAD_GRP_USER_AFFECT))
-	require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
+if (! empty($conf->agenda->enabled))
+	dol_include_once('/comm/action/class/actioncomm.class.php');
 
-// Security check
+if (! empty($conf->global->LEAD_GRP_USER_AFFECT))
+	require_once DOL_DOCUMENT_ROOT . '/user/class/usergroup.class.php';
+	
+	// Security check
 if (! $user->rights->lead->read)
 	accessforbidden();
 
@@ -78,25 +79,21 @@ $extrafields = new ExtraFields($db);
 
 $error = 0;
 
-
-
-//Limuit uer list to groups
-$includeuserlist=array();
-if (!empty($conf->global->LEAD_GRP_USER_AFFECT)) {
-	$usergroup=new UserGroup($db);
-	$result=$usergroup->fetch($conf->global->LEAD_GRP_USER_AFFECT);
+// Limuit uer list to groups
+$includeuserlist = array();
+if (! empty($conf->global->LEAD_GRP_USER_AFFECT)) {
+	$usergroup = new UserGroup($db);
+	$result = $usergroup->fetch($conf->global->LEAD_GRP_USER_AFFECT);
 	if ($result < 0)
 		setEventMessages(null, $usergroup->errors, 'errors');
-
-	$includeuserlisttmp=$usergroup->listUsersForGroup();
-	if (is_array($includeuserlisttmp) && count($includeuserlisttmp)>0) {
-		foreach($includeuserlisttmp as $usertmp) {
-			$includeuserlist[]=$usertmp->id;
+	
+	$includeuserlisttmp = $usergroup->listUsersForGroup();
+	if (is_array($includeuserlisttmp) && count($includeuserlisttmp) > 0) {
+		foreach ( $includeuserlisttmp as $usertmp ) {
+			$includeuserlist[] = $usertmp->id;
 		}
-
 	}
 }
-
 
 // fetch optionals attributes and labels
 $extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
@@ -114,7 +111,7 @@ if ($id > 0) {
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 $hookmanager->initHooks(array(
-	'leadcard'
+		'leadcard' 
 ));
 
 /*
@@ -125,9 +122,9 @@ $parameters = array();
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
 
 if ($action == "add") {
-
-	$error= 0;
-
+	
+	$error = 0;
+	
 	$object->ref_int = $ref_int;
 	$object->ref = $object->getNextNumRef();
 	$object->fk_c_status = $leadstatus;
@@ -138,34 +135,32 @@ if ($action == "add") {
 	$object->fk_user_resp = $userid;
 	$object->fk_user_author = $userid;
 	$object->description = $description;
-
+	
 	$extrafields->setOptionalsFromPost($extralabels, $object);
-
+	
 	$result = $object->create($user);
 	if ($result < 0) {
 		$action = 'create';
 		setEventMessages(null, $object->errors, 'errors');
-		$error++;
+		$error ++;
 	}
-
-	$propalid = GETPOST('propalid','int');
-	if (!empty($propalid)) {
+	
+	$propalid = GETPOST('propalid', 'int');
+	if (! empty($propalid)) {
 		$tablename = 'propal';
 		$elementselectid = $propalid;
 		$result = $object->add_object_linked($tablename, $elementselectid);
 		if ($result < 0) {
 			setEventMessages(null, $object->errors, 'errors');
-			$error++;
+			$error ++;
 		}
 	}
 	
-	if($date_relance) {
+	if ($date_relance) {
 		
 		$object->addRelance($date_relance);
-		
 	}
 	
-
 	if (empty($error)) {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 	}
@@ -178,9 +173,9 @@ if ($action == "add") {
 	$object->fk_soc = $socid;
 	$object->fk_user_resp = $userid;
 	$object->description = $description;
-
+	
 	$extrafields->setOptionalsFromPost($extralabels, $object);
-
+	
 	$result = $object->update($user);
 	if ($result < 0) {
 		$action = 'edit';
@@ -203,44 +198,40 @@ if ($action == "add") {
 		setEventMessages(null, $object->errors, 'errors');
 	}
 } elseif ($action == "unlink") {
-
+	
 	$sourceid = GETPOST('sourceid');
 	$sourcetype = GETPOST('sourcetype');
-
+	
 	$result = $object->deleteObjectLinked($sourceid, $sourcetype);
 	if ($result < 0) {
 		setEventMessages(null, $object->errors, 'errors');
 	}
-} elseif ($action == "confirm_clone" && $confirm=='yes') {
-
+} elseif ($action == "confirm_clone" && $confirm == 'yes') {
+	
 	$object_clone = new Lead($db);
-	$object_clone->ref_int=GETPOST('ref_interne');
+	$object_clone->ref_int = GETPOST('ref_interne');
 	$result = $object_clone->createFromClone($object->id);
 	if ($result < 0) {
 		setEventMessages(null, $object_clone->errors, 'errors');
 	} else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $result);
 	}
-} elseif ($action=="confirm_lost" && $confirm=='yes') {
-	//Status 7=LOST hard coded, loaded by default in data.sql dictionnary (but check is done in this card that call this method)
-	$object->fk_c_status=7;
-	$result=$object->update($user);
+} elseif ($action == "confirm_lost" && $confirm == 'yes') {
+	// Status 7=LOST hard coded, loaded by default in data.sql dictionnary (but check is done in this card that call this method)
+	$object->fk_c_status = 7;
+	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages(null, $object->errors, 'errors');
-	}else {
+	} else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 	}
-
-}
-else if($action === 'confirm_relance' && GETPOST('confirm')==='yes') {
+} else if ($action === 'confirm_relance' && GETPOST('confirm') === 'yes') {
 	
-	if($date_relance) {
+	if ($date_relance) {
 		$object->addRelance($date_relance);
 		setEventMessage($langs->trans('relanceAdded'));
 	}
-	
 }
-
 
 /*
  * View
@@ -253,37 +244,38 @@ $formlead = new FormLead($db);
 
 $now = dol_now();
 
-if($action === 'create_relance' ) {
-	print $form->formconfirm("card.php?id=".$object->id,$langs->trans("CreateRelance"),$langs->trans("ConfirmCreateRelance"),"confirm_relance",array(array(
-		'type'=>'date'
-		,'name'=>'date_relance'
-	)),'',1);
-	
+if ($action === 'create_relance') {
+	print $form->formconfirm("card.php?id=" . $object->id, $langs->trans("CreateRelance"), $langs->trans("ConfirmCreateRelance"), "confirm_relance", array(
+			array(
+					'type' => 'date',
+					'name' => 'date_relance' 
+			) 
+	), '', 1);
 }
 
 // Add new proposal
 if ($action == 'create' && $user->rights->lead->write) {
 	dol_fiche_head();
-
+	
 	print_fiche_titre($langs->trans("LeadCreate"), '', dol_buildpath('/lead/img/object_lead.png', 1), 1);
-
+	
 	print '<form name="addlead" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-
-	print '<input type="hidden" name="propalid" value="'.GETPOST('propalid','int').'">';
-
+	
+	print '<input type="hidden" name="propalid" value="' . GETPOST('propalid', 'int') . '">';
+	
 	print '<input type="hidden" name="action" value="add">';
-
+	
 	print '<table class="border" width="100%">';
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_dolusers(empty($userid) ? $user->id : $userid, 'userid', 0, array(),0,$includeuserlist,'',0,0,0,'',0,'','',1);
+	print $form->select_dolusers(empty($userid) ? $user->id : $userid, 'userid', 0, array(), 0, $includeuserlist, '', 0, 0, 0, '', 0, '', '', 1);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadRefInt');
@@ -292,7 +284,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print '<input type="text" name="ref_int" size="10" value="' . $ref_int . '"/>';
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadStatus');
@@ -301,7 +293,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $formlead->select_lead_status($leadstatus, 'leadstatus', 0);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadType');
@@ -310,9 +302,9 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $formlead->select_lead_type($leadtype, 'leadtype', 0);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
-	if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
+	if (! empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
 		print '<td class="fieldrequired">';
 	} else {
 		print '<td>';
@@ -324,7 +316,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print $form->select_thirdparty_list($socid, 'socid', 'client<>0', 1, 1, 0, $events);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadAmountGuess');
@@ -333,31 +325,31 @@ if ($action == 'create' && $user->rights->lead->write) {
 	print '<input type="text" name="amount_guess" size="5" value="' . price2num($amount_guess) . '"/>';
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadDeadLine');
 	print '</td>';
 	print '<td>';
-
+	
 	if (strlen($deadline) == 0) {
 		$deadline = dol_time_plus_duree(dol_now(), $conf->global->LEAD_NB_DAY_COSURE_AUTO, 'd');
 	}
-
+	
 	print $form->select_date($deadline, 'deadline', 0, 0, 0, "addlead", 1, 1, 0, 0);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td width="20%">';
 	print $langs->trans('LeadDateRelance');
 	print '</td>';
 	print '<td>';
-
+	
 	print $form->select_date(null, 'date_relance', 0, 0, 0, "addlead", 1, 1, 0, 0);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadDescription');
@@ -367,45 +359,45 @@ if ($action == 'create' && $user->rights->lead->write) {
 	$doleditor->Create();
 	print '</td>';
 	print '</tr>';
-
+	
 	// Other attributes
 	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-
+	
 	if (empty($reshook) && ! empty($extrafields->attribute_label)) {
 		print $object->showOptionals($extrafields, 'edit');
 	}
-
+	
 	print '</table>';
-
+	
 	print '<div class="center">';
 	print '<input type="submit" class="button" value="' . $langs->trans("Create") . '">';
 	print '&nbsp;<input type="button" class="button" value="' . $langs->trans("Cancel") . '" onClick="javascript:history.go(-1)">';
 	print '</div>';
-
+	
 	print '</form>';
-
+	
 	dol_fiche_end();
-}
+} 
 
 elseif ($action == 'edit') {
-
+	
 	$head = lead_prepare_head($object);
 	dol_fiche_head($head, 'card', $langs->trans('Module103111Name'), 0, dol_buildpath('/lead/img/object_lead.png', 1), 1);
-
+	
 	print '<form name="editlead" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="POST">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 	print '<input type="hidden" name="action" value="update">';
-
+	
 	print '<table class="border" width="100%">';
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadCommercial');
 	print '</td>';
 	print '<td>';
-	print $form->select_dolusers($object->fk_user_resp, 'userid', 0, array(),0,$includeuserlist,'',0,0,0,'',0,'','',1);
+	print $form->select_dolusers($object->fk_user_resp, 'userid', 0, array(), 0, $includeuserlist, '', 0, 0, 0, '', 0, '', '', 1);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadRefInt');
@@ -414,7 +406,7 @@ elseif ($action == 'edit') {
 	print '<input type="text" name="ref_int" size="10" value="' . $object->ref_int . '"/>';
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadStatus');
@@ -423,7 +415,7 @@ elseif ($action == 'edit') {
 	print $formlead->select_lead_status($object->fk_c_status, 'leadstatus', 0);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadType');
@@ -432,9 +424,9 @@ elseif ($action == 'edit') {
 	print $formlead->select_lead_type($object->fk_c_type, 'leadtype', 0);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
-	if (!empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
+	if (! empty($conf->global->LEAD_FORCE_USE_THIRDPARTY)) {
 		print '<td class="fieldrequired">';
 	} else {
 		print '<td>';
@@ -446,7 +438,7 @@ elseif ($action == 'edit') {
 	print $form->select_thirdparty_list($object->thirdparty->id, 'socid', 'client<>0', 1, 1, 0, $events);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadAmountGuess');
@@ -455,7 +447,7 @@ elseif ($action == 'edit') {
 	print '<input type="text" name="amount_guess" size="5" value="' . price2num($object->amount_prosp) . '"/>';
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td class="fieldrequired"  width="20%">';
 	print $langs->trans('LeadDeadLine');
@@ -464,7 +456,7 @@ elseif ($action == 'edit') {
 	print $form->select_date($object->date_closure, 'deadline', 0, 0, 0, "addlead", 1, 1, 0, 0);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadDescription');
@@ -474,21 +466,21 @@ elseif ($action == 'edit') {
 	$doleditor->Create();
 	print '</td>';
 	print '</tr>';
-
+	
 	// Other attributes
 	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-
+	
 	if (empty($reshook) && ! empty($extrafields->attribute_label)) {
 		print $object->showOptionals($extrafields, 'edit');
 	}
-
+	
 	print '</table>';
-
+	
 	print '<div class="center">';
 	print '<input type="submit" class="button" value="' . $langs->trans("Save") . '">';
 	print '&nbsp;<input type="button" class="button" value="' . $langs->trans("Cancel") . '" onClick="javascript:history.go(-1)">';
 	print '</div>';
-
+	
 	print '</form>';
 } else {
 	/*
@@ -496,17 +488,17 @@ elseif ($action == 'edit') {
 	 */
 	$head = lead_prepare_head($object);
 	dol_fiche_head($head, 'card', $langs->trans('Module103111Name'), 0, dol_buildpath('/lead/img/object_lead.png', 1), 1);
-
+	
 	// Confirm form
 	$formconfirm = '';
 	if ($action == 'delete') {
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('LeadDelete'), $langs->trans('LeadConfirmDelete'), 'confirm_delete', '', 0, 1);
 	}
-
+	
 	if ($action == 'close') {
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('LeadLost'), $langs->trans('LeadConfirmLost'), 'confirm_lost', '', 0, 1);
 	}
-
+	
 	// Clone confirmation
 	if ($action == 'clone') {
 		// Create an array for form
@@ -516,20 +508,26 @@ elseif ($action == 'edit') {
 				// 1),
 				// array('type' => 'checkbox', 'name' => 'update_prices', 'label' => $langs->trans("PuttingPricesUpToDate"), 'value'
 				// => 1),
-				array('type' => 'text','name' => 'ref_interne','label' => $langs->trans("LeadRefInt"),'value' => $langs->trans('CopyOf').' '.$object->ref_int));
+				array(
+						'type' => 'text',
+						'name' => 'ref_interne',
+						'label' => $langs->trans("LeadRefInt"),
+						'value' => $langs->trans('CopyOf') . ' ' . $object->ref_int 
+				) 
+		);
 		// Paiement incomplet. On demande si motif = escompte ou autre
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Clone'), $langs->trans('ConfirmCloneLead', $object->ref), 'confirm_clone', $formquestion, 'yes', 1);
 	}
-
+	
 	if (empty($formconfirm)) {
 		$parameters = array();
 		$formconfirm = $hookmanager->executeHooks('formConfirm', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-		if(!empty($formconfirm))print $formconfirm;
+		if (! empty($formconfirm))
+			print $formconfirm;
 	}
 	
-
 	$linkback = '<a href="' . dol_buildpath('/lead/lead/list.php', 1) . '">' . $langs->trans("BackToList") . '</a>';
-
+	
 	print '<table class="border" width="100%">';
 	print '<tr>';
 	print '<td width="20%">';
@@ -539,7 +537,7 @@ elseif ($action == 'edit') {
 	print $formlead->showrefnav($object, 'id', $linkback, 1, 'rowid', 'ref', '');
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td width="20%">';
 	print $langs->trans('LeadRefInt');
@@ -548,7 +546,7 @@ elseif ($action == 'edit') {
 	print $object->ref_int;
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td width="20%">';
 	print $langs->trans('LeadCommercial');
@@ -562,7 +560,7 @@ elseif ($action == 'edit') {
 	print $userstatic->getFullName($langs);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('Company');
@@ -571,7 +569,7 @@ elseif ($action == 'edit') {
 	print $object->getNomUrlCompany(1);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadStatus');
@@ -580,7 +578,7 @@ elseif ($action == 'edit') {
 	print $object->status_label;
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadType');
@@ -589,7 +587,7 @@ elseif ($action == 'edit') {
 	print $object->type_label;
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadAmountGuess');
@@ -598,7 +596,7 @@ elseif ($action == 'edit') {
 	print price($object->amount_prosp, 'HTML') . $langs->getCurrencySymbol($conf->currency);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadDeadLine');
@@ -607,7 +605,7 @@ elseif ($action == 'edit') {
 	print dol_print_date($object->date_closure, 'daytext');
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadRealAmount');
@@ -616,7 +614,7 @@ elseif ($action == 'edit') {
 	print $object->getRealAmount() . $langs->getCurrencySymbol($conf->currency);
 	print '</td>';
 	print '</tr>';
-
+	
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadDescription');
@@ -625,36 +623,36 @@ elseif ($action == 'edit') {
 	print $object->description;
 	print '</td>';
 	print '</tr>';
-
+	
 	// Other attributes
 	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-
+	
 	if (empty($reshook) && ! empty($extrafields->attribute_label)) {
 		print $object->showOptionals($extrafields);
 	}
-
+	
 	print '</table>';
 	print "</div>\n";
-
+	
 	/*
 	 * Barre d'actions
 	 */
 	print '<div class="tabsAction">';
-
+	
 	// Delete
 	if ($user->rights->lead->write) {
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=edit">' . $langs->trans("Edit") . "</a></div>\n";
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("Clone") . "</a></div>\n";
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_relance">' . $langs->trans("CreateRelance") . "</a></div>\n";
-		if ($object->status[7]==$langs->trans('LeadStatus_LOST') && $object->fk_c_status!=7) {
+		if ($object->status[7] == $langs->trans('LeadStatus_LOST') && $object->fk_c_status != 7) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
 		}
 	} else {
 		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("anoughPermissions")) . '">' . $langs->trans("Edit") . "</a></div>";
 		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("anoughPermissions")) . '">' . $langs->trans("Clone") . "</a></div>";
-		//print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("LeadLost") . "</font></div>";
+		// print '<div class="inline-block divButAction"><font class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("LeadLost") . "</font></div>";
 	}
-
+	
 	// Delete
 	if ($user->rights->lead->delete) {
 		print '<div class="inline-block divButAction"><a class="butActionDelete" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . "</a></div>\n";
@@ -662,19 +660,19 @@ elseif ($action == 'edit') {
 		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("anoughPermissions")) . '">' . $langs->trans("Delete") . "</a></div>";
 	}
 	print '</div>';
-
+	
 	print_fiche_titre($langs->trans('LeadDocuments'), '', 'lead@lead');
-
-	foreach ($object->listofreferent as $key => $value) {
+	
+	foreach ( $object->listofreferent as $key => $value ) {
 		$title = $value['title'];
 		$classname = $value['class'];
 		$tablename = $value['table'];
 		$qualified = $value['test'];
-
+		
 		if ($qualified) {
 			print '<br>';
 			print_fiche_titre($langs->trans($title));
-
+			
 			$selectList = $formlead->select_element($tablename, $object);
 			if ($selectList) {
 				print '<form action="' . $_SERVER["PHP_SELF"] . '?id=' . $id . '" method="post">';
@@ -687,7 +685,7 @@ elseif ($action == 'edit') {
 				print '</form>';
 			}
 			print '<table class="noborder" width="100%">';
-
+			
 			print '<tr class="liste_titre">';
 			print '<td></td>';
 			print '<td width="100">' . $langs->trans("Ref") . '</td>';
@@ -699,12 +697,12 @@ elseif ($action == 'edit') {
 				print '<td align="right" width="120">' . $langs->trans("AmountTTC") . '</td>';
 			print '<td align="right" width="200">' . $langs->trans("Status") . '</td>';
 			print '</tr>';
-
+			
 			$ret = $object->fetchDocumentLink($object->id, $tablename);
 			if ($ret < 0) {
 				setEventMessages(null, $object->errors, 'errors');
 			}
-
+			
 			$elementarray = array();
 			$elementarray = $object->doclines;
 			if (count($elementarray) > 0 && is_array($elementarray)) {
@@ -712,59 +710,65 @@ elseif ($action == 'edit') {
 				$total_ht = 0;
 				$total_ttc = 0;
 				$num = count($elementarray);
-				foreach ($elementarray as $line) {
+				foreach ( $elementarray as $line ) {
 					/**
+					 *
 					 * @var CommonObject $element
 					 */
 					$element = new $classname($db);
 					$element->fetch($line->fk_source);
 					$element->fetch_thirdparty();
-
+					
 					$var = ! $var;
 					print "<tr " . $bc[$var] . ">";
-
+					
 					print '<td width="1%">';
 					print '<a href="' . $_SERVER["PHP_SELF"] . '?id=' . $id . '&action=unlink&sourceid=' . $element->id . '&sourcetype=' . $tablename . '">' . img_picto($langs->trans('LeadUnlinkDoc'), 'unlink.png@lead') . '</a>';
 					print "</td>\n";
-
+					
 					// Ref
 					print '<td align="left">';
 					print $element->getNomUrl(1);
 					print "</td>\n";
-
+					
 					// Date
 					$date = $element->date;
-					if (empty($date))
+					if (empty($date)) {
 						$date = $element->datep;
-					if (empty($date))
+					}
+					if (empty($date)) {
 						$date = $element->date_contrat;
-					if (empty($date))
+					}
+					if (empty($date)) {
 						$date = $element->datev; // Fiche inter
+					}
 					print '<td align="center">' . dol_print_date($date, 'day') . '</td>';
-
+					
 					// Third party
 					print '<td align="left">';
-					if (is_object($element->client))
-						print $element->client->getNomUrl(1, '', 48);
+					if (is_object($element->thirdparty))
+						print $element->thirdparty->getNomUrl(1, '', 48);
 					print '</td>';
-
+					
 					// Amount
-					if (empty($value['disableamount']))
+					if (empty($value['disableamount'])) {
 						print '<td align="right">' . (isset($element->total_ht) ? price($element->total_ht) : '&nbsp;') . '</td>';
-
-						// Amount
-					if (empty($value['disableamount']))
+					}
+					
+					// Amount
+					if (empty($value['disableamount'])) {
 						print '<td align="right">' . (isset($element->total_ttc) ? price($element->total_ttc) : '&nbsp;') . '</td>';
-
-						// Status
+					}
+					
+					// Status
 					print '<td align="right">' . $element->getLibStatut(5) . '</td>';
-
+					
 					print '</tr>';
-
+					
 					$total_ht = $total_ht + $element->total_ht;
 					$total_ttc = $total_ttc + $element->total_ttc;
 				}
-
+				
 				print '<tr class="liste_total">';
 				print '<td>&nbsp;</td>';
 				print '<td colspan="3">' . $langs->trans("Number") . ': ' . $num . '</td>';
