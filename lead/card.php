@@ -126,7 +126,7 @@ if ($action == "add") {
 	$error = 0;
 
 	$object->ref_int = $ref_int;
-	$object->ref = $object->getNextNumRef();
+	$object->ref = $object->getNextNumRef($userid,$socid);
 	$object->fk_c_status = $leadstatus;
 	$object->fk_c_type = $leadtype;
 	$object->amount_prosp = price2num($amount_guess);
