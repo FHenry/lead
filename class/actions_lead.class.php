@@ -22,7 +22,7 @@
  */
 class ActionsLead // extends CommonObject
 {
-	
+
 	/**
 	 * Overloading the doActions function : replacing the parent's function with the one below
 	 *
@@ -33,22 +33,22 @@ class ActionsLead // extends CommonObject
 	 */
 	function showLinkedObjectBlock($parameters, $object, $action) {
 		global $conf, $langs, $db;
-		
+
 		require_once 'lead.class.php';
-		
+
 		$lead = new Lead($db);
-		
+
 		$authorized_object = array ();
 		foreach ( $lead->listofreferent as $referent ) {
 			$authorized_object[] = $referent['table'];
 		}
-		
+
 		if (is_object($object) && in_array($object->table_element, $authorized_object)) {
 			$langs->load("lead@lead");
 			require_once 'html.formlead.class.php';
-			
+
 			$formlead = new FormLead($db);
-			
+
 			$ret = $lead->fetchLeadLink(($object->rowid ? $id = $object->rowid : $object->id), $object->table_element);
 			if ($ret < 0) {
 				setEventMessages(null, $lead->errors, 'errors');
@@ -58,7 +58,7 @@ class ActionsLead // extends CommonObject
 			foreach ( $lead->doclines as $line ) {
 				$array_exclude_lead[] = $line->id;
 			}
-			
+
 			print '<br>';
 			print_fiche_titre($langs->trans('Lead'));
 			if (count($lead->doclines) == 0 || ($object->table_element=='contrat' && !empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT))) {
@@ -74,7 +74,7 @@ class ActionsLead // extends CommonObject
 			print "<td>" . $langs->trans('LeadLink') . "</td>";
 			print "</tr>";
 			$filter = array (
-					'so.rowid' => ($object->fk_soc ? $object->fk_soc : $object->socid) 
+					'so.rowid' => ($object->fk_soc ? $object->fk_soc : $object->socid)
 			);
 			if (count($array_exclude_lead) > 0) {
 				$filter['t.rowid !IN'] = implode($array_exclude_lead, ',');
@@ -88,7 +88,7 @@ class ActionsLead // extends CommonObject
 				print '</td>';
 				print '</tr>';
 			}
-			
+
 			foreach ( $lead->doclines as $line ) {
 				print '<tr><td>';
 				print $line->getNomUrl(1).'-'.dol_trunc($line->description).' ('.$line->status_label.' - '.$line->type_label.')';
@@ -109,7 +109,7 @@ class ActionsLead // extends CommonObject
 		// Always OK
 		return 0;
 	}
-	
+
 	/**
 	 * addMoreActionsButtons Method Hook Call
 	 *
@@ -121,20 +121,20 @@ class ActionsLead // extends CommonObject
 	 */
 	function addMoreActionsButtons($parameters, &$object, &$action, $hookmanager) {
 		global $langs, $conf, $user, $db ,$bc;
-		
+
 		$current_context = explode(':', $parameters['context']);
 		if (in_array('commcard', $current_context)) {
-			
+
 			$langs->load("lead@lead");
-			
+
 			if ($user->rights->lead->write) {
 				$html = '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/lead/lead/card.php', 1) . '?action=create&socid=' . $object->id . '">' . $langs->trans('LeadCreate') . '</a></div>';
 			} else {
 				$html = '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('LeadCreate') . '</a></div>';
 			}
-			
+
 			$html = str_replace('"', '\"', $html);
-			
+
 			$js= '<script type="text/javascript">'."\n";
 			$js.= '	$(document).ready('."\n";
 			$js.= '		function () {'."\n";
@@ -142,37 +142,37 @@ class ActionsLead // extends CommonObject
 			$js.= '		});'."\n";
 			$js.= '</script>';
 			print $js;
-			
+
 			if ($user->rights->lead->read) {
-				
+
 				require_once 'lead.class.php';
 				$lead = new Lead($db);
-				
+
 				$filter['so.rowid'] = $object->id;
 				$resql = $lead->fetch_all('DESC', 't.date_closure', 0, 0, $filter);
 				if ($resql == - 1) {
 					setEventMessages(null, $object->errors, 'errors');
 				}
-				
+
 				$total_lead = count($lead->lines);
-				
+
 				// $filter['so.rowid'] = $object->id;
 				$resql = $lead->fetch_all('DESC', 't.date_closure', 4, 0, $filter);
 				if ($resql == - 1) {
 					setEventMessages(null, $object->errors, 'errors');
 				}
-				
+
 				$num = count($lead->lines);
-				
+
 				$html = '<table class="noborder" width="100%">';
-				
+
 				$html .= '<tr class="liste_titre">';
 				$html .= '<td colspan="6">';
 				$html .= '<table width="100%" class="nobordernopadding"><tr><td>' . $langs->trans("LeadLastLeadUpdated", ($num <= 4 ? $num : 4)) . '</td><td align="right"><a href="' . dol_buildpath('/lead/lead/list.php', 1) . '?socid=' . $object->id . '">' . $langs->trans("LeadList") . ' (' . $total_lead . ')</a></td>';
 				$html .= '<td width="20px" align="right"><a href="' . dol_buildpath('/lead/index.php', 1) . '">' . img_picto($langs->trans("Statistics"), 'stats') . '</a></td>';
 				$html .= '</tr></table></td>';
 				$html .= '</tr>';
-				
+
 				foreach ( $lead->lines as $lead_line ) {
 					$var = ! $var;
 					$html .='<tr '. $bc[$var].'>';
@@ -184,7 +184,7 @@ class ActionsLead // extends CommonObject
 					$html .= '<td>'.$lead_line->getLibStatut(2).'</td>';
 					$html .= '</tr>';
 				}
-				
+
 				$html .= '</table>';
 				$html = str_replace('"', '\"', $html);
 				$js= '<script type="text/javascript">'."\n";
@@ -199,21 +199,21 @@ class ActionsLead // extends CommonObject
 		if (in_array('propalcard', $current_context)) {
 			require_once 'lead.class.php';
 			$lead = new Lead($db);
-			
+
 			$ret = $lead->fetchLeadLink(($object->rowid ? $id = $object->rowid : $object->id), $object->table_element);
 			if ($ret < 0) {
 				setEventMessages(null, $lead->errors, 'errors');
 			}
-			
+
 			if (count($lead->doclines) == 0) {
 				$langs->load("lead@lead");
-				
+
 				if ($user->rights->lead->write) {
 					$html = '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/lead/lead/card.php', 1) . '?action=create&amp;socid=' . $object->socid . '&amp;amount_guess=' . $object->total_ht . '&amp;propalid=' . $object->id . '">' . $langs->trans('LeadCreate') . '</a></div>';
 				} else {
 					$html = '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('LeadCreate') . '</a></div>';
 				}
-				
+
 				$html = str_replace('"', '\"', $html);
 				$js= '<script type="text/javascript">'."\n";
 				$js.= '	$(document).ready('."\n";
@@ -227,5 +227,26 @@ class ActionsLead // extends CommonObject
 
 		// Always OK
 		return 0;
+	}
+
+	/**
+	 * addSearchEntry Method Hook Call
+	 *
+	 * @param array $parameters parameters
+	 * @param Object &$object Object to use hooks on
+	 * @param string &$action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	 * @param object $hookmanager class instance
+	 * @return void
+	 */
+	public function addSearchEntry($parameters, &$object, &$action, $hookmanager) {
+		global $conf, $langs;
+		$langs->load('lead@lead');
+
+		$arrayresult['searchintolead'] = array (
+				'text' => img_object('', 'lead@lead') . ' ' . $langs->trans("Module103111Name"),
+				'url' => dol_buildpath('/lead/lead/list.php', 1) . '?search_ref=' . urlencode($parameters['search_boxvalue'])
+		);
+
+		$this->results = $arrayresult;
 	}
 }
