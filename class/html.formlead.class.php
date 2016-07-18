@@ -61,11 +61,20 @@ class FormLead extends Form
 		$sql .= " FROM " . MAIN_DB_PREFIX . $tablename;
 		//TODO Fix sourcetype can be different from tablename (exemple project/projet)
 		$sqlwhere=array();
-		//if ($tablename!='contrat' || empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT)) {
+		if ($tablename!='contrat') {
 			$sql_inner='  rowid NOT IN (SELECT fk_source FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
 			$sql_inner.=' AND sourcetype=\''.$this->db->escape($tablename).'\')';
 			$sqlwhere[]= $sql_inner;
-		//}
+		} else {			
+			/*
+			 * A lead can be linked to only 1 contract
+			 * If there's already on contract linked to this lead
+			 * Then return an empty list
+			 */
+			$sql_inner=' '. $lead->id .' NOT IN (SELECT fk_target FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
+                        $sql_inner.=' AND sourcetype=\''.$this->db->escape($tablename).'\')';
+                        $sqlwhere[]= $sql_inner;
+                }  
 
 		// Manage filter
 		$sqlwhere[]= ' fk_soc=' . $this->db->escape($lead->fk_soc);
