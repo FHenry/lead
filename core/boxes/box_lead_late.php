@@ -141,7 +141,7 @@ class box_lead_late extends ModeleBoxes
 	 * @param array $contents With properties of box lines
 	 * @return void
 	 */
-	public function showBox($head = null, $contents = null)
+	public function showBox($head = null, $contents = null, $nooutput = 0)
 	{
 		parent::showBox($this->info_box_head, $this->info_box_contents);
 	}

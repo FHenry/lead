@@ -139,7 +139,7 @@ class box_lead_current extends ModeleBoxes
 	 *
 	 * @return void
 	 */
-	public function showBox($head = null, $contents = null)
+	public function showBox($head = null, $contents = null, $nooutput = 0)
 	{
 		parent::showBox($this->info_box_head, $this->info_box_contents);
 	}
