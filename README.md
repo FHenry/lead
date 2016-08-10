@@ -13,7 +13,7 @@ See COPYING for more information.
 INSTALL
 -------
 
-- Make sure Dolibarr (v >= 3.7) is already installed and configured on your server.
+- Make sure Dolibarr (v >= 3.8) is already installed and configured on your server.
 
 - In your Dolibarr installation directory, edit the htdocs/conf/conf.php file
 
@@ -46,7 +46,7 @@ INSTALL
 	*(You may have to create the custom directory first if it doesn't exist yet.)*
 
 	```
-	git clone --recursive git@github.com:FHenry/lead.git lead
+	git clone --recursive https://github.com/ATM-Consulting/dolibarr_module_lead.git
 	```
 
 	**The template now uses a git submodule to fetch the PHP Markdown library.**
@@ -55,7 +55,7 @@ INSTALL
 
 	Please use this instead to fetch the latest version:
 
-		git clone git@github.com:FHenry/lead.git lead
+		git clone https://github.com/ATM-Consulting/dolibarr_module_lead.git lead
 		cd lead
 		git submodule update --init
 		php composer.php install
@@ -77,7 +77,7 @@ INSTALL
 Contributions
 -------------
 
-Feel free to contribute and report defects at <https://github.com/FHenry/lead>
+Feel free to contribute and report defects at <https://github.com/ATM-Consulting/dolibarr_module_lead.git>
 
 Other Licences
 --------------
