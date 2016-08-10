@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -57,10 +57,10 @@ if ($action == 'updateMask') {
 	$masklead = GETPOST('masklead', 'alpha');
 	if ($maskconstlead)
 		$res = dolibarr_set_const($db, $maskconstlead, $masklead, 'chaine', 0, '', $conf->entity);
-	
+
 	if (! $res > 0)
 		$error ++;
-	
+
 	if (! $error) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
@@ -69,7 +69,7 @@ if ($action == 'updateMask') {
 } else if ($action == 'setmod') {
 	dolibarr_set_const($db, "LEAD_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } else if ($action == 'setvar') {
-	
+
 	$nb_day = GETPOST('LEAD_NB_DAY_COSURE_AUTO', 'int');
 	if (! empty($nb_day)) {
 		$res = dolibarr_set_const($db, 'LEAD_NB_DAY_COSURE_AUTO', $nb_day, 'chaine', 0, '', $conf->entity);
@@ -77,36 +77,46 @@ if ($action == 'updateMask') {
 	if (! $res > 0) {
 		$error ++;
 	}
-	
+
 	$user_goup = GETPOST('LEAD_GRP_USER_AFFECT', 'int');
 	if ($user_goup == - 1)
 		$user_goup = '';
-	
+
 	$res = dolibarr_set_const($db, 'LEAD_GRP_USER_AFFECT', $user_goup, 'chaine', 0, '', $conf->entity);
 	if (! $res > 0) {
 		$error ++;
 	}
-	
+
+	$template = GETPOST('LEAD_PERSONNAL_TEMPLATE', 'alpha');
+	if (! file_exists(dol_buildpath($template))) {
+		$template = '';
+	}
+
+	$res = dolibarr_set_const($db, 'LEAD_PERSONNAL_TEMPLATE', $template, 'chaine', 0, '', $conf->entity);
+	if (! $res > 0) {
+		$error ++;
+	}
+
 	$force_use_thirdparty = GETPOST('LEAD_FORCE_USE_THIRDPARTY', 'int');
 	$res = dolibarr_set_const($db, 'LEAD_FORCE_USE_THIRDPARTY', $force_use_thirdparty, 'yesno', 0, '', $conf->entity);
 	if (! $res > 0) {
 		$error ++;
 	}
-	
+
 	$allow_multiple = GETPOST('LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT', 'int');
 	$res = dolibarr_set_const($db, 'LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT', $allow_multiple, 'yesno', 0, '', $conf->entity);
 	if (! $res > 0) {
 		$error ++;
 	}
-	
+
 	$LEAD_EVENT_RELANCE_TYPE = GETPOST('LEAD_EVENT_RELANCE_TYPE');
 	$res = dolibarr_set_const($db, 'LEAD_EVENT_RELANCE_TYPE', $LEAD_EVENT_RELANCE_TYPE, 'chaine', 0, '', $conf->entity);
 	if (! $res > 0) {
 		$error ++;
 	}
-	
+
 	$errordb = 0;
-	$errors = array ();
+	$errors = array();
 	if ($force_use_thirdparty == 1) {
 		$sql = 'ALTER TABLE llx_lead ADD INDEX idx_llx_lead_fk_soc (fk_soc)';
 		$resql = $db->query($sql);
@@ -114,7 +124,7 @@ if ($action == 'updateMask') {
 			$errordb ++;
 			$errors[] = $db->lasterror;
 		}
-		
+
 		$sql = 'ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_3 FOREIGN KEY (fk_soc) REFERENCES llx_societe (rowid)';
 		$resql = $db->query($sql);
 		if (! $resql) {
@@ -124,13 +134,13 @@ if ($action == 'updateMask') {
 	} else {
 		$sql = 'ALTER TABLE llx_lead DROP FOREIGN KEY llx_lead_ibfk_3';
 		$resql = $db->query($sql);
-		if (! $resql && ($db->errno()!='DB_ERROR_NOSUCHFIELD' && $db->errno()!='DB_ERROR_NO_INDEX_TO_DROP')) {
+		if (! $resql && ($db->errno() != 'DB_ERROR_NOSUCHFIELD' && $db->errno() != 'DB_ERROR_NO_INDEX_TO_DROP')) {
 			$errordb ++;
 			$errors[] = $db->lasterror;
 		}
 		$sql = 'ALTER TABLE llx_lead DROP INDEX idx_llx_lead_fk_soc';
 		$resql = $db->query($sql);
-		if (! $resql  && ($db->errno()!='DB_ERROR_NOSUCHFIELD' && $db->errno()!='DB_ERROR_NO_INDEX_TO_DROP')) {
+		if (! $resql && ($db->errno() != 'DB_ERROR_NOSUCHFIELD' && $db->errno() != 'DB_ERROR_NO_INDEX_TO_DROP')) {
 			$errordb ++;
 			$errors[] = $db->lasterror;
 		}
@@ -138,7 +148,7 @@ if ($action == 'updateMask') {
 	if (! empty($errordb)) {
 		setEventMessages(null, $errors, 'warnings');
 	}
-	
+
 	if (! $error) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
@@ -165,8 +175,8 @@ dol_fiche_head($head, 'settings', $langs->trans("Module103111Name"), 0, "lead@le
  */
 print_fiche_titre($langs->trans("LeadSetupPage"));
 
-$dirmodels = array_merge(array (
-		'/' 
+$dirmodels = array_merge(array(
+		'/'
 ), ( array ) $conf->modules_parts['models']);
 
 print '<table class="noborder" width="100%">';
@@ -184,35 +194,35 @@ $form = new Form($db);
 
 foreach ( $dirmodels as $reldir ) {
 	$dir = dol_buildpath($reldir . "core/modules/lead/");
-	
+
 	if (is_dir($dir)) {
 		$handle = opendir($dir);
 		if (is_resource($handle)) {
 			$var = true;
-			
+
 			while ( ($file = readdir($handle)) !== false ) {
 				if ((substr($file, 0, 9) == 'mod_lead_') && substr($file, dol_strlen($file) - 3, 3) == 'php') {
 					$file = substr($file, 0, dol_strlen($file) - 4);
 					require_once $dir . $file . '.php';
-					
+
 					/**
 					 *
 					 * @var ModeleNumRefLead $module
 					 */
 					$module = new $file();
-					
+
 					// Show modules according to features level
 					if ($module->version == 'development' && $conf->global->MAIN_FEATURES_LEVEL < 2)
 						continue;
 					if ($module->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1)
 						continue;
-					
+
 					if ($module->isEnabled()) {
 						$var = ! $var;
 						print '<tr ' . $bc[$var] . '><td>' . $module->nom . "</td><td>\n";
 						print $module->info();
 						print '</td>';
-						
+
 						// Show example of numbering module
 						print '<td class="nowrap">';
 						$tmp = $module->getExample();
@@ -223,7 +233,7 @@ foreach ( $dirmodels as $reldir ) {
 						else
 							print $tmp;
 						print '</td>' . "\n";
-						
+
 						print '<td align="center">';
 						if ($conf->global->LEAD_ADDON == "$file") {
 							print img_picto($langs->trans("Activated"), 'switch_on');
@@ -233,10 +243,10 @@ foreach ( $dirmodels as $reldir ) {
 							print '</a>';
 						}
 						print '</td>';
-						
+
 						$businesscase = new Lead($db);
 						$businesscase->initAsSpecimen();
-						
+
 						// Info
 						$htmltooltip = '';
 						$htmltooltip .= '' . $langs->trans("Version") . ': <b>' . $module->getVersion() . '</b><br>';
@@ -250,11 +260,11 @@ foreach ( $dirmodels as $reldir ) {
 								$htmltooltip .= $langs->trans($module->error) . '<br>';
 							}
 						}
-						
+
 						print '<td align="center">';
 						print $form->textwithpicto('', $htmltooltip, 1, 0);
 						print '</td>';
-						
+
 						print "</tr>\n";
 					}
 				}
@@ -285,47 +295,49 @@ print '<td align="left">';
 print '<input type="text" name="LEAD_NB_DAY_COSURE_AUTO" value="' . $conf->global->LEAD_NB_DAY_COSURE_AUTO . '" size="4" ></td>';
 print '</tr>';
 
-// User Group
-print '<tr class="impair"><td>' . $langs->trans("LeadUserGroupAffect") . '</td>';
+// template
+print '<tr class="impair"><td>Chemin du template personnel</td>';
 print '<td align="left">';
-print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array (), 0, '', '', $conf->entity);
+print '<input type="text" name="LEAD_PERSONNAL_TEMPLATE" value="' . $conf->global->LEAD_PERSONNAL_TEMPLATE . '" size="30" ></td>';
+print '</tr>';
+
+// User Group
+print '<tr class="pair"><td>' . $langs->trans("LeadUserGroupAffect") . '</td>';
+print '<td align="left">';
+print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USER_AFFECT', 1, array(), 0, '', '', $conf->entity);
 print '</tr>';
 
 // Force use thirdparty
-print '<tr class="pair"><td>' . $langs->trans("LeadForceUseThirdparty") . '</td>';
+print '<tr class="impair"><td>' . $langs->trans("LeadForceUseThirdparty") . '</td>';
 print '<td align="left">';
-$arrval = array (
+$arrval = array(
 		'0' => $langs->trans("No"),
-		'1' => $langs->trans("Yes") 
+		'1' => $langs->trans("Yes")
 );
 print $form->selectarray("LEAD_FORCE_USE_THIRDPARTY", $arrval, $conf->global->LEAD_FORCE_USE_THIRDPARTY);
 print '</tr>';
 
-
 // Allow multiple lead on contract
-print '<tr class="impair"><td>' . $langs->trans("LeadAllowMultipleOnContract") . '</td>';
+print '<tr class="pair"><td>' . $langs->trans("LeadAllowMultipleOnContract") . '</td>';
 print '<td align="left">';
-$arrval = array (
+$arrval = array(
 		'0' => $langs->trans("No"),
-		'1' => $langs->trans("Yes") 
+		'1' => $langs->trans("Yes")
 );
 print $form->selectarray("LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT", $arrval, $conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT);
 print '</tr>';
 
-if (!empty($conf->global->AGENDA_USE_EVENT_TYPE)) {
-	
+if (! empty($conf->global->AGENDA_USE_EVENT_TYPE)) {
+
 	print '<tr class="impair"><td>' . $langs->trans("LeadTypeRelance") . '</td>';
 	print '<td align="left">';
 	dol_include_once('/core/class/html.formactions.class.php');
-	$formactions=new FormActions($db);
-	$formactions->select_type_actions($conf->global->LEAD_EVENT_RELANCE_TYPE, "LEAD_EVENT_RELANCE_TYPE", "systemauto", 0, -1);
+	$formactions = new FormActions($db);
+	$formactions->select_type_actions($conf->global->LEAD_EVENT_RELANCE_TYPE, "LEAD_EVENT_RELANCE_TYPE", "systemauto", 0, - 1);
 	print '</tr>';
-	
 }
 
 print '</table>';
-
-
 
 print '<tr class="impair"><td colspan="2" align="right"><input type="submit" class="button" value="' . $langs->trans("Save") . '"></td>';
 print '</tr>';
