@@ -231,7 +231,7 @@ if ($action == "add") {
 		$object->addRelance($date_relance);
 		setEventMessage($langs->trans('relanceAdded'));
 	}
-} else if (strpos($action, 'ext_head') !== false && file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
+} else if (strpos($action, 'ext_head') !== false && !empty($conf->global->LEAD_PERSONNAL_TEMPLATE) && file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
 	$res = include dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE);
 }
 
@@ -258,7 +258,7 @@ if ($action === 'create_relance') {
 // Add new proposal
 if ($action == 'create' && $user->rights->lead->write) {
 
-	if (file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
+	if (!empty($conf->global->LEAD_PERSONNAL_TEMPLATE) && file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
 		$res = include dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE);
 	} else {
 
@@ -392,7 +392,7 @@ elseif ($action == 'edit') {
 	$head = lead_prepare_head($object);
 	dol_fiche_head($head, 'card', $langs->trans('Module103111Name'), 0, dol_buildpath('/lead/img/object_lead.png', 1), 1);
 
-	if (file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
+	if (!empty($conf->global->LEAD_PERSONNAL_TEMPLATE) && file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
 		$res = include dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE);
 	} else {
 
@@ -542,7 +542,7 @@ elseif ($action == 'edit') {
 
 	$linkback = '<a href="' . dol_buildpath('/lead/lead/list.php', 1) . '">' . $langs->trans("BackToList") . '</a>';
 
-	if (file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
+	if (!empty($conf->global->LEAD_PERSONNAL_TEMPLATE) && file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
 		$res = include dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE);
 	} else {
 
