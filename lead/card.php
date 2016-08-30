@@ -511,6 +511,7 @@ elseif ($action == 'edit') {
 
 	// Confirm form
 	$formconfirm = '';
+
 	if ($action == 'delete') {
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('LeadDelete'), $langs->trans('LeadConfirmDelete'), 'confirm_delete', '', 0, 1);
 	}
@@ -545,8 +546,9 @@ elseif ($action == 'edit') {
 		$formconfirm = $hookmanager->executeHooks('formConfirm', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
 		if (! empty($formconfirm))
 			$printformconfirm = true;
+	} else {
+		$printformconfirm=true;
 	}
-
 	$linkback = '<a href="' . dol_buildpath('/lead/lead/list.php', 1) . '">' . $langs->trans("BackToList") . '</a>';
 
 	if (!empty($conf->global->LEAD_PERSONNAL_TEMPLATE) && file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
