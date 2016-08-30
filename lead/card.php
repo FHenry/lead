@@ -125,8 +125,15 @@ if ($action == "add") {
 
 	$error = 0;
 
+	if (!empty($socid)) {
+		$thirdparty=new Societe($db);
+		$thirdparty->fetch($socid);
+		$object->ref = $object->getNextNumRef($userid,$thirdparty);
+	} else {
+		$object->ref = $object->getNextNumRef($userid);
+	}
+
 	$object->ref_int = $ref_int;
-	$object->ref = $object->getNextNumRef($userid,$socid);
 	$object->fk_c_status = $leadstatus;
 	$object->fk_c_type = $leadtype;
 	$object->amount_prosp = price2num($amount_guess);
