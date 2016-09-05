@@ -64,7 +64,7 @@ if ($id > 0) {
 		$ret = $object->fetch_thirdparty();
 	if ($ret < 0)
 		setEventMessage($object->error, 'errors');
-	
+
 	$upload_dir = $conf->lead->dir_output . "/" . dol_sanitizeFileName($object->ref);
 }
 
@@ -112,10 +112,10 @@ if ($id > 0 || ! empty($ref))
 		print $langs->trans('Ref');
 		print '</td>';
 		print '<td>';
-		print $formlead->showrefnav($object, 'id', $linkback, 1, 'rowid', 'ref', '');
+		print $formlead->showrefnav_custom($object, 'id', $linkback, 1, 'rowid', 'ref', '');
 		print '</td>';
 		print '</tr>';
-		
+
 		print '<tr>';
 		print '<td width="20%">';
 		print $langs->trans('LeadRefInt');

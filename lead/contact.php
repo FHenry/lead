@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -78,7 +78,7 @@ if ($action == 'addcontact' && $user->rights->lead->write) {
 		$contactid = (GETPOST('userid', 'int') ? GETPOST('userid', 'int') : GETPOST('contactid', 'int'));
 		$result = $object->add_contact($contactid, $_POST["type"], $_POST["source"]);
 	}
-	
+
 	if ($result >= 0) {
 		header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $object->id);
 		exit();
@@ -90,19 +90,19 @@ if ($action == 'addcontact' && $user->rights->lead->write) {
 			setEventMessages(null, $object->errors, 'errors');
 		}
 	}
-} 
+}
 
 // Bascule du statut d'un contact
 else if ($action == 'swapstatut' && $user->rights->lead->write) {
 	if ($object->id > 0) {
 		$result = $object->swapContactStatus(GETPOST('ligne'));
 	}
-} 
+}
 
 // Efface un contact
 else if ($action == 'deletecontact' && $user->rights->lead->write) {
 	$result = $object->delete_contact($lineid);
-	
+
 	if ($result >= 0) {
 		header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $object->id);
 		exit();
@@ -125,19 +125,19 @@ $formlead = new FormLead($db);
 if ($object->id > 0) {
 	$head = lead_prepare_head($object);
 	dol_fiche_head($head, 'contact', $langs->trans("LeadContact"), 0, 'contact');
-	
+
 	/*
 	 * Lead synthese pour rappel
 	 */
 	print '<table class="border" width="100%">';
-	
+
 	$linkback = '<a href="list.php">' . $langs->trans("BackToList") . '</a>';
-	
+
 	// Ref
 	print '<tr><td width="25%">' . $langs->trans('Ref') . '</td><td colspan="3">';
-	print $formlead->showrefnav($object, 'id', $linkback, 1, 'rowid', 'ref', '');
+	print $formlead->showrefnav_custom($object, 'id', $linkback, 1, 'rowid', 'ref', '');
 	print '</td></tr>';
-	
+
 	print '<tr>';
 	print '<td width="20%">';
 	print $langs->trans('LeadCommercial');
@@ -151,7 +151,7 @@ if ($object->id > 0) {
 	print $userstatic->getFullName($langs);
 	print '</td>';
 	print '</tr>';
-	
+
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('Company');
@@ -160,7 +160,7 @@ if ($object->id > 0) {
 	print $object->thirdparty->getNomUrl();
 	print '</td>';
 	print '</tr>';
-	
+
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadStatus');
@@ -169,7 +169,7 @@ if ($object->id > 0) {
 	print $object->status_label;
 	print '</td>';
 	print '</tr>';
-	
+
 	print '<tr>';
 	print '<td>';
 	print $langs->trans('LeadType');
@@ -178,13 +178,13 @@ if ($object->id > 0) {
 	print $object->type_label;
 	print '</td>';
 	print '</tr>';
-	
+
 	print "</table>";
-	
+
 	print '</div>';
-	
+
 	print '<br>';
-	
+
 	$res = @include '../tpl/contacts.tpl.php';
 }
 

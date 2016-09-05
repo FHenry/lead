@@ -85,10 +85,10 @@ if ($id > 0)
 	print $langs->trans('Ref');
 	print '</td>';
 	print '<td>';
-	print $formlead->showrefnav($object, 'id', $linkback, 1, 'rowid', 'ref', '');
+	print $formlead->showrefnav_custom($object, 'id', $linkback, 1, 'rowid', 'ref', '');
 	print '</td>';
 	print '</tr>';
-	
+
 	print '<tr>';
 	print '<td width="20%">';
 	print $langs->trans('LeadRefInt');

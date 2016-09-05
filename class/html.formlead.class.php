@@ -65,7 +65,7 @@ class FormLead extends Form
 			$sql_inner='  rowid NOT IN (SELECT fk_source FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
 			$sql_inner.=' AND sourcetype=\''.$this->db->escape($tablename).'\')';
 			$sqlwhere[]= $sql_inner;
-		} else {			
+		} else {
 			/*
 			 * A lead can be linked to only 1 contract
 			 * If there's already on contract linked to this lead
@@ -74,7 +74,7 @@ class FormLead extends Form
 			$sql_inner=' '. $lead->id .' NOT IN (SELECT fk_target FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
                         $sql_inner.=' AND sourcetype=\''.$this->db->escape($tablename).'\')';
                         $sqlwhere[]= $sql_inner;
-                }  
+                }
 
 		// Manage filter
 		$sqlwhere[]= ' fk_soc=' . $this->db->escape($lead->fk_soc);
@@ -123,7 +123,7 @@ class FormLead extends Form
 	 *
 	 * @return string Portion HTML avec ref + boutons nav
 	 */
-	function showrefnav($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlright = '')
+	function showrefnav_custom($object, $paramid, $morehtml = '', $shownav = 1, $fieldid = 'rowid', $fieldref = 'ref', $morehtmlref = '', $moreparam = '', $nodbprefix = 0, $morehtmlleft = '', $morehtmlright = '')
 	{
 		global $langs, $conf;
 
