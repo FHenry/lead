@@ -117,6 +117,10 @@ LeadConfirmLost=Toute les proposition commerciales associées à cette affaire s
 LeadPropalCloseByLead=Proposition cloturée par l'affaire %s perdue
 LeadObjectWindExists=Des propositions signées ou des factures existent (Le statut de l'affaire devrait être « Gagné »)
 LeadLastLeadUpdated=Les %s derniéres affaires modifiées
+LeadCreatePropale=Créer une proposition commerciale
+LeadConfirmCreatePropale=Confirmer la création d'une proposition commerciale
+LeadClonePropale=Cloner une proposition commerciale
+LeadChoosePropale=Choisir une proposition commerciale
 
 #
 # Export

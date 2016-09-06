@@ -223,7 +223,37 @@ if ($action == "add") {
 	} else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $result);
 	}
-} elseif ($action == "confirm_lost" && $confirm == 'yes') {
+} else if ($action === 'confirm_create_propale' && $confirm == 'yes') {
+	$propal = new Propal($db);
+	$propal->socid = $object->fk_soc;
+	$propal->fetch_thirdparty();
+	$propal->duree_validite = 15;
+	$propal->cond_reglement_id = 1;
+	$propal->mode_reglement_id = 0;
+	$propal->origin_id = 0;
+	$propal->availability_id = 0;
+	$propal->datep = time();
+	$propal->statut = Propal::STATUS_DRAFT;
+	$propal->modelpdf = 'azur';
+	$propal->create($user);
+	$result = $object->add_object_linked('propal', $propal->id);
+	if ($result < 0) {
+		setEventMessages(null, $object->errors, 'errors');
+	} else {
+		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+	}
+} else if ($action === 'confirm_clone_propale' && $confirm == 'yes') {
+	$propale_id = GETPOST('propale_id');
+	$propale = new Propal($db);
+	$propale->fetch($propale_id);
+	$new_propale_id = $propale->createFromClone($object->fk_soc);
+	$result = $object->add_object_linked('propal', $new_propale_id);
+	if ($result < 0) {
+		setEventMessages(null, $object->errors, 'errors');
+	} else {
+		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+	}
+} else if ($action == "confirm_lost" && $confirm == 'yes') {
 	// Status 7=LOST hard coded, loaded by default in data.sql dictionnary (but check is done in this card that call this method)
 	$object->fk_c_status = 7;
 	$result = $object->update($user);
@@ -262,6 +292,28 @@ if ($action === 'create_relance') {
 	), '', 1);
 }
 
+if ($action === 'clone_propale') {
+	$TRes = array();
+	$form = new Form($db);
+	$sql = 'SELECT rowid, ref, ref_client from ' . MAIN_DB_PREFIX . 'propal ORDER BY ref, ref_client';
+	$result = $db->query($sql);
+	if($result){
+		while($row = $db->fetch_object($result)) {
+			$TRes[$row->rowid] = $row->ref.' '.$row->ref_client;
+		}
+	}
+	$test = $form->selectarray('propale_id',$TRes, 'propale_id', 0, 0, 0, 'style="min-width:200px;"', 0, 0, 0, '', '', 1);
+	print $form->formconfirm("card.php?id=" . $object->id, $langs->trans("LeadClonePropale"), $langs->trans("LeadChoosePropale"), "confirm_clone_propale", array(
+			array(
+					'type' => 'other',
+					'name' => 'propale_id',
+					'value' => $test
+			)
+	), '', 1);
+}
+if ($action === 'create_propale') {
+	print $form->formconfirm("card.php?id=" . $object->id, $langs->trans("LeadCreatePropale"), $langs->trans("LeadConfirmCreatePropale"), "confirm_create_propale", array(), '', 1);
+} 
 // Add new proposal
 if ($action == 'create' && $user->rights->lead->write) {
 
@@ -674,6 +726,10 @@ elseif ($action == 'edit') {
 	if ($user->rights->lead->write) {
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=edit">' . $langs->trans("Edit") . "</a></div>\n";
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("Clone") . "</a></div>\n";
+		if($user->rights->propale->creer) {
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_propale">' . $langs->trans("LeadCreatePropale") . "</a></div>\n";
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone_propale">' . $langs->trans("LeadClonePropale") . "</a></div>\n";
+		}
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_relance">' . $langs->trans("CreateRelance") . "</a></div>\n";
 		if ($object->status[7] == $langs->trans('LeadStatus_LOST') && $object->fk_c_status != 7) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
