@@ -194,11 +194,11 @@ class Lead extends CommonObject
 
 	function addRelance($dateRelance) {
 		global $user,$db,$conf,$langs;
-		
+
 		if(empty($dateRelance)) return false;
-		
+
 		dol_include_once('/comm/action/class/actioncomm.class.php');
-	
+
 		$a=new ActionComm($db);
 		$a->percent = 0;
 		$a->label = $langs->trans('leadRelanceEvent', $this->ref_int);
@@ -208,14 +208,14 @@ class Lead extends CommonObject
 		$a->type_code = empty($conf->global->AGENDA_USE_EVENT_TYPE) || empty($conf->global->LEAD_EVENT_RELANCE_TYPE) ? 'AC_OTH' : $conf->global->LEAD_EVENT_RELANCE_TYPE;
 		$a->fk_element = $this->id;
 		$a->elementtype = 'lead';
-		
-		
+
+
 		if($a->add($user)<=0) {
 			setEventMessage($langs->trans("ImpossibleToCreateEventLead"), "errors");
 		}
-		
+
 		$result = $this->add_object_linked('action', $a->id);
-		
+
 		return $a->id;
 	}
 
@@ -477,7 +477,9 @@ class Lead extends CommonObject
 	 * @return int <0 if KO, >0 if OK
 	 */
 	function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = array()) {
-		global $langs;
+		global $langs,$user;
+
+
 		$sql = "SELECT";
 		$sql .= " t.rowid,";
 
@@ -504,6 +506,10 @@ class Lead extends CommonObject
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_status as leadsta ON leadsta.rowid=t.fk_c_status";
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "c_lead_type as leadtype ON leadtype.rowid=t.fk_c_type";
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "lead_extrafields as leadextra ON leadextra.fk_object=t.rowid";
+
+		if (!$user->rights->societe->client->voir) {
+			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user = " .$user->id;
+		}
 
 		$sql .= " WHERE t.entity IN (" . getEntity('lead') . ")";
 
