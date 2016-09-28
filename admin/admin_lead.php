@@ -308,7 +308,7 @@ print $form->select_dolgroups($conf->global->LEAD_GRP_USER_AFFECT, 'LEAD_GRP_USE
 print '</tr>';
 
 // Force use thirdparty
-print '<tr class="impair"><td>' . $langs->trans("LeadForceUseThirdparty") . '</td>';
+print '<tr class="impair"><td>' . $langs->trans("LeadForceUseThirdparty") . info_admin($langs->trans("LeadForceUseThirdpartyHelp"),1) . '</td>';
 print '<td align="left">';
 $arrval = array(
 		'0' => $langs->trans("No"),
