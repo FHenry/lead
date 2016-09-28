@@ -37,7 +37,8 @@ LeadSetupPage = Page de réglages des Affaires
 LeadNbDayDefaultClosure = Nombre de jours à ajouter à la date du jour pour obtenir la date de clôture par défaut
 LeadAdmVar=Administration
 LeadUserGroupAffect = Limiter les utilisateurs affectables à une affaire au groupe
-LeadForceUseThirdparty = Forcer l'utilisation des client sur les Affaires
+LeadForceUseThirdparty = Forcer l'utilisation des client sur les Affaires 
+LeadForceUseThirdpartyHelp = Si configuré à Non, les affaires sans clients ne seront jamais visible pour les utilisateur n'ayant pas la permission "Étendre l'accès à tous les tiers".
 LeadAllowMultipleOnContract=Autoriser l'association plusieurs affaire sur un contrat
 
 #
