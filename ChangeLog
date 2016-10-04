@@ -1,5 +1,8 @@
 English Lead ChangeLog
 
+***** ChangeLog for 1.15 compared to 1.14 *****
+FIX : error into log on addSearchEntry hook
+
 ***** ChangeLog for 1.14 compared to 1.12 *****
 FIX : Lead visibility according user right on thirdparties
 NEW : Can create propal on Lead page

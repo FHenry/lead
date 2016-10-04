@@ -248,5 +248,7 @@ class ActionsLead // extends CommonObject
 		);
 
 		$this->results = $arrayresult;
+
+		return 0;
 	}
 }
