@@ -478,41 +478,8 @@ class modLead extends DolibarrModules
 		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "lead_extrafields as extra ON extra.fk_object=l.rowid";
 		$this->export_sql_end [$r] .= ' WHERE l.entity IN (' . getEntity("lead", 1) . ')';
 
-		// Add extra fields
-		$sql="SELECT name, label, type, param FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'lead'";
-		$resql=$this->db->query($sql);
-		if ($resql)    // This can fail when class is used on old database (during migration for example)
-		{
-			while ($obj=$this->db->fetch_object($resql))
-			{
-				$fieldname='extra.'.$obj->name;
-				$fieldlabel=ucfirst($obj->label);
-				$typeFilter="Text";
-				switch($obj->type)
-				{
-					case 'int':
-					case 'double':
-					case 'price':
-						$typeFilter="Numeric";
-						break;
-					case 'date':
-					case 'datetime':
-						$typeFilter="Date";
-						break;
-					case 'boolean':
-						$typeFilter="Boolean";
-						break;
-					case 'sellist':
-						$typeFilter="List:".$obj->param;
-						break;
-				}
-				$this->export_fields_array[$r][$fieldname]=$fieldlabel;
-				$this->export_TypeFields_array[$r][$fieldname]=$typeFilter;
-				$this->export_entities_array[$r][$fieldname]='lead';
-			}
-		}
-
-
+		$keyforselect='lead'; $keyforelement='lead'; $keyforaliasextra='extra';
+		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
 
 		//Export propal not linked with lead
 		$r ++;
