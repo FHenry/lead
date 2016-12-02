@@ -478,7 +478,7 @@ class modLead extends DolibarrModules
 		$this->export_sql_end [$r] .=  " LEFT JOIN " . MAIN_DB_PREFIX . "lead_extrafields as extra ON extra.fk_object=l.rowid";
 		$this->export_sql_end [$r] .= ' WHERE l.entity IN (' . getEntity("lead", 1) . ')';
 
-		$keyforselect='lead'; $keyforelement='lead'; $keyforaliasextra='extra';
+		$keyforselect='lead'; $keyforelement='lead@lead'; $keyforaliasextra='extra';
 		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
 
 		//Export propal not linked with lead
