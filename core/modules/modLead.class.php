@@ -62,7 +62,7 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '1.15';
+		$this->version = '1.16';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -125,8 +125,8 @@ class modLead extends DolibarrModules
 		);
 		// Minimum version of Dolibarr required by module
 		$this->need_dolibarr_version = array(
-			3,
-			9
+			5,
+			0
 		);
 		$this->langfiles = array(
 			"lead@lead"
