@@ -36,6 +36,16 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
 
+
+$form = new Form($db);
+$formlead = new FormLead($db);
+$object = new Lead($db);
+$formother = new FormOther($db);
+
+$extrafields = new ExtraFields($db);
+$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
+$search_array_options=$extrafields->getOptionalsFromPost($extralabels,'','search_');
+
 // Security check
 if (! $user->rights->lead->read)
 	accessforbidden();
@@ -71,22 +81,6 @@ $search_propalid = GETPOST('search_propalid', 'alpha');
 $link_element = GETPOST("link_element");
 if (! empty($link_element)) {
 	$action = 'link_element';
-}
-
-// Do we click on purge search criteria ?
-if (GETPOST("button_removefilter_x")) {
-	$search_commercial = '';
-	$search_soc = '';
-	$search_ref = '';
-	$search_ref_int = '';
-	$search_type = '';
-	$search_status = '';
-	$search_month = '';
-	$search_year = '';
-	$search_invoiceid='';
-	$search_invoiceref='';
-	$search_propalref='';
-	$search_propalid='';
 }
 
 $filter = array();
@@ -141,43 +135,77 @@ if (!empty($viewtype)) {
 	$option .= '&viewtype=' . $viewtype;
 }
 
-/*if (! empty($search_invoiceid)) {
-	$invoice = new Facture($db);
-	$invoice->fetch($search_invoiceid);
-	$search_invoiceref = $invoice->ref;
-	$object_socid = $invoice->socid;
+// Initialize context for list
+$contextpage=GETPOST('contextpage','aZ')?GETPOST('contextpage','aZ'):'leadlist';
+
+// Add $param from extra fields
+foreach ($search_array_options as $key => $val)
+{
+	$crit=$val;
+	$tmpkey=preg_replace('/search_options_/','',$key);
+	$typ=$extrafields->attribute_type[$tmpkey];
+	if ($val != '') {
+		$param.='&search_options_'.$tmpkey.'='.urlencode($val);
+	}
+	$mode=0;
+	if (in_array($typ, array('int','double'))) $mode=1;    // Search on a numeric
+	if ($val && ( ($crit != '' && ! in_array($typ, array('select'))) || ! empty($crit)))
+	{
+		$filter['leadextra.'.$tmpkey]=natural_search('leadextra.'.$tmpkey, $crit, $mode);
+	}
+}
+if (! empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param.='&contextpage='.$contextpage;
+
+$arrayfields = array(
+		't.ref' => array(
+				'label' => $langs->trans("Ref"),
+				'checked' => 1
+		),
+		't.ref_int' => array(
+				'label' => $langs->trans("LeadRefInt"),
+				'checked' => 1
+		),
+		'so.nom' => array(
+				'label' => $langs->trans("Customer"),
+				'checked' => 1
+		),
+		'usr.lastname' => array(
+				'label' => $langs->trans("LeadCommercial"),
+				'checked' => 1
+		),
+		'leadsta.label' => array(
+				'label' => $langs->trans("LeadStatus"),
+				'checked' => 1
+		),
+		'leadtype.label' => array(
+				'label' => $langs->trans("LeadType"),
+				'checked' => 1
+		),
+		't.amount_prosp' => array(
+				'label' => $langs->trans("LeadAmountGuess"),
+				'checked' => 1
+		),
+		't.date_closure' => array(
+				'label' => $langs->trans("LeadDeadLine"),
+				'checked' => 1
+		),
+);
+
+// Extra fields
+if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label)) {
+	foreach ( $extrafields->attribute_label as $key => $val ) {
+		$typeofextrafield=$extrafields->attribute_type[$key];
+		if ($typeofextrafield!='separate') {
+			$arrayfields["leadextra." . $key] = array(
+					'label' => $extrafields->attribute_label[$key],
+					'checked' => $extrafields->attribute_list[$key],
+					'position' => $extrafields->attribute_pos[$key],
+					'enabled' => $extrafields->attribute_perms[$key]
+			);
+		}
+	}
 }
 
-if (! empty($search_invoiceref)) {
-	$invoice = new Facture($db);
-	$invoice->fetch('', $search_invoiceref);
-	$search_invoiceid = $invoice->id;
-	$object_socid = $invoice->socid;
-}
-
-if (! empty($search_propalref)) {
-	$propal = new Propal($db);
-	$propal->fetch('', $search_propalref);
-	$search_propalid = $propal->id;
-	$object_socid = $propal->socid;
-}
-
-if (! empty($search_propalid)) {
-	$propal = new Propal($db);
-	$propal->fetch($search_propalid, '');
-	$search_propalref = $propal->ref;
-	$object_socid = $propal->socid;
-}*/
-
-/*
-if (!empty($user->rights->societe->client->voir)) {
-	$filter['userlimitviewsoc'] = 1;
-} else {
-	$filter['userlimitviewsoc'] = 0;
-}
-
-$sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
-*/
 
 if ($page == - 1) {
 	$page = 0;
@@ -187,11 +215,6 @@ $offset = $conf->liste_limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$form = new Form($db);
-$formlead = new FormLead($db);
-$object = new Lead($db);
-$formother = new FormOther($db);
-
 if (empty($sortorder))
 	$sortorder = "DESC";
 if (empty($sortfield))
@@ -200,6 +223,27 @@ if (empty($sortfield))
 $title = $langs->trans('LeadList');
 
 llxHeader('', $title);
+
+
+include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+
+// Do we click on purge search criteria ?
+if (GETPOST("button_removefilter_x") || GETPOST("button_removefilter.x") || GETPOST("button_removefilter")) {
+	$search_commercial = '';
+	$search_soc = '';
+	$search_ref = '';
+	$search_ref_int = '';
+	$search_type = '';
+	$search_status = '';
+	$search_month = '';
+	$search_year = '';
+	$search_invoiceid='';
+	$search_invoiceref='';
+	$search_propalref='';
+	$search_propalid='';
+	$search_array_options=array();
+	$filter=array();
+}
 
 if (!empty($socid)) {
 	require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
@@ -223,6 +267,9 @@ if ($resql != - 1) {
 	$num = $resql;
 
 	print_barre_liste($title, $page, $_SERVER['PHP_SELF'], $option, $sortfield, $sortorder, '', $num, $nbtotalofrecords);
+	
+	$varpage=empty($contextpage)?$_SERVER["PHP_SELF"]:$contextpage;
+	$selectedfields=$form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage);
 
 	print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" name="search_form">' . "\n";
 
@@ -236,6 +283,9 @@ if ($resql != - 1) {
 		print '<input type="hidden" name="viewtype" value="' . $viewtype . '"/>';
 	if (! empty($socid))
 		print '<input type="hidden" name="socid" value="' . $socid . '"/>';
+	
+	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
+	print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 
 	$moreforfilter = $langs->trans('Period') . '(' . $langs->trans("LeadDateDebut") . ')' . ': ';
 	$moreforfilter .= $langs->trans('Month') . ':<input class="flat" type="text" size="4" name="search_month" value="' . $search_month . '">';
@@ -250,76 +300,114 @@ if ($resql != - 1) {
 	$i = 0;
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
-	print_liste_field_titre($langs->trans("Ref"), $_SERVEUR['PHP_SELF'], "t.ref", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadRefInt"), $_SERVEUR['PHP_SELF'], "t.ref_int", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("Customer"), $_SERVEUR['PHP_SELF'], "so.nom", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadCommercial"), $_SERVEUR['PHP_SELF'], "usr.lastname", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadStatus"), $_SERVEUR['PHP_SELF'], "leadsta.label", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadType"), $_SERVEUR['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.ref']['checked'])) print_liste_field_titre($langs->trans("Ref"), $_SERVEUR['PHP_SELF'], "t.ref", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.ref_int']['checked'])) print_liste_field_titre($langs->trans("LeadRefInt"), $_SERVEUR['PHP_SELF'], "t.ref_int", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['so.nom']['checked'])) print_liste_field_titre($langs->trans("Customer"), $_SERVEUR['PHP_SELF'], "so.nom", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['usr.lastname']['checked'])) print_liste_field_titre($langs->trans("LeadCommercial"), $_SERVEUR['PHP_SELF'], "usr.lastname", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['leadsta.label']['checked'])) print_liste_field_titre($langs->trans("LeadStatus"), $_SERVEUR['PHP_SELF'], "leadsta.label", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['leadtype.label']['checked'])) print_liste_field_titre($langs->trans("LeadType"), $_SERVEUR['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.amount_prosp']['checked'])) print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
-
-
-	$extrafields = new ExtraFields($db);
-	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
-	if (count($extralabels) > 0) {
-		foreach($extralabels as $code_extra=>$label_extra) {
-			if ($extrafields->attribute_list[$code_extra]) {
-				print_liste_field_titre($label_extra, $_SERVEUR['PHP_SELF'], "leadextra.".$code_extra, "", $option, ' align="right" ', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
+	
+	// Extra fields
+	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
+	{
+		foreach($extrafields->attribute_label as $key => $val)
+		{
+			if (! empty($arrayfields["leadextra.".$key]['checked']))
+			{
+				$align=$extrafields->getAlignFlag($key);
+				print_liste_field_titre($extralabels[$key],$_SERVER["PHP_SELF"],"leadextra.".$key,"",$param,($align?'align="'.$align.'"':''),$sortfield,$sortorder);
 			}
 		}
 	}
 
 
-	print '<td align="center"></td>';
-
+	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"],"",'','','align="right"',$sortfield,$sortorder,'maxwidthsearch ');
+	
 	print "</tr>\n";
 
 	print '<tr class="liste_titre">';
+	if (! empty($arrayfields['t.ref']['checked']))
+	{
+		print '<td><input type="text" class="flat" name="search_ref" value="' . $search_ref . '" size="5"></td>';
+	}
+	if (! empty($arrayfields['t.ref_int']['checked']))
+	{
+		print '<td><input type="text" class="flat" name="search_ref_int" value="' . $search_ref_int . '" size="5"></td>';
+	}
+	if (! empty($arrayfields['so.nom']['checked']))
+	{
+		print '<td class="liste_titre">';
+		print '<input type="text" class="flat" name="search_soc" value="' . $search_soc . '" size="20">';
+		print '</td>';
+	}
 
-	print '<td><input type="text" class="flat" name="search_ref" value="' . $search_ref . '" size="5"></td>';
+	if (! empty($arrayfields['usr.lastname']['checked']))
+	{
+		print '<td class="liste_titre">';
+		print $formother->select_salesrepresentatives($search_commercial, 'search_commercial', $user);
+		print '</td>';
+	}
 
-	print '<td><input type="text" class="flat" name="search_ref_int" value="' . $search_ref_int . '" size="5"></td>';
+	if (! empty($arrayfields['leadsta.label']['checked']))
+	{
+		print '<td class="liste_titre">';
+		print $formlead->select_lead_status($search_status, 'search_status', 1);
+		print '</td>';
+	}
+	
+	if (! empty($arrayfields['leadtype.label']['checked']))
+	{
+		print '<td class="liste_titre">';
+		print $formlead->select_lead_type($search_type, 'search_type', 1);
+		print '</td>';
+	}
 
-	print '<td class="liste_titre">';
-	print '<input type="text" class="flat" name="search_soc" value="' . $search_soc . '" size="20">';
-	print '</td>';
-
-	print '<td class="liste_titre">';
-	print $formother->select_salesrepresentatives($search_commercial, 'search_commercial', $user);
-	print '</td>';
-
-	print '<td class="liste_titre">';
-	print $formlead->select_lead_status($search_status, 'search_status', 1);
-	print '</td>';
-
-	print '<td class="liste_titre">';
-	print $formlead->select_lead_type($search_type, 'search_type', 1);
-	print '</td>';
-
-	// amount guess
-	print '<td id="totalamountguess" align="right"></td>';
+	if (! empty($arrayfields['t.amount_prosp']['checked']))
+	{
+		// amount guess
+		print '<td id="totalamountguess" align="right"></td>';
+	}
 	// amount real
 	print '<td id="totalamountreal" align="right"></td>';
-	// dt closure
-	print '<td></td>';
+	
+	if (! empty($arrayfields['t.date_closure']['checked']))
+	{
+		// dt closure
+		print '<td></td>';
+	}
 
 
-	$extrafields = new ExtraFields($db);
-	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
-	if (count($extralabels) > 0) {
-		foreach($extralabels as $code_extra=>$label_extra) {
-			if ($extrafields->attribute_list[$code_extra]) {
-				print '<td></td>';
+	// Extra fields
+	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
+	{
+		foreach($extrafields->attribute_label as $key => $val)
+		{
+			if (! empty($arrayfields["leadextra.".$key]['checked']))
+			{
+				$align=$extrafields->getAlignFlag($key);
+				$typeofextrafield=$extrafields->attribute_type[$key];
+				print '<td class="liste_titre'.($align?' '.$align:'').'">';
+				if (in_array($typeofextrafield, array('varchar', 'int', 'double', 'select')))
+				{
+					$crit=$val;
+					$tmpkey=preg_replace('/search_options_/','',$key);
+					$searchclass='';
+					if (in_array($typeofextrafield, array('varchar', 'select'))) $searchclass='searchstring';
+					if (in_array($typeofextrafield, array('int', 'double'))) $searchclass='searchnum';
+					print '<input class="flat'.($searchclass?' '.$searchclass:'').'" size="4" type="text" name="search_options_'.$tmpkey.'" value="'.dol_escape_htmltag($search_array_options['search_options_'.$tmpkey]).'">';
+				}
+				print '</td>';
 			}
 		}
 	}
 
 	// edit button
-	print '<td class="liste_titre" align="right"><input class="liste_titre" type="image" src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/search.png" value="' . dol_escape_htmltag($langs->trans("Search")) . '" title="' . dol_escape_htmltag($langs->trans("Search")) . '">';
-	print '&nbsp; ';
-	print '<input type="image" class="liste_titre" name="button_removefilter" src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/searchclear.png" value="' . dol_escape_htmltag($langs->trans("RemoveFilter")) . '" title="' . dol_escape_htmltag($langs->trans("RemoveFilter")) . '">';
+	print '<td class="liste_titre" align="right">';
+	$searchpitco=$form->showFilterAndCheckAddButtons(0);
+	print $searchpitco;
 	print '</td>';
 
 	print "</tr>\n";
@@ -338,51 +426,74 @@ if ($resql != - 1) {
 		$var = ! $var;
 		print '<tr ' . $bc[$var] . '>';
 
-		// Ref
-		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref . '</a>';
-		if ($line->fk_c_status!=6) {
-			$result=$line->isObjectSignedExists();
-			if ($result<0) {
-				setEventMessages($line->error, null, 'errors');
-			}elseif ($result>0) {
-				print img_warning($langs->trans('LeadObjectWindExists'));
+		if (! empty($arrayfields['t.ref']['checked']))
+		{
+			// Ref
+			print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref . '</a>';
+			if ($line->fk_c_status!=6) {
+				$result=$line->isObjectSignedExists();
+				if ($result<0) {
+					setEventMessages($line->error, null, 'errors');
+				}elseif ($result>0) {
+					print img_warning($langs->trans('LeadObjectWindExists'));
+				}
 			}
+			print '</td>';
 		}
-		print '</td>';
 
-		// RefInt
-		print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref_int . '</a></td>';
-
-		// Societe
-		print '<td>';
-		if (! empty($line->fk_soc) && $line->fk_soc != - 1) {
-			$soc = new Societe($db);
-			$soc->fetch($line->fk_soc);
-			print $soc->getNomURL(1);
-		} else {
-			print '&nbsp;';
+		if (! empty($arrayfields['t.ref_int']['checked']))
+		{
+			// RefInt
+			print '<td><a href="card.php?id=' . $line->id . '">' . $line->ref_int . '</a></td>';
 		}
-		print '</td>';
 
-		// Commercial
-		print '<td>';
-		if (! empty($line->fk_user_resp)) {
-			$userstatic = new User($db);
-			$userstatic->fetch($line->fk_user_resp);
-			if (! empty($userstatic->id)) {
-				print $userstatic->getFullName($langs);
+		if (! empty($arrayfields['so.nom']['checked']))
+		{
+			// Societe
+			print '<td>';
+			if (! empty($line->fk_soc) && $line->fk_soc != - 1) {
+				$soc = new Societe($db);
+				$soc->fetch($line->fk_soc);
+				print $soc->getNomURL(1);
+			} else {
+				print '&nbsp;';
 			}
+			print '</td>';
 		}
-		print '</td>';
 
-		// Status
-		print '<td>' . $line->status_label . '</td>';
+		if (! empty($arrayfields['usr.lastname']['checked']))
+		{
+			// Commercial
+			print '<td>';
+			if (! empty($line->fk_user_resp)) {
+				$userstatic = new User($db);
+				$userstatic->fetch($line->fk_user_resp);
+				if (! empty($userstatic->id)) {
+					print $userstatic->getFullName($langs);
+				}
+			}
+			print '</td>';
+		}
 
-		// Type
-		print '<td>' . $line->type_label . '</td>';
 
-		// Amount prosp
-		print '<td align="right">' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+		if (! empty($arrayfields['leadsta.label']['checked']))
+		{
+			// Status
+			print '<td>' . $line->status_label . '</td>';
+		}
+
+		if (! empty($arrayfields['leadtype.label']['checked']))
+		{
+			// Type
+			print '<td>' . $line->type_label . '</td>';
+		}
+
+
+		if (! empty($arrayfields['t.amount_prosp']['checked']))
+		{
+			// Amount prosp
+			print '<td align="right">' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+		}
 		$totalamountguess += $line->amount_prosp;
 
 		// Amount real
@@ -390,19 +501,31 @@ if ($resql != - 1) {
 		print '<td  align="right">' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		$totalamountreal += $amount;
 
-		// Closure date
-		print '<td  align="right">' . dol_print_date($line->date_closure, 'daytextshort') . '</td>';
-
-		$extrafields = new ExtraFields($db);
-		$extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
-		if (count($extralabels) > 0) {
-			foreach($extralabels as $code_extra=>$label_extra) {
-				if ($extrafields->attribute_list[$code_extra]) {
-					print '<td align="right">'.$line->array_options['options_'.$code_extra].'</td>';
+		if (! empty($arrayfields['t.date_closure']['checked']))
+		{
+			// Closure date
+			print '<td  align="right">' . dol_print_date($line->date_closure, 'daytextshort') . '</td>';
+		}
+		
+		// Extra fields
+		if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
+		{
+			foreach($extrafields->attribute_label as $key => $val)
+			{
+				if (! empty($arrayfields["leadextra.".$key]['checked']))
+				{
+					print '<td';
+					$align=$extrafields->getAlignFlag($key);
+					if ($align) print ' align="'.$align.'"';
+					print '>';
+					$tmpkey='options_'.$key;
+					print $extrafields->showOutputField($key, $resource->array_options[$tmpkey], '', 1);
+					print '</td>';
 				}
 			}
+			if (! $i) $totalarray['nbfield']++;
 		}
-
+		
 		print '<td align="center"><a href="card.php?id=' . $line->id . '&action=edit">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
 
 		print "</tr>\n";
