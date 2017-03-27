@@ -242,6 +242,28 @@ if ($action == "add") {
 	} else {
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 	}
+} else if ($action === 'confirm_create_contract' && $confirm == 'yes') {
+	
+	$contract = new Contrat($db);
+	$contract->socid = $object->fk_soc;
+	$contract->fetch_thirdparty();
+	$contract->commercial_signature_id= $user->id;
+	$contract->commercial_suivi_id= $user->id;
+	$contract->date_contrat= dol_now();
+	$contract->array_options['options_duration']= 1;
+	$contract->array_options['options_type_contract']= 'VTE';
+	$result=$contract->create($user);
+	if ($result < 0) {
+		setEventMessages($contract->error, $contract->errors, 'errors');
+	} else {
+		$result = $object->add_object_linked('contrat', $contract->id);
+		if ($result < 0) {
+			setEventMessages(null, $object->errors, 'errors');
+		} else {
+			header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+		}
+	}
+	
 } else if ($action === 'confirm_clone_propale' && $confirm == 'yes') {
 	$propale_id = GETPOST('propale_id');
 	$propale = new Propal($db);
@@ -313,6 +335,9 @@ if ($action === 'clone_propale') {
 }
 if ($action === 'create_propale') {
 	print $form->formconfirm("card.php?id=" . $object->id, $langs->trans("LeadCreatePropale"), $langs->trans("LeadConfirmCreatePropale"), "confirm_create_propale", array(), '', 1);
+} 
+if ($action === 'create_contract') {
+	print $form->formconfirm("card.php?id=" . $object->id, $langs->trans("LeadCreateContract"), $langs->trans("LeadConfirmCreateContract"), "confirm_create_contract", array(), '', 1);
 } 
 // Add new proposal
 if ($action == 'create' && $user->rights->lead->write) {
@@ -729,6 +754,9 @@ elseif ($action == 'edit') {
 		if($user->rights->propale->creer) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_propale">' . $langs->trans("LeadCreatePropale") . "</a></div>\n";
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone_propale">' . $langs->trans("LeadClonePropale") . "</a></div>\n";
+		}
+		if($user->rights->contrat->creer) {
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_contract">' . $langs->trans("LeadCreateContract") . "</a></div>\n";
 		}
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_relance">' . $langs->trans("CreateRelance") . "</a></div>\n";
 		if ($object->status[7] == $langs->trans('LeadStatus_LOST') && $object->fk_c_status != 7) {

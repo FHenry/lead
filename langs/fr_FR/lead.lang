@@ -122,6 +122,8 @@ LeadCreatePropale=Créer une proposition commerciale
 LeadConfirmCreatePropale=Confirmer la création d'une proposition commerciale
 LeadClonePropale=Cloner une proposition commerciale
 LeadChoosePropale=Choisir une proposition commerciale
+LeadCreateContract=Créer un contrat
+LeadConfirmCreateContract=Confirmer la création d'un contrat
 
 #
 # Export

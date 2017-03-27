@@ -118,6 +118,8 @@ LeadConfirmLost=Sicuro divoler chiudere il lead?
 LeadPropalCloseByLead=Proposal close by lost lead %s
 LeadObjectWindExists=Proposal signed or invoice exist (lead status should be win)
 LeadLastLeadUpdated=Last %s lead updated
+LeadCreateContract=Create a contract
+LeadConfirmCreateContract=Confirm create contract
 
 #
 # Export
