@@ -250,7 +250,7 @@ if ($action == "add") {
 	$contract->commercial_signature_id= $user->id;
 	$contract->commercial_suivi_id= $user->id;
 	$contract->date_contrat= dol_now();
-	$contract->array_options['options_duration']= 1;
+	$contract->array_options['options_duration']= 12;
 	$contract->array_options['options_type_contract']= 'VTE';
 	$result=$contract->create($user);
 	if ($result < 0) {
