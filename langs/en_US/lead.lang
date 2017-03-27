@@ -122,6 +122,8 @@ LeadCreatePropale=Create proposal
 LeadConfirmCreatePropale=Confirm proposal creation
 LeadClonePropale=Clone proposal
 LeadChoosePropale=Choose a proposal
+LeadCreateContract=Create contract
+LeadConfirmCreateContract=Confirm create contract
 
 #
 # Export
