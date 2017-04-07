@@ -151,7 +151,7 @@ foreach ($search_array_options as $key => $val)
 	if (in_array($typ, array('int','double'))) $mode=1;    // Search on a numeric
 	if ($val && ( ($crit != '' && ! in_array($typ, array('select'))) || ! empty($crit)))
 	{
-		$filter['leadextra.'.$tmpkey]=natural_search('leadextra.'.$tmpkey, $crit, $mode);
+		$filter['leadextra.'.$tmpkey]=natural_search('leadextra.'.$tmpkey, $crit, $mode, 1);
 	}
 }
 if (! empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param.='&contextpage='.$contextpage;
@@ -323,7 +323,6 @@ if ($resql != - 1) {
 		}
 	}
 
-
 	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"],"",'','','align="right"',$sortfield,$sortorder,'maxwidthsearch ');
 	
 	print "</tr>\n";
@@ -411,7 +410,7 @@ if ($resql != - 1) {
 	print '</td>';
 
 	print "</tr>\n";
-	print '</form>';
+	
 
 	$var = true;
 	$totalamountguess = 0;
@@ -534,6 +533,7 @@ if ($resql != - 1) {
 	}
 
 	print "</table>";
+	print '</form>';
 
 	print '<script type="text/javascript" language="javascript">' . "\n";
 	print '$(document).ready(function() {
