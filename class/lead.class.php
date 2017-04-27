@@ -991,7 +991,7 @@ class Lead extends CommonObject
 		$sql .= " FROM " . MAIN_DB_PREFIX . "facture as fac";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
 		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='facture' AND elmt.fk_source=fac.rowid";
-		$sql .= " AND fac.fk_statut = 1";
+		$sql .= " AND fac.fk_statut IN (1,2)";
 
 		dol_syslog(get_class($this) . "::getRealAmount sql=" . $sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);

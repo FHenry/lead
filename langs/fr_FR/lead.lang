@@ -39,7 +39,7 @@ LeadAdmVar=Administration
 LeadUserGroupAffect = Limiter les utilisateurs affectables à une affaire au groupe
 LeadForceUseThirdparty = Forcer l'utilisation des client sur les Affaires 
 LeadForceUseThirdpartyHelp = Si configuré à Non, les affaires sans clients ne seront jamais visible pour les utilisateur n'ayant pas la permission "Étendre l'accès à tous les tiers".
-LeadAllowMultipleOnContract=Autoriser l'association plusieurs affaire sur un contrat
+LeadAllowMultipleOnContract=Autoriser l'association de plusieurs affaire sur un contrat
 
 #
 # Page À propos
@@ -85,6 +85,7 @@ LeadStatus_PROPO=Proposition
 LeadStatus_NEGO=Négociation
 LeadStatus_RECOND=Reconduction
 LeadStatus_WIN=Gagné
+LeadStatus_WON=Gagné
 LeadStatus_LOST=Perdu
 
 #

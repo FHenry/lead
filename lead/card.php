@@ -315,11 +315,12 @@ if ($action === 'create_relance') {
 if ($action === 'clone_propale') {
 	$TRes = array();
 	$form = new Form($db);
-	$sql = 'SELECT rowid, ref, ref_client from ' . MAIN_DB_PREFIX . 'propal ORDER BY ref, ref_client';
+	$sql = 'SELECT prop.rowid, prop.ref, prop.ref_client, soc.nom as socnom from ' . MAIN_DB_PREFIX . 'propal as prop ';
+	$sql .= ' INNER JOIN llx_societe as soc ON soc.rowid=prop.fk_soc ORDER BY ref, ref_client, soc.nom';
 	$result = $db->query($sql);
 	if($result){
 		while($row = $db->fetch_object($result)) {
-			$TRes[$row->rowid] = $row->ref.' '.$row->ref_client;
+			$TRes[$row->rowid] = $row->ref.' '.$row->ref_client. '('.$row->socnom .')';
 		}
 	}
 	$test = $form->selectarray('propale_id',$TRes, 'propale_id', 0, 0, 0, 'style="min-width:200px;"', 0, 0, 0, '', '', 1);
