@@ -115,7 +115,7 @@ LeadShowLead=Afficher l'affaire
 SelectElement=Selectionner l'élément
 LeadLink=Affaire(s) associé(s)
 LeadLost=Affaire perdue
-LeadConfirmLost=Les proposition commerciales selectionnées à cette affaire seront mises au statut « Non Signés ».
+LeadConfirmLost=Les proposition commerciales selectionnées à cette affaire seront mises au statut « Non Signées ».
 LeadPropalCloseByLead=Proposition cloturée par l'affaire %s perdue
 LeadObjectWindExists=Des propositions signées ou des factures existent (Le statut de l'affaire devrait être « Gagné »)
 LeadLastLeadUpdated=Les %s derniéres affaires modifiées
@@ -125,8 +125,8 @@ LeadClonePropale=Cloner une proposition commerciale
 LeadChoosePropale=Choisir une proposition commerciale
 LeadCreateContract=Créer un contrat
 LeadConfirmCreateContract=Confirmer la création d'un contrat
-LeadWin=Affaire gagné
-LeadConfirmWin=Les proposition commerciales selectionnées à cette affaire seront mises au statut « Signés ».
+LeadWin=Affaire gagnée
+LeadConfirmWin=Les proposition commerciales selectionnées à cette affaire seront mises au statut « Signées ».
 
 #
 # Export
