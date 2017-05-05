@@ -713,20 +713,12 @@ class Lead extends CommonObject
 				// // End call triggers
 			}
 		}
-		if (! $error) {
-			if ($this->fk_c_status == 7) {
-				$result = $this->closeAllProposal($user);
-				if ($result < 0) {
-					$this->errors[] = $this->error;
-					$error ++;
-				}
-			}
-		}
 
 		if (! $error) {
 
-			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
-{
+			// For avoid conflicts if trigger used
+			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) 
+			{
 				$result = $this->insertExtraFields();
 				if ($result < 0) {
 					$error ++;
@@ -1334,6 +1326,7 @@ class Lead extends CommonObject
 		// Unsupported mode
 		return '';
 	}
+	
 	/**
 	 * Close proposal link to lead
 	 *
@@ -1342,44 +1335,42 @@ class Lead extends CommonObject
 	 * @return int <0 if KO
 	 */
 	public function closeAllProposal(User $user) {
-		global $langs;
+		global $langs, $conf;
 
 		$error = 0;
 
 		$this->db->begin();
 
-		if (! empty($conf->propal->enabled))
+		if (! empty($conf->propal->enabled)) {
 			require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 
-		if (empty($error)) {
-
-			$ret = $this->fetchDocumentLink($this->id, $this->listofreferent['propal']['table']);
-			if ($result < 0) {
-				$this->errors[] = $this->error;
-				$error ++;
+			if (empty($error)) {
+	
+				$ret = $this->fetchDocumentLink($this->id, $this->listofreferent['propal']['table']);
+				if ($result < 0) {
+					$this->errors[] = $this->error;
+					$error ++;
+				}
 			}
-		}
-
-		if (empty($error)) {
-			// Close all propal linked
-			$elementarray = array ();
-			$classname = $this->listofreferent['propal']['class'];
-			$elementarray = $this->doclines;
-			if (count($elementarray) > 0 && is_array($elementarray)) {
-				$var = true;
-				$total_ht = 0;
-				$total_ttc = 0;
-				$num = count($elementarray);
-				foreach ( $elementarray as $line ) {
-
-					$element = new $classname($this->db);
-					$element->fetch($line->fk_source);
-					// Close only proposal not already close
-					if ($element->statut != 3 && $element->statut != 2) {
-						$result = $element->cloture($user, 3, $langs->trans('LeadPropalCloseByLead', $this->ref));
-						if ($result < 0) {
-							$this->errors[] = $this->error;
-							$error ++;
+	
+			if (empty($error)) {
+				// Close all propal linked
+				$elementarray = array ();
+				$classname = $this->listofreferent['propal']['class'];
+				$elementarray = $this->doclines;
+				if (count($elementarray) > 0 && is_array($elementarray)) {
+					$num = count($elementarray);
+					foreach ( $elementarray as $line ) {
+	
+						$element = new $classname($this->db);
+						$element->fetch($line->fk_source);
+						// Close only proposal not already close
+						if ($element->statut != 3 && $element->statut != 2) {
+							$result = $element->cloture($user, 3, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							if ($result < 0) {
+								$this->errors[] = $this->error;
+								$error ++;
+							}
 						}
 					}
 				}
@@ -1391,6 +1382,74 @@ class Lead extends CommonObject
 			return null;
 		}
 
+		// Error
+		foreach ( $this->errors as $errmsg ) {
+			dol_syslog(get_class($this) . "::" . __METHOD__ . " " . $errmsg, LOG_ERR);
+			$this->error .= ($this->error ? ', ' . $errmsg : $errmsg);
+		}
+		$this->db->rollback();
+		return - 1 * $error;
+	}
+	
+		
+	/**
+	 * Change proposal link to lead
+	 * 
+	 * @param User $user
+	 * @param array $propal_to_update
+	 * @param string $status
+	 * @return number
+	 */
+	public function setProposalsStatus(User $user, $propal_to_update = array(), $status = '') {
+		global $langs,$conf;
+		
+		$error = 0;
+		
+		$this->db->begin();
+		
+		if (! empty($conf->propal->enabled)) {
+			
+			
+			require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
+			
+			$element = new Propal($this->db);
+			
+			if ($status == 'close') {
+				if (count($propal_to_update) > 0 && is_array($propal_to_update)) {
+					foreach ( $propal_to_update as $id ) {
+						$element->fetch($id);
+						if ($element->statut == $element::STATUS_DRAFT ||  $element->statut == $element::STATUS_VALIDATED) {
+							$result = $element->cloture($user, $element::STATUS_NOTSIGNED, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							if ($result < 0) {
+								$this->errors[] = $this->error;
+								$error ++;
+							}
+						}
+					}
+				}
+			}
+			
+			if ($status == 'win') {
+				if (count($propal_to_update) > 0 && is_array($propal_to_update)) {
+					foreach ( $propal_to_update as $id ) {
+						$element->fetch($id);
+						if ($element->statut == $element::STATUS_DRAFT ||  $element->statut == $element::STATUS_VALIDATED) {
+							$result = $element->cloture($user, $element::STATUS_SIGNED, $langs->trans('LeadPropalCloseSignedByLead', $this->ref));
+							if ($result < 0) {
+								$this->errors[] = $this->error;
+								$error ++;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (empty($error)) {
+			$this->db->commit();
+			return 1;
+		}
+		
 		// Error
 		foreach ( $this->errors as $errmsg ) {
 			dol_syslog(get_class($this) . "::" . __METHOD__ . " " . $errmsg, LOG_ERR);

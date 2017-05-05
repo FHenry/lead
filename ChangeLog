@@ -1,5 +1,8 @@
 English Lead ChangeLog
 
+***** ChangeLog for 2.0 compared to 1.16 *****
+NEW : Better management of close or open leads 
+
 ***** ChangeLog for 1.16 compared to 1.15 *****
 NEW : Only for 5.0 with good list management
 NEW : Can create contract from lead
