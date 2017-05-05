@@ -852,7 +852,7 @@ elseif ($action == 'edit') {
 		if ($object->status[7] == $langs->trans('LeadStatus_LOST') && $object->fk_c_status != 7) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
 		}
-		if ($object->status[7] != $langs->trans('LeadStatus_LOST') || $object->fk_c_status != 7) {
+		if ($object->status[6] == $langs->trans('LeadStatus_WIN') && $object->fk_c_status != 6) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=win">' . $langs->trans("LeadWin") . "</a></div>\n";
 		}
 	} else {
