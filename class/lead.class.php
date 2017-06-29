@@ -122,7 +122,7 @@ class Lead extends CommonObject
 			$this->listofreferent['agenda'] = array (
 					'title' => "Event",
 					'class' => 'ActionComm',
-					'table' => 'action',
+					'table' => 'actioncomm',
 					'test' => $conf->agenda->enabled && $user->rights->agenda->myactions->read
 					,'disableamount'=>true
 			);
@@ -214,7 +214,7 @@ class Lead extends CommonObject
 			setEventMessage($langs->trans("ImpossibleToCreateEventLead"), "errors");
 		}
 
-		$result = $this->add_object_linked('action', $a->id);
+		$result = $this->add_object_linked('actioncomm', $a->id);
 
 		return $a->id;
 	}
