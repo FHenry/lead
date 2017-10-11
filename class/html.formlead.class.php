@@ -42,19 +42,24 @@ class FormLead extends Form
 	function select_element($tablename, $lead, $htmlname = 'elementselect')
 	{
 		global $langs, $conf;
-
+		
+		$primary = 'rowid';
 		switch ($tablename) {
 			case "facture":
-				$sql = "SELECT rowid, facnumber as ref, total as total_ht, date_valid as date_element";
+				$sql = "SELECT $primary, facnumber as ref, total as total_ht, date_valid as date_element";
 				break;
 			case "contrat":
-					$sql = "SELECT rowid, ref as ref, 0 as total_ht, date_contrat as date_element";
+					$sql = "SELECT $primary, ref as ref, 0 as total_ht, date_contrat as date_element";
 					break;
 			case "commande":
-				$sql = "SELECT rowid, ref as ref, total_ht as total_ht, date_commande as date_element";
+				$sql = "SELECT $primary, ref as ref, total_ht as total_ht, date_commande as date_element";
+				break;
+			case "actioncomm":
+				$primary = 'id';
+				$sql = "SELECT $primary as rowid, ref_ext as ref, '' as total_ht, datep as date_element";
 				break;
 			default:
-				$sql = "SELECT rowid, ref, total_ht, datep as date_element";
+				$sql = "SELECT $primary, ref, total_ht, datep as date_element";
 				break;
 		}
 
@@ -62,7 +67,7 @@ class FormLead extends Form
 		//TODO Fix sourcetype can be different from tablename (exemple project/projet)
 		$sqlwhere=array();
 		if ($tablename!='contrat') {
-			$sql_inner='  rowid NOT IN (SELECT fk_source FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
+			$sql_inner= $primary.' NOT IN (SELECT fk_source FROM ' . MAIN_DB_PREFIX . 'element_element WHERE targettype=\'' . $this->db->escape($lead->element) . '\'';
 			$sql_inner.=' AND sourcetype=\''.$this->db->escape($tablename).'\')';
 			$sqlwhere[]= $sql_inner;
 		} else {
@@ -84,7 +89,7 @@ class FormLead extends Form
 			$sql .= ' WHERE ' . implode(' AND ', $sqlwhere);
 		}
 		$sql .= $this->db->order('ref','DESC');
-
+		
 		dol_syslog(get_class($this) . "::".__METHOD__, LOG_DEBUG);
 
 		$resql = $this->db->query($sql);
