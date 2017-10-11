@@ -71,7 +71,12 @@ if ($id > 0) {
 /*
  * Actions
  */
-include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_pre_headers.tpl.php';
+if (file_exists(DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_pre_headers.tpl.php')) {
+	include_once DOL_DOCUMENT_ROOT.'/core/document_actions_pre_headers.tpl.php';
+} else {
+	include_once DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+}
+
 
 
 /*
