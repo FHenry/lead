@@ -9,3 +9,4 @@ UPDATE llx_c_lead_status SET position='40' , percent='60' WHERE code='NEGO';
 UPDATE llx_c_lead_status SET position='50' , percent='50' WHERE code='PENDING';
 UPDATE llx_c_lead_status SET position='60' , percent='100' WHERE code='WIN';
 UPDATE llx_c_lead_status SET position='70' , percent='0' WHERE code='LOST';
+ALTER TABLE llx_lead ADD COLUMN fk_user_modif integer AFTER `fk_user_author`;
