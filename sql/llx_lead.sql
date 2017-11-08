@@ -31,6 +31,7 @@ description 		text,
 note_public 		text,
 note_private 		text,
 fk_user_author		integer	NOT NULL,
+fk_user_modif 		integer NOT NULL DEFAULT 0,
 datec			datetime  NOT NULL,
 fk_user_mod 		integer NOT NULL,
 tms 			timestamp NOT NULL
