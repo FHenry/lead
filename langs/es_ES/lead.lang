@@ -84,7 +84,7 @@ LeadStatus_CHIFF=Interesado
 LeadStatus_PROPO=Presupuesto
 LeadStatus_NEGO=Negociando
 LeadStatus_RECOND=Renovar
-LeadStatus_WIN=Ganado
+LeadStatus_WIN=Won
 LeadStatus_LOST=Perdido
 
 #
@@ -127,7 +127,7 @@ Leadwin = Lead ganado
 LeadWin = Lead ganado
 LeadConfirmWin = Los presupuestos seleccionados vinculados a este Lead serán firmados o aceptados
 CreateRelance=Crear Evento
-
+LeadStatus_WIN=Won
 #
 # Export
 #
