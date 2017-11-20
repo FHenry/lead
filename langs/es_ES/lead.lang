@@ -126,6 +126,7 @@ LeadConfirmCreateContract=Confirma creación contrato
 Leadwin = Lead ganado
 LeadWin = Lead ganado
 LeadConfirmWin = Los presupuestos seleccionados vinculados a este Lead serán firmados o aceptados
+CreateRelance=Crear Evento
 
 #
 # Export
