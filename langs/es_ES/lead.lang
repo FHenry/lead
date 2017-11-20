@@ -1,0 +1,163 @@
+# Manage Lead
+# Copyright (C) 2014  Florian HENRY <florian.henry@open-concept.pro>
+# Copyright (C) 2015 Raphaël Doursenaud <rdoursenaud@gpcsolutions.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+
+# Module label 'Leads'
+# (where XXX is value of numeric property 'numero' of module)
+Lead = Lead
+LeadLead= Lead
+# Module description 'ModuleXXXDesc'
+# (where XXX is value of numeric property 'numero' of module)
+Module103111Desc = Manages Lead
+LeadSimpleNumRefModelDesc=Return a reference like LEA-yymm-nnnn where yy is the year, mm the month and nnnn a sequencial counter without reset
+
+#
+# Admin page
+#
+LeadSetup = Configuración Lead
+SettingsLead = Configuración
+LeadSetupPage = Cargar Lead Setup Page
+LeadNbDayDefaultClosure = Número de días a añadir a la fecha actual para calcular fecha cierre. 
+LeadAdmVar=Admin valor
+LeadUserGroupAffect = Limitar usuarios asignables a un Lead a un grupo de usuarios. 
+LeadForceUseThirdparty = Forzar usar Tercero en Leads.
+LeadForceUseThirdpartyHelp = Si seleccionas NO, los Lead sin Terceros asignados nunca serán visibles a usuarios sin el permiso "Extender acceso a todos los Terceros". 
+LeadAllowMultipleOnContract=Permitir a los usuarios añadir varios Leads a un solo contrato. 
+
+#
+# About page
+#
+About = Sobre
+LeadAbout = Sobre Lead
+LeadAboutPage = Lead about page
+
+
+#
+# Permissions
+#
+Permission1031111=Ver Lead
+Permission1031112=Actualizar Lead
+Permission1031113=Eliminar Lead
+Permission1031114=Exportar Lead
+
+#
+# Dictionnaires
+#
+LeadStatusDict=Modulo Lead - Pasos
+LeadTypeDict=Modulo Lead - Tipos
+
+#
+# Menu
+#
+LeadList = Listado Leads
+LeadInfo = Info Leads
+LeadCreate = Crear Lead
+LeadContact=Contacto Lead
+LeadListCurrent=Lead Actual
+LeadListMyLead=Mis Leads
+LeadListLate = Leads atrasados
+
+
+#
+# Status
+#
+LeadStatus=Proceso de venta
+LeadStatus_PROSP=Prospección
+LeadStatus_CHIFF=Interesado
+LeadStatus_PROPO=Presupuesto
+LeadStatus_NEGO=Negociando
+LeadStatus_RECOND=Renovar
+LeadStatus_WIN=Ganado
+LeadStatus_LOST=Perdido
+
+#
+# Type
+#
+LeadType=Type
+LeadType_SUPP=Soporte
+LeadType_TRAIN = Formación
+LeadType_ADVI=Consultoría
+
+#
+# Card
+#
+LeadCommercial=Comercial
+LeadAmountGuess = Presupuesto SIN IVA
+LeadDeadLine=Fecha Tope
+LeadDelete=Eliminar Lead
+LeadConfirmDelete = Estás seguro que quieres borrar este Lead?
+LeadRefInt = Referencia Interna
+LeadRealAmount = Cantidad real sin IVA
+LeadDescription=Descripción
+LeadDocuments=Enlazar documento
+LeadAddElement=Enlazar
+LeadLate=Lead retrasado
+ConfirmCloneLead=Estás seguro que quieres clonar Lead?
+LeadShowLead=Mostrar Lead
+SelectElement=Seleccionar elemento
+LeadLink=Enlace Lead
+LeadLost=Lead Perdido
+LeadConfirmLost=Todos los presupuestos enlazados a este Lead serán cerrados (no firmados)
+LeadPropalCloseByLead=Presupuestos cerrados vs Leads perdidos. LeadObjectWindExists=Presupuesto cerrado o factura existe. (Estado del Lead debería ser Ganado)
+LeadLastLeadUpdated=Últimos %s Leads actualizados. 
+LeadCreatePropale=Crear presupuesto. 
+LeadConfirmCreatePropale=Confirmar creación presupuesto. 
+LeadClonePropale=Clonar presupuesto
+LeadChoosePropale=Elege presupuesto
+LeadCreateContract=Crear contrato
+LeadConfirmCreateContract=Confirma creación contrato
+Leadwin = Lead ganado
+LeadWin = Lead ganado
+LeadConfirmWin = Los presupuestos seleccionados vinculados a este Lead serán firmados o aceptados
+
+#
+# Export
+#
+ExportDataset_lead=Lead
+LeadRefExt=Ref. Ext
+LeadStepCode=Código pasos
+LeadStepLabel=Etiqueta pasos
+LeadTypeCode=Código tipo
+LeadTypeLabel=Etiqueta tipos
+lead@lead=Leads
+ExportDataset_leadPropal=Propal not linked with lead
+
+#
+# List
+#
+LeadDateDebut = Fecha de inicio
+
+#
+# Graph
+#
+LeadNbLeadByType=Nº Leads por Tipo.
+LeadNbLeadByStatus=Nº Leads por Estado.
+LeadStats=Estadísticas Leads.
+LeadNbLead=Nº Leads
+LeadNbLeadByMonth=Nº Leads por mes
+LeadAmountOfLead=Cantidad Leads
+LeadAmountOfLeadsByMonth=Cantidad Leads por mes
+LeadTransRateOfLead=Ratio de cierre
+LeadTransRateOfLeadsByMonth=Ratio de cierre por mes
+
+#
+# Boxes
+#
+LastN=Últimos %s
