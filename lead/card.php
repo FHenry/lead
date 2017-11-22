@@ -318,7 +318,7 @@ if ($action == "add") {
 } else if ($action === 'confirm_relance' && GETPOST('confirm') === 'yes') {
 	
 	if ($date_relance) {
-		$object->addRelance($date_relance);
+		$object->addRelance($date_relance +(3600*12)); // +12heures
 		setEventMessage($langs->trans('relanceAdded'));
 	}
 } else if (strpos($action, 'ext_head') !== false && ! empty($conf->global->LEAD_PERSONNAL_TEMPLATE) && file_exists(dol_buildpath($conf->global->LEAD_PERSONNAL_TEMPLATE))) {
@@ -845,13 +845,14 @@ elseif ($action == 'edit') {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_propale">' . $langs->trans("LeadCreatePropale") . "</a></div>\n";
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone_propale">' . $langs->trans("LeadClonePropale") . "</a></div>\n";
 		}
-		if ($user->rights->contrat->creer) {
+		if ($conf->contract->enabled && $user->rights->contrat->creer) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_contract">' . $langs->trans("LeadCreateContract") . "</a></div>\n";
 		}
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_relance">' . $langs->trans("CreateRelance") . "</a></div>\n";
 		if ($object->status[7] == $langs->trans('LeadStatus_LOST') && $object->fk_c_status != 7) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
 		}
+		
 		if ($object->status[6] == $langs->trans('LeadStatus_WIN') && $object->fk_c_status != 6) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=win">' . $langs->trans("LeadWin") . "</a></div>\n";
 		}
