@@ -70,7 +70,7 @@ LeadList = Listado Leads
 LeadInfo = Info Leads
 LeadCreate = Crear Lead
 LeadContact=Contacto Lead
-LeadListCurrent=Lead Actual
+LeadListCurrent=Leads Actuales
 LeadListMyLead=Mis Leads
 LeadListLate = Leads atrasados
 
@@ -90,7 +90,7 @@ LeadStatus_LOST=Perdido
 #
 # Type
 #
-LeadType=Type
+LeadType=Interés
 LeadType_SUPP=Soporte
 LeadType_TRAIN = Formación
 LeadType_ADVI=Consultoría
@@ -117,7 +117,7 @@ LeadLost=Lead Perdido
 LeadConfirmLost=Todos los presupuestos enlazados a este Lead serán cerrados (no firmados)
 LeadPropalCloseByLead=Presupuestos cerrados vs Leads perdidos. LeadObjectWindExists=Presupuesto cerrado o factura existe. (Estado del Lead debería ser Ganado)
 LeadLastLeadUpdated=Últimos %s Leads actualizados. 
-LeadCreatePropale=Crear presupuesto. 
+LeadCreatePropale=Crear presupuesto 
 LeadConfirmCreatePropale=Confirmar creación presupuesto. 
 LeadClonePropale=Clonar presupuesto
 LeadChoosePropale=Elege presupuesto
@@ -128,6 +128,9 @@ LeadWin = Lead ganado
 LeadConfirmWin = Los presupuestos seleccionados vinculados a este Lead serán firmados o aceptados
 CreateRelance=Crear Evento
 LeadStatus_WIN=Won
+LeadDateRelance=Fecha Creación 1er Seguimiento
+ConfirmCreateRelance=Selecciona fecha y confirma (Se programará a las 12.00 del día seleccionado)
+
 #
 # Export
 #
@@ -154,7 +157,7 @@ LeadStats=Estadísticas Leads.
 LeadNbLead=Nº Leads
 LeadNbLeadByMonth=Nº Leads por mes
 LeadAmountOfLead=Cantidad Leads
-LeadAmountOfLeadsByMonth=Cantidad Leads por mes
+LeadAmountOfLeadsByMonth=Total € Leads por mes
 LeadTransRateOfLead=Ratio de cierre
 LeadTransRateOfLeadsByMonth=Ratio de cierre por mes
 
