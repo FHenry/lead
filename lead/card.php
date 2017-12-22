@@ -924,7 +924,7 @@ elseif ($action == 'edit') {
 					 * @var CommonObject $element
 					 */
 					$element = new $classname($db);
-					$element->fetch($line->fk_source);
+					if($element->fetch($line->fk_source) <= 0) continue;
 					$element->fetch_thirdparty();
 					
 					$var = ! $var;
