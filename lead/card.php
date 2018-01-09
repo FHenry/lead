@@ -165,7 +165,7 @@ if ($action == "add") {
 	
 	if ($date_relance) {
 		
-		$object->addRelance($date_relance);
+		$object->addRelance($date_relance +(3600*12)); // +12heures
 	}
 	
 	if (empty($error)) {
