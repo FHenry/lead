@@ -123,8 +123,8 @@ class ActionsLead // extends CommonObject
 		global $langs, $conf, $user, $db ,$bc;
 
 		$current_context = explode(':', $parameters['context']);
-		if (in_array('commcard', $current_context)) {
 
+		if (in_array('commcard', $current_context) || in_array('thirdpartycomm', $current_context)) {
 			$langs->load("lead@lead");
 
 			if ($user->rights->lead->write) {
