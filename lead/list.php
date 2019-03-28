@@ -518,7 +518,7 @@ if ($resql != - 1) {
 					if ($align) print ' align="'.$align.'"';
 					print '>';
 					$tmpkey='options_'.$key;
-					print $extrafields->showOutputField($key, $line->array_options[$tmpkey], '', 1);
+					print $extrafields->showOutputField($key, $line->array_options[$tmpkey], '', 'lead');
 					print '</td>';
 				}
 			}
