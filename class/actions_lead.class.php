@@ -123,8 +123,8 @@ class ActionsLead // extends CommonObject
 		global $langs, $conf, $user, $db ,$bc;
 
 		$current_context = explode(':', $parameters['context']);
-		if (in_array('commcard', $current_context)) {
 
+		if (in_array('commcard', $current_context) || in_array('thirdpartycomm', $current_context)) {
 			$langs->load("lead@lead");
 
 			if ($user->rights->lead->write) {
@@ -239,10 +239,14 @@ class ActionsLead // extends CommonObject
 	 * @return void
 	 */
 	public function addSearchEntry($parameters, &$object, &$action, $hookmanager) {
-		global $conf, $langs;
+		global $conf, $langs, $db;
 		$langs->load('lead@lead');
 
+		dol_include_once('/lead/core/modules/modLead.class.php');
+		$modLead = new modLead($db);
+
 		$arrayresult['searchintolead'] = array (
+				'position' => $modLead->numero,
 				'text' => img_object('', 'lead@lead') . ' ' . $langs->trans("Module103111Name"),
 				'url' => dol_buildpath('/lead/lead/list.php', 1) . '?search_ref=' . urlencode($parameters['search_boxvalue'])
 		);

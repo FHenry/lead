@@ -120,14 +120,14 @@ if ($action == 'updateMask') {
 	if ($force_use_thirdparty == 1) {
 		$sql = 'ALTER TABLE llx_lead ADD INDEX idx_llx_lead_fk_soc (fk_soc)';
 		$resql = $db->query($sql);
-		if (! $resql) {
+		if (! $resql && $db->errno() != 'DB_ERROR_KEY_NAME_ALREADY_EXISTS') {
 			$errordb ++;
 			$errors[] = $db->lasterror;
 		}
 
 		$sql = 'ALTER TABLE llx_lead ADD CONSTRAINT llx_lead_ibfk_3 FOREIGN KEY (fk_soc) REFERENCES llx_societe (rowid)';
 		$resql = $db->query($sql);
-		if (! $resql) {
+		if (! $resql && $db->errno() != 'DB_ERROR_KEY_NAME_ALREADY_EXISTS') {
 			$errordb ++;
 			$errors[] = $db->lasterror;
 		}

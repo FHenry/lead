@@ -52,6 +52,7 @@ $endyear=$year;
 
 $includeuserlist=array();
 if (!empty($conf->global->LEAD_GRP_USER_AFFECT)) {
+	dol_include_once('/user/class/usergroup.class.php');
 	$usergroup=new UserGroup($db);
 	$result=$usergroup->fetch($conf->global->LEAD_GRP_USER_AFFECT);
 	if ($result < 0)

@@ -138,14 +138,14 @@ if (!empty($viewtype)) {
 // Initialize context for list
 $contextpage=GETPOST('contextpage','aZ')?GETPOST('contextpage','aZ'):'leadlist';
 
-// Add $param from extra fields
+// Add $option from extra fields
 foreach ($search_array_options as $key => $val)
 {
 	$crit=$val;
 	$tmpkey=preg_replace('/search_options_/','',$key);
 	$typ=$extrafields->attribute_type[$tmpkey];
 	if ($val != '') {
-		$param.='&search_options_'.$tmpkey.'='.urlencode($val);
+		$option.='&search_options_'.$tmpkey.'='.urlencode($val);
 	}
 	$mode=0;
 	if (in_array($typ, array('int','double'))) $mode=1;    // Search on a numeric
@@ -154,7 +154,7 @@ foreach ($search_array_options as $key => $val)
 		$filter['leadextra.'.$tmpkey]=natural_search('leadextra.'.$tmpkey, $crit, $mode, 1);
 	}
 }
-if (! empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param.='&contextpage='.$contextpage;
+if (! empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $option.='&contextpage='.$contextpage;
 
 $arrayfields = array(
 		't.ref' => array(
@@ -318,7 +318,7 @@ if ($resql != - 1) {
 			if (! empty($arrayfields["leadextra.".$key]['checked']))
 			{
 				$align=$extrafields->getAlignFlag($key);
-				print_liste_field_titre($extralabels[$key],$_SERVER["PHP_SELF"],"leadextra.".$key,"",$param,($align?'align="'.$align.'"':''),$sortfield,$sortorder);
+				print_liste_field_titre($extralabels[$key],$_SERVER["PHP_SELF"],"leadextra.".$key,"",$option,($align?'align="'.$align.'"':''),$sortfield,$sortorder);
 			}
 		}
 	}
@@ -518,7 +518,7 @@ if ($resql != - 1) {
 					if ($align) print ' align="'.$align.'"';
 					print '>';
 					$tmpkey='options_'.$key;
-					print $extrafields->showOutputField($key, $line->array_options[$tmpkey], '', 1);
+					print $extrafields->showOutputField($key, $line->array_options[$tmpkey], '', 'lead');
 					print '</td>';
 				}
 			}
