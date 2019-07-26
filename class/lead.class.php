@@ -637,10 +637,6 @@ class Lead extends CommonObject
 				$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Customer'));
 			}
 		}
-		if (empty($this->ref_int)) {
-			$error ++;
-			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadRefInt'));
-		}
 		if (empty($this->fk_user_resp)) {
 			$error ++;
 			$this->errors[] = $langs->trans('ErrorFieldRequired', $langs->transnoentities('LeadCommercial'));
