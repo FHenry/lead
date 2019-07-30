@@ -64,7 +64,7 @@ class ActionsLead // extends CommonObject
 			if (count($lead->doclines) == 0 || ($object->table_element=='contrat' && !empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT))) {
 				print '<form action="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '" method="POST">';
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-				print '<input type="hidden" name="redirect" value="http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '">';
+				print '<input type="hidden" name="redirect" value="' . $_SERVER['REQUEST_URI'] . '">';
 				print '<input type="hidden" name="tablename" value="' . $object->table_element . '">';
 				print '<input type="hidden" name="elementselect" value="' . ($object->rowid ? $object->rowid : $object->id) . '">';
 				print '<input type="hidden" name="action" value="link">';
@@ -95,7 +95,7 @@ class ActionsLead // extends CommonObject
 				print '<a href="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '?action=unlink&sourceid=' . ($object->rowid ? $object->rowid : $object->id);
 				print '&sourcetype=' . $object->table_element;
 				print '&leadid=' . $line->id;
-				print '&redirect=' . urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+				print '&redirect=' . urlencode($_SERVER['REQUEST_URI']);
 				print '">' . img_picto($langs->trans('LeadUnlinkDoc'), 'unlink.png@lead') . '</a>';
 				print '</td>';
 				print '</tr>';
