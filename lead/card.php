@@ -400,7 +400,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 		print '</tr>';
 		
 		print '<tr>';
-		print '<td class="fieldrequired"  width="20%">';
+		print '<td width="20%">';
 		print $langs->trans('LeadRefInt');
 		print '</td>';
 		print '<td>';
@@ -526,7 +526,7 @@ elseif ($action == 'edit') {
 		print '</tr>';
 		
 		print '<tr>';
-		print '<td class="fieldrequired"  width="20%">';
+		print '<td width="20%">';
 		print $langs->trans('LeadRefInt');
 		print '</td>';
 		print '<td>';
