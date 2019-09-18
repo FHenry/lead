@@ -26,7 +26,7 @@ if (! $res)
 	$res = @include '../../../main.inc.php'; // For "custom" directory
 if (! $res)
 	die("Include of main fails");
-
+global $conf;
 require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 require_once '../class/lead.class.php';
 require_once '../lib/lead.lib.php';
@@ -35,12 +35,18 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
-
+if ($conf->margin->enabled) {
+	require_once DOL_DOCUMENT_ROOT . '/core/class/html.formmargin.class.php';
+}
 
 $form = new Form($db);
 $formlead = new FormLead($db);
 $object = new Lead($db);
 $formother = new FormOther($db);
+if (! empty($conf->margin->enabled)) {
+	$formmargin = new FormMargin($db);
+	$rounding = min($conf->global->MAIN_MAX_DECIMALS_UNIT, $conf->global->MAIN_MAX_DECIMALS_TOT);
+}
 
 $extrafields = new ExtraFields($db);
 $extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
@@ -191,6 +197,11 @@ $arrayfields = array(
 		),
 );
 
+if (! empty($conf->margin->enabled)){
+	$arrayfields['margin'] = array('label'=>$langs->trans("Margin"), 'checked'=>0);
+	$arrayfields['markRate'] = array('label'=>$langs->trans("MarkRate"), 'checked'=>0);
+}
+
 // Extra fields
 if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label)) {
 	foreach ( $extrafields->attribute_label as $key => $val ) {
@@ -308,6 +319,10 @@ if ($resql != - 1) {
 	if (! empty($arrayfields['leadtype.label']['checked'])) print_liste_field_titre($langs->trans("LeadType"), $_SERVEUR['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
 	if (! empty($arrayfields['t.amount_prosp']['checked'])) print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
+	if (! empty($conf->margin->enabled)) {
+		if (!empty($arrayfields['margin']['checked'])) print_liste_field_titre($arrayfields['margin']['label'], $_SERVER["PHP_SELF"], "", "", "$param", 'align="center"', $sortfield, $sortorder);
+		if (!empty($arrayfields['markRate']['checked'])) print_liste_field_titre($arrayfields['markRate']['label'], $_SERVER["PHP_SELF"], "", "", "$param", 'align="center"', $sortfield, $sortorder);
+	}
 	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
 	
 	// Extra fields
@@ -371,7 +386,14 @@ if ($resql != - 1) {
 	}
 	// amount real
 	print '<td id="totalamountreal" align="right"></td>';
-	
+
+	if (!empty($arrayfields['margin']['checked'])){
+		print '<td id="totalmargin" align="right"></td>';
+	}
+	if (!empty($arrayfields['markRate']['checked'])){
+		print '<td align="right"></td>';
+	}
+
 	if (! empty($arrayfields['t.date_closure']['checked']))
 	{
 		// dt closure
@@ -420,6 +442,26 @@ if ($resql != - 1) {
 		/**
 		 * @var Lead $line
 		 */
+
+		if (! empty($conf->margin->enabled)) {
+			$propal = new Propal($db);
+			$lead = new Lead($db);
+			$lead->fetchDocumentLink($line->id, $object->listofreferent['propal']['table']);
+			$marginInfos["total_margin"] = 0;
+			$marginInfos["total_mark_rate"] = 0;
+			$countProp = 0;
+			foreach ($lead->doclines as $propalArray){
+				$propal->fetch($propalArray->fk_source);
+				$marginInfosPropal = $formmargin->getMarginInfosArray($propal);
+				$marginInfos["total_margin"] += $marginInfosPropal["total_margin"];
+				$marginInfos["total_mark_rate"] += $marginInfosPropal["total_mark_rate"];
+				$countProp++;
+			}
+			if ($countProp > 0){
+				$marginInfos["total_margin"] = $marginInfos["total_margin"] / $countProp;
+				$marginInfos["total_mark_rate"] = $marginInfos["total_mark_rate"] / $countProp;
+			}
+		}
 
 		// Affichage tableau des lead
 		$var = ! $var;
@@ -491,14 +533,26 @@ if ($resql != - 1) {
 		if (! empty($arrayfields['t.amount_prosp']['checked']))
 		{
 			// Amount prosp
-			print '<td align="right">' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+			print '<td align="right" nowrap>' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		}
 		$totalamountguess += $line->amount_prosp;
 
 		// Amount real
 		$amount = $line->getRealAmount();
-		print '<td  align="right">' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+		print '<td  align="right" nowrap>' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		$totalamountreal += $amount;
+
+		if (! empty($conf->margin->enabled)) {
+			// Margin
+			if (!empty($arrayfields['margin']['checked'])) {
+				print '<td align="center" nowrap>' . price($marginInfos['total_margin']). $langs->getCurrencySymbol($conf->currency) . "</td>\n";
+				$totalmargin += $marginInfos['total_margin'];
+			}
+			// MarkRate
+			if (!empty($arrayfields['markRate']['checked'])) {
+				print '<td align="right">' . (($marginInfos['total_mark_rate'] == '') ? '' : price($marginInfos['total_mark_rate'], null, null, null, null, $rounding) . '%') . '</td>';
+			}
+		}
 
 		if (! empty($arrayfields['t.date_closure']['checked']))
 		{
@@ -538,8 +592,11 @@ if ($resql != - 1) {
 	print '<script type="text/javascript" language="javascript">' . "\n";
 	print '$(document).ready(function() {
 					$("#totalamountguess").append("' . price($totalamountguess) . $langs->getCurrencySymbol($conf->currency) . '");
-					$("#totalamountreal").append("' . price($totalamountreal) . $langs->getCurrencySymbol($conf->currency) . '");
-			});';
+					$("#totalamountreal").append("' . price($totalamountreal) . $langs->getCurrencySymbol($conf->currency) . '");';
+	if (! empty($conf->margin->enabled)) {
+		print '$("#totalmargin").append("' . price($totalmargin) . $langs->getCurrencySymbol($conf->currency) . '");';
+	}
+	print '});';
 	print "\n" . '</script>' . "\n";
 } else {
 	setEventMessages(null, $object->errors, 'errors');
