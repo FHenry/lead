@@ -458,7 +458,6 @@ if ($resql != - 1) {
 				$countProp++;
 			}
 			if ($countProp > 0){
-				$marginInfos["total_margin"] = $marginInfos["total_margin"] / $countProp;
 				$marginInfos["total_mark_rate"] = $marginInfos["total_mark_rate"] / $countProp;
 			}
 		}
