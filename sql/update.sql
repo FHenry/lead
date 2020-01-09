@@ -1,6 +1,6 @@
-ALTER TABLE llx_lead ADD COLUMN note_public text AFTER description;
-ALTER TABLE llx_lead ADD COLUMN note_private text AFTER note_public;
-ALTER TABLE llx_c_lead_status ADD COLUMN position integer AFTER label;
+ALTER TABLE llx_lead ADD COLUMN note_public text;
+ALTER TABLE llx_lead ADD COLUMN note_private text;
+ALTER TABLE llx_c_lead_status ADD COLUMN position integer;
 ALTER TABLE llx_c_lead_status ADD COLUMN percent double(5,2) AFTER position;
 UPDATE llx_c_lead_status SET position='10' , percent='0' WHERE code='PROSP';
 UPDATE llx_c_lead_status SET position='20' , percent='20' WHERE code='QUAL';
@@ -9,4 +9,4 @@ UPDATE llx_c_lead_status SET position='40' , percent='60' WHERE code='NEGO';
 UPDATE llx_c_lead_status SET position='50' , percent='50' WHERE code='PENDING';
 UPDATE llx_c_lead_status SET position='60' , percent='100' WHERE code='WIN';
 UPDATE llx_c_lead_status SET position='70' , percent='0' WHERE code='LOST';
-ALTER TABLE llx_lead ADD COLUMN fk_user_modif integer AFTER `fk_user_author`;
+ALTER TABLE llx_lead ADD COLUMN fk_user_modif integer;
