@@ -32,7 +32,12 @@ class ActionsLead // extends CommonObject
 	 * @return int Hook status
 	 */
 	function showLinkedObjectBlock($parameters, $object, $action) {
-		global $conf, $langs, $db;
+		global $conf, $langs, $db, $user;
+		
+		if (empty($user->rights->lead->read))
+		{
+			return 0;
+		}
 
 		require_once 'lead.class.php';
 
@@ -239,7 +244,13 @@ class ActionsLead // extends CommonObject
 	 * @return void
 	 */
 	public function addSearchEntry($parameters, &$object, &$action, $hookmanager) {
-		global $conf, $langs, $db;
+		global $conf, $langs, $db, $user;
+
+		if (empty($user->rights->lead->read))
+		{
+			return 0;
+		};
+
 		$langs->load('lead@lead');
 
 		dol_include_once('/lead/core/modules/modLead.class.php');
