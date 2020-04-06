@@ -200,7 +200,7 @@ class Lead extends CommonObject
 		dol_include_once('/comm/action/class/actioncomm.class.php');
 
 		$a=new ActionComm($db);
-		$a->percent = 0;
+		$a->percentage = 0;
 		$a->label = $langs->trans('leadRelanceEvent', $this->ref_int);
 		$a->socid = $this->fk_soc;
 		$a->datep = $dateRelance;
@@ -209,12 +209,17 @@ class Lead extends CommonObject
 		$a->fk_element = $this->id;
 		$a->elementtype = 'lead';
 
+		$actionCommCreationReturn = method_exists($a, 'create') ? $a->create($user) : $a->add($user);
 
-		if($a->add($user)<=0) {
+		if ($actionCommCreationReturn <= 0)
+		{
 			setEventMessage($langs->trans("ImpossibleToCreateEventLead"), "errors");
 		}
 
-		$result = $this->add_object_linked('actioncomm', $a->id);
+		if ($a->id > 0)
+		{
+			$result = $this->add_object_linked('actioncomm', $a->id);
+		}
 
 		return $a->id;
 	}
