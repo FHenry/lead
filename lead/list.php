@@ -67,14 +67,14 @@ $socid=GETPOST('socid','int');
 $viewtype=GETPOST('viewtype','alpha');
 
 // Search criteria
-$search_commercial = GETPOST("search_commercial");
-$search_soc = GETPOST("search_soc");
-$search_ref = GETPOST("search_ref");
-$search_ref_int = GETPOST("search_ref_int");
-$search_type = GETPOST('search_type');
+$search_commercial = GETPOST("search_commercial",'alpha');
+$search_soc = GETPOST("search_soc",'alpha');
+$search_ref = GETPOST("search_ref",'alpha');
+$search_ref_int = GETPOST("search_ref_int",'alpha');
+$search_type = GETPOST('search_type','alpha');
 if ($search_type == - 1)
 	$search_type = 0;
-$search_status = GETPOST('search_status');
+$search_status = GETPOST('search_status','alpha');
 if ($search_status == - 1)
 	$search_status = 0;
 $search_month = GETPOST('search_month', 'aplha');
@@ -84,7 +84,7 @@ $search_invoiceref = GETPOST('search_invoiceref', 'alpha');
 $search_propalref = GETPOST('search_propalref', 'alpha');
 $search_propalid = GETPOST('search_propalid', 'alpha');
 
-$link_element = GETPOST("link_element");
+$link_element = GETPOST("link_element",'alpha');
 if (! empty($link_element)) {
 	$action = 'link_element';
 }
@@ -239,7 +239,7 @@ llxHeader('', $title);
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 // Do we click on purge search criteria ?
-if (GETPOST("button_removefilter_x") || GETPOST("button_removefilter.x") || GETPOST("button_removefilter")) {
+if (GETPOST("button_removefilter_x",'alpha') || GETPOST("button_removefilter.x",'alpha') || GETPOST("button_removefilter",'alpha')) {
 	$search_commercial = '';
 	$search_soc = '';
 	$search_ref = '';

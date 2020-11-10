@@ -44,7 +44,7 @@ if ($user->societe_id > 0)
 	$socid = $user->societe_id;
 }
 $nowyear=strftime("%Y", dol_now());
-$year = GETPOST('year')>0?GETPOST('year'):$nowyear;
+$year = GETPOST('year','int')>0?GETPOST('year','int'):$nowyear;
 //$startyear=$year-2;
 $startyear=$year-1;
 $endyear=$year;

@@ -68,11 +68,11 @@ if ($socid == - 1)
 $userid = GETPOST('userid', 'int');
 $leadstatus = GETPOST('leadstatus', 'int');
 $leadtype = GETPOST('leadtype', 'int');
-$amount_guess = GETPOST('amount_guess');
+$amount_guess = GETPOST('amount_guess','int');
 $description = GETPOST('description');
-$deadline = dol_mktime(0, 0, 0, GETPOST('deadlinemonth'), GETPOST('deadlineday'), GETPOST('deadlineyear'));
+$deadline = dol_mktime(0, 0, 0, GETPOST('deadlinemonth','int'), GETPOST('deadlineday','int'), GETPOST('deadlineyear','int'));
 
-$date_relance = dol_mktime(0, 0, 0, GETPOST('date_relancemonth'), GETPOST('date_relanceday'), GETPOST('date_relanceyear'));
+$date_relance = dol_mktime(0, 0, 0, GETPOST('date_relancemonth','int'), GETPOST('date_relanceday','int'), GETPOST('date_relanceyear','int'));
 
 $object = new Lead($db);
 $extrafields = new ExtraFields($db);
@@ -198,16 +198,16 @@ if ($action == "add") {
 		header('Location:' . dol_buildpath('/lead/lead/list.php', 1));
 	}
 } elseif ($action == "addelement") {
-	$tablename = GETPOST("tablename");
-	$elementselectid = GETPOST("elementselect");
+	$tablename = GETPOST("tablename",'alpha');
+	$elementselectid = GETPOST("elementselect",'int');
 	$result = $object->add_object_linked($tablename, $elementselectid);
 	if ($result < 0) {
 		setEventMessages(null, $object->errors, 'errors');
 	}
 } elseif ($action == "unlink") {
 	
-	$sourceid = GETPOST('sourceid');
-	$sourcetype = GETPOST('sourcetype');
+	$sourceid = GETPOST('sourceid','int');
+	$sourcetype = GETPOST('sourcetype','alpha');
 	
 	$result = $object->deleteObjectLinked($sourceid, $sourcetype);
 	if ($result < 0) {
@@ -216,7 +216,7 @@ if ($action == "add") {
 } elseif ($action == "confirm_clone" && $confirm == 'yes') {
 	
 	$object_clone = new Lead($db);
-	$object_clone->ref_int = GETPOST('ref_interne');
+	$object_clone->ref_int = GETPOST('ref_interne','alpha');
 	$result = $object_clone->createFromClone($object->id);
 	if ($result < 0) {
 		setEventMessages(null, $object_clone->errors, 'errors');
@@ -262,7 +262,7 @@ if ($action == "add") {
 		}
 	}
 } else if ($action === 'confirm_clone_propale' && $confirm == 'yes') {
-	$propale_id = GETPOST('propale_id');
+	$propale_id = GETPOST('propale_id','int');
 	$propale = new Propal($db);
 	$propale->fetch($propale_id);
 	$new_propale_id = $propale->createFromClone($object->fk_soc);
@@ -315,7 +315,7 @@ if ($action == "add") {
 		
 		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 	}
-} else if ($action === 'confirm_relance' && GETPOST('confirm') === 'yes') {
+} else if ($action === 'confirm_relance' && GETPOST('confirm','alpha') === 'yes') {
 	
 	if ($date_relance) {
 		$object->addRelance($date_relance +(3600*12)); // +12heures

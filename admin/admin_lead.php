@@ -109,7 +109,7 @@ if ($action == 'updateMask') {
 		$error ++;
 	}
 
-	$LEAD_EVENT_RELANCE_TYPE = GETPOST('LEAD_EVENT_RELANCE_TYPE');
+	$LEAD_EVENT_RELANCE_TYPE = GETPOST('LEAD_EVENT_RELANCE_TYPE','none');
 	$res = dolibarr_set_const($db, 'LEAD_EVENT_RELANCE_TYPE', $LEAD_EVENT_RELANCE_TYPE, 'chaine', 0, '', $conf->entity);
 	if (! $res > 0) {
 		$error ++;
