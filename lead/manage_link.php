@@ -34,11 +34,11 @@ $object = new Lead($db);
  * Actions
  */
 
-$tablename = GETPOST("tablename");
-$leadid = GETPOST("leadid");
-$elementselectid = GETPOST("elementselect");
+$tablename = GETPOST("tablename",'alpha');
+$leadid = GETPOST("leadid",'int');
+$elementselectid = GETPOST("elementselect",'int');
 $redirect = GETPOST('redirect', 'alpha');
-$action=GETPOST('action');
+$action=GETPOST('action','alpha');
 
 if (empty($leadid) || $leadid==-1) {
 	setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Lead")), null, 'errors');
@@ -61,8 +61,8 @@ if (! $error) {
 		}
 	}
 	if ($action == 'unlink') {
-		$sourceid = GETPOST('sourceid');
-		$sourcetype = GETPOST('sourcetype');
+		$sourceid = GETPOST('sourceid','int');
+		$sourcetype = GETPOST('sourcetype','alpha');
 		
 		$result = $object->deleteObjectLinked($sourceid, $sourcetype);
 		if ($result < 0) {
