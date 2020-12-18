@@ -286,25 +286,25 @@ class modLead extends DolibarrModules
 		$r = 0;
 		$this->rights[$r][0] = 1031111;
 		$this->rights[$r][1] = 'See Leads';
-		$this->rights[$r][3] = 1;
+		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'read';
 		$r ++;
 
 		$this->rights[$r][0] = 1031112;
 		$this->rights[$r][1] = 'Update Leads';
-		$this->rights[$r][3] = 1;
+		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'write';
 		$r ++;
 
 		$this->rights[$r][0] = 1031113;
 		$this->rights[$r][1] = 'Delete Leads';
-		$this->rights[$r][3] = 1;
+		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'delete';
 		$r ++;
 
 		$this->rights[$r][0] = 1031114;
 		$this->rights[$r][1] = 'Export Leads';
-		$this->rights[$r][3] = 1;
+		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'export';
 		$r ++;
 
