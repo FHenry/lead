@@ -1,5 +1,8 @@
 English Lead ChangeLog
 
+***** ChangeLog for 2.2 compared to 2.1.7 *****
+FIX : delete "setPrecisionY" function
+
 ***** ChangeLog for 2.0 compared to 1.16 *****
 NEW : Better management of close or open leads 
 
