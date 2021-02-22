@@ -120,8 +120,11 @@ if (empty($mesg)) {
 						220
 				)
 		));
-		if(function_exists('SetPrecisionY'));
-		$px->SetPrecisionY(0);
+
+		if(function_exists('SetPrecisionY')){
+			$px->SetPrecisionY(0);
+		}
+
 		$px->SetLegend($legend);
 		$px->setShowLegend(0);
 		$px->setShowPointValue($showpointvalue);
