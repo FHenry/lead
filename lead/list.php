@@ -26,7 +26,7 @@ if (! $res)
 	$res = @include '../../../main.inc.php'; // For "custom" directory
 if (! $res)
 	die("Include of main fails");
-
+global $conf;
 require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 require_once '../class/lead.class.php';
 require_once '../lib/lead.lib.php';
@@ -35,12 +35,18 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 require_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
-
+if ($conf->margin->enabled) {
+	require_once DOL_DOCUMENT_ROOT . '/core/class/html.formmargin.class.php';
+}
 
 $form = new Form($db);
 $formlead = new FormLead($db);
 $object = new Lead($db);
 $formother = new FormOther($db);
+if (! empty($conf->margin->enabled)) {
+	$formmargin = new FormMargin($db);
+	$rounding = min($conf->global->MAIN_MAX_DECIMALS_UNIT, $conf->global->MAIN_MAX_DECIMALS_TOT);
+}
 
 $extrafields = new ExtraFields($db);
 $extralabels = $extrafields->fetch_name_optionals_label($object->table_element, true);
@@ -62,14 +68,14 @@ $socid=GETPOST('socid','int');
 $viewtype=GETPOST('viewtype','alpha');
 
 // Search criteria
-$search_commercial = GETPOST("search_commercial");
-$search_soc = GETPOST("search_soc");
-$search_ref = GETPOST("search_ref");
-$search_ref_int = GETPOST("search_ref_int");
-$search_type = GETPOST('search_type');
+$search_commercial = GETPOST("search_commercial",'alpha');
+$search_soc = GETPOST("search_soc",'alpha');
+$search_ref = GETPOST("search_ref",'alpha');
+$search_ref_int = GETPOST("search_ref_int",'alpha');
+$search_type = GETPOST('search_type','alpha');
 if ($search_type == - 1)
 	$search_type = 0;
-$search_status = GETPOST('search_status');
+$search_status = GETPOST('search_status','alpha');
 if ($search_status == - 1)
 	$search_status = 0;
 $search_month = GETPOST('search_month', 'aplha');
@@ -79,7 +85,7 @@ $search_invoiceref = GETPOST('search_invoiceref', 'alpha');
 $search_propalref = GETPOST('search_propalref', 'alpha');
 $search_propalid = GETPOST('search_propalid', 'alpha');
 
-$link_element = GETPOST("link_element");
+$link_element = GETPOST("link_element",'alpha');
 if (! empty($link_element)) {
 	$action = 'link_element';
 }
@@ -192,6 +198,11 @@ $arrayfields = array(
 		),
 );
 
+if (! empty($conf->margin->enabled)){
+	$arrayfields['margin'] = array('label'=>$langs->trans("Margin"), 'checked'=>0);
+	$arrayfields['markRate'] = array('label'=>$langs->trans("MarkRate"), 'checked'=>0);
+}
+
 // Extra fields
 if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label)) {
 	foreach ( $extrafields->attribute_label as $key => $val ) {
@@ -212,7 +223,7 @@ if ($page == - 1) {
 	$page = 0;
 }
 
-$offset = intval($conf->liste_limit) * $page;
+$offset = $conf->liste_limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
@@ -229,7 +240,7 @@ llxHeader('', $title);
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 // Do we click on purge search criteria ?
-if (GETPOST("button_removefilter_x") || GETPOST("button_removefilter.x") || GETPOST("button_removefilter")) {
+if (GETPOST("button_removefilter_x",'alpha') || GETPOST("button_removefilter.x",'alpha') || GETPOST("button_removefilter",'alpha')) {
 	$search_commercial = '';
 	$search_soc = '';
 	$search_ref = '';
@@ -268,7 +279,7 @@ if ($resql != - 1) {
 	$num = $resql;
 
 	print_barre_liste($title, $page, $_SERVER['PHP_SELF'], $option, $sortfield, $sortorder, '', $num, $nbtotalofrecords);
-
+	
 	$varpage=empty($contextpage)?$_SERVER["PHP_SELF"]:$contextpage;
 	$selectedfields=$form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage);
 
@@ -284,7 +295,7 @@ if ($resql != - 1) {
 		print '<input type="hidden" name="viewtype" value="' . $viewtype . '"/>';
 	if (! empty($socid))
 		print '<input type="hidden" name="socid" value="' . $socid . '"/>';
-
+	
 	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 	print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 
@@ -309,8 +320,12 @@ if ($resql != - 1) {
 	if (! empty($arrayfields['leadtype.label']['checked'])) print_liste_field_titre($langs->trans("LeadType"), $_SERVEUR['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
 	if (! empty($arrayfields['t.amount_prosp']['checked'])) print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
+	if (! empty($conf->margin->enabled)) {
+		if (!empty($arrayfields['margin']['checked'])) print_liste_field_titre($arrayfields['margin']['label'], $_SERVER["PHP_SELF"], "", "", "$param", 'align="center"', $sortfield, $sortorder);
+		if (!empty($arrayfields['markRate']['checked'])) print_liste_field_titre($arrayfields['markRate']['label'], $_SERVER["PHP_SELF"], "", "", "$param", 'align="center"', $sortfield, $sortorder);
+	}
 	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
-
+	
 	// Extra fields
 	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
 	{
@@ -325,7 +340,7 @@ if ($resql != - 1) {
 	}
 
 	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"],"",'','','align="right"',$sortfield,$sortorder,'maxwidthsearch ');
-
+	
 	print "</tr>\n";
 
 	print '<tr class="liste_titre">';
@@ -357,7 +372,7 @@ if ($resql != - 1) {
 		print $formlead->select_lead_status($search_status, 'search_status', 1);
 		print '</td>';
 	}
-
+	
 	if (! empty($arrayfields['leadtype.label']['checked']))
 	{
 		print '<td class="liste_titre">';
@@ -372,6 +387,13 @@ if ($resql != - 1) {
 	}
 	// amount real
 	print '<td id="totalamountreal" align="right"></td>';
+
+	if (!empty($arrayfields['margin']['checked'])){
+		print '<td id="totalmargin" align="right"></td>';
+	}
+	if (!empty($arrayfields['markRate']['checked'])){
+		print '<td align="right"></td>';
+	}
 
 	if (! empty($arrayfields['t.date_closure']['checked']))
 	{
@@ -411,7 +433,7 @@ if ($resql != - 1) {
 	print '</td>';
 
 	print "</tr>\n";
-
+	
 
 	$var = true;
 	$totalamountguess = 0;
@@ -421,6 +443,25 @@ if ($resql != - 1) {
 		/**
 		 * @var Lead $line
 		 */
+
+		if (! empty($conf->margin->enabled)) {
+			$propal = new Propal($db);
+			$lead = new Lead($db);
+			$lead->fetchDocumentLink($line->id, $object->listofreferent['propal']['table']);
+			$marginInfos["total_margin"] = 0;
+			$marginInfos["total_mark_rate"] = 0;
+			$countProp = 0;
+			foreach ($lead->doclines as $propalArray){
+				$propal->fetch($propalArray->fk_source);
+				$marginInfosPropal = $formmargin->getMarginInfosArray($propal);
+				$marginInfos["total_margin"] += $marginInfosPropal["total_margin"];
+				$marginInfos["total_mark_rate"] += $marginInfosPropal["total_mark_rate"];
+				$countProp++;
+			}
+			if ($countProp > 0){
+				$marginInfos["total_mark_rate"] = $marginInfos["total_mark_rate"] / $countProp;
+			}
+		}
 
 		// Affichage tableau des lead
 		$var = ! $var;
@@ -492,21 +533,33 @@ if ($resql != - 1) {
 		if (! empty($arrayfields['t.amount_prosp']['checked']))
 		{
 			// Amount prosp
-			print '<td align="right">' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+			print '<td align="right" nowrap>' . price($line->amount_prosp) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		}
 		$totalamountguess += $line->amount_prosp;
 
 		// Amount real
 		$amount = $line->getRealAmount();
-		print '<td  align="right">' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
+		print '<td  align="right" nowrap>' . price($amount) . ' ' . $langs->getCurrencySymbol($conf->currency) . '</td>';
 		$totalamountreal += $amount;
+
+		if (! empty($conf->margin->enabled)) {
+			// Margin
+			if (!empty($arrayfields['margin']['checked'])) {
+				print '<td align="center" nowrap>' . price($marginInfos['total_margin']). $langs->getCurrencySymbol($conf->currency) . "</td>\n";
+				$totalmargin += $marginInfos['total_margin'];
+			}
+			// MarkRate
+			if (!empty($arrayfields['markRate']['checked'])) {
+				print '<td align="right">' . (($marginInfos['total_mark_rate'] == '') ? '' : price($marginInfos['total_mark_rate'], null, null, null, null, $rounding) . '%') . '</td>';
+			}
+		}
 
 		if (! empty($arrayfields['t.date_closure']['checked']))
 		{
 			// Closure date
 			print '<td  align="right">' . dol_print_date($line->date_closure, 'daytextshort') . '</td>';
 		}
-
+		
 		// Extra fields
 		if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
 		{
@@ -525,7 +578,7 @@ if ($resql != - 1) {
 			}
 			if (! $i) $totalarray['nbfield']++;
 		}
-
+		
 		print '<td align="center"><a href="card.php?id=' . $line->id . '&action=edit">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
 
 		print "</tr>\n";
@@ -539,8 +592,11 @@ if ($resql != - 1) {
 	print '<script type="text/javascript" language="javascript">' . "\n";
 	print '$(document).ready(function() {
 					$("#totalamountguess").append("' . price($totalamountguess) . $langs->getCurrencySymbol($conf->currency) . '");
-					$("#totalamountreal").append("' . price($totalamountreal) . $langs->getCurrencySymbol($conf->currency) . '");
-			});';
+					$("#totalamountreal").append("' . price($totalamountreal) . $langs->getCurrencySymbol($conf->currency) . '");';
+	if (! empty($conf->margin->enabled)) {
+		print '$("#totalmargin").append("' . price($totalmargin) . $langs->getCurrencySymbol($conf->currency) . '");';
+	}
+	print '});';
 	print "\n" . '</script>' . "\n";
 } else {
 	setEventMessages(null, $object->errors, 'errors');

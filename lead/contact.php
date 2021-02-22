@@ -95,7 +95,7 @@ if ($action == 'addcontact' && $user->rights->lead->write) {
 // Bascule du statut d'un contact
 else if ($action == 'swapstatut' && $user->rights->lead->write) {
 	if ($object->id > 0) {
-		$result = $object->swapContactStatus(GETPOST('ligne'));
+		$result = $object->swapContactStatus(GETPOST('ligne','alpha'));
 	}
 }
 
