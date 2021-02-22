@@ -1,5 +1,8 @@
 English Lead ChangeLog
 
+***** ChangeLog for 2.3 compared to 2.3 *****
+NEW : Add tab count badges for tabs "Contacts", "Files" and "Notes"
+
 ***** ChangeLog for 2.2 compared to 2.1.7 *****
 FIX : delete "setPrecisionY" function
 

@@ -53,6 +53,7 @@ if (! $user->rights->lead->read)
 $sortorder = GETPOST('sortorder', 'alpha');
 $sortfield = GETPOST('sortfield', 'alpha');
 $page = GETPOST('page', 'int');
+$page = intval($page);
 
 //Socid is fill when come from thirdparty tabs
 $socid=GETPOST('socid','int');
@@ -211,7 +212,7 @@ if ($page == - 1) {
 	$page = 0;
 }
 
-$offset = $conf->liste_limit * $page;
+$offset = intval($conf->liste_limit) * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
@@ -267,7 +268,7 @@ if ($resql != - 1) {
 	$num = $resql;
 
 	print_barre_liste($title, $page, $_SERVER['PHP_SELF'], $option, $sortfield, $sortorder, '', $num, $nbtotalofrecords);
-	
+
 	$varpage=empty($contextpage)?$_SERVER["PHP_SELF"]:$contextpage;
 	$selectedfields=$form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage);
 
@@ -283,7 +284,7 @@ if ($resql != - 1) {
 		print '<input type="hidden" name="viewtype" value="' . $viewtype . '"/>';
 	if (! empty($socid))
 		print '<input type="hidden" name="socid" value="' . $socid . '"/>';
-	
+
 	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 	print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 
@@ -309,7 +310,7 @@ if ($resql != - 1) {
 	if (! empty($arrayfields['t.amount_prosp']['checked'])) print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
 	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
-	
+
 	// Extra fields
 	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
 	{
@@ -324,7 +325,7 @@ if ($resql != - 1) {
 	}
 
 	print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"],"",'','','align="right"',$sortfield,$sortorder,'maxwidthsearch ');
-	
+
 	print "</tr>\n";
 
 	print '<tr class="liste_titre">';
@@ -356,7 +357,7 @@ if ($resql != - 1) {
 		print $formlead->select_lead_status($search_status, 'search_status', 1);
 		print '</td>';
 	}
-	
+
 	if (! empty($arrayfields['leadtype.label']['checked']))
 	{
 		print '<td class="liste_titre">';
@@ -371,7 +372,7 @@ if ($resql != - 1) {
 	}
 	// amount real
 	print '<td id="totalamountreal" align="right"></td>';
-	
+
 	if (! empty($arrayfields['t.date_closure']['checked']))
 	{
 		// dt closure
@@ -410,7 +411,7 @@ if ($resql != - 1) {
 	print '</td>';
 
 	print "</tr>\n";
-	
+
 
 	$var = true;
 	$totalamountguess = 0;
@@ -505,7 +506,7 @@ if ($resql != - 1) {
 			// Closure date
 			print '<td  align="right">' . dol_print_date($line->date_closure, 'daytextshort') . '</td>';
 		}
-		
+
 		// Extra fields
 		if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
 		{
@@ -524,7 +525,7 @@ if ($resql != - 1) {
 			}
 			if (! $i) $totalarray['nbfield']++;
 		}
-		
+
 		print '<td align="center"><a href="card.php?id=' . $line->id . '&action=edit">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
 
 		print "</tr>\n";
