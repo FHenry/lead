@@ -59,6 +59,7 @@ if (! $user->rights->lead->read)
 $sortorder = GETPOST('sortorder', 'alpha');
 $sortfield = GETPOST('sortfield', 'alpha');
 $page = GETPOST('page', 'int');
+$page = intval($page);
 
 //Socid is fill when come from thirdparty tabs
 $socid=GETPOST('socid','int');

@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,28 +25,28 @@
 function leadAdminPrepareHead()
 {
 	global $langs, $conf;
-	
+
 	$langs->load("lead@lead");
 	$langs->load("admin");
-	
+
 	$h = 0;
 	$head = array();
-	
+
 	$head[$h][0] = dol_buildpath("/lead/admin/admin_lead.php", 1);
 	$head[$h][1] = $langs->trans("SettingsLead");
 	$head[$h][2] = 'settings';
 	$h ++;
-	
+
 	$head[$h][0] = dol_buildpath("/lead/admin/lead_extrafields.php", 1);
 	$head[$h][1] = $langs->trans("ExtraFields");
 	$head[$h][2] = 'attributes';
 	$h ++;
-	
+
 	$head[$h][0] = dol_buildpath("/lead/admin/about.php", 1);
 	$head[$h][1] = $langs->trans("About");
 	$head[$h][2] = 'about';
 	$h ++;
-	
+
 	// Show more tabs from modules
 	// Entries must be declared in modules descriptor with line
 	// $this->tabs = array(
@@ -56,7 +56,7 @@ function leadAdminPrepareHead()
 	// 'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
 	// ); // to remove a tab
 	complete_head_from_modules($conf, $langs, null, $head, $h, 'lead_admin');
-	
+
 	return $head;
 }
 
@@ -69,28 +69,47 @@ function leadAdminPrepareHead()
  */
 function lead_prepare_head($object)
 {
-	global $langs, $conf;
-	
+	global $langs, $conf, $db;
+
 	$langs->load("lead@lead");
-	
+
 	$h = 0;
 	$head = array();
-	
+
 	$head[$h][0] = dol_buildpath("/lead/lead/card.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("LeadLead");
 	$head[$h][2] = 'card';
 	$h ++;
-	
+
+	// CONTACTS
+	$nbContact = count($object->liste_contact(-1, 'internal')) + count($object->liste_contact(-1, 'external'));
 	$head[$h][0] = dol_buildpath("/lead/lead/contact.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Contacts");
+	if ($nbContact > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbContact.'</span>';
 	$head[$h][2] = 'contact';
 	$h ++;
-	
+
+
+	// DOCUMENTS
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	if(isset($conf->lead->multidir_output) && !empty($object->entity)){ // maybe one day the lead module will use entities
+		$upload_dir = $conf->lead->multidir_output[$object->entity]."/".dol_sanitizeFileName($object->ref);
+	}
+	else{
+		$upload_dir = $conf->lead->dir_output . "/" . dol_sanitizeFileName($object->ref);
+	}
+
+	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
+	$nbLinks = Link::count($db, $object->element, $object->id);
+
 	$head[$h][0] = dol_buildpath("/lead/lead/document.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Documents");
+	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
 	$head[$h][2] = 'documents';
 	$h ++;
-	
+
+	// NOTES
 	if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
 	{
 		$nbNote = 0;
@@ -98,16 +117,16 @@ function lead_prepare_head($object)
 		if(!empty($object->note_public)) $nbNote++;
 		$head[$h][0] = dol_buildpath("/lead/lead/note.php", 1) . '?id=' . $object->id;
 		$head[$h][1] = $langs->trans('Notes');
-		if($nbNote > 0) $head[$h][1].= ' ('.$nbNote.')';
+		if($nbNote > 0) $head[$h][1].= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
 		$head[$h][2] = 'note';
 		$h++;
 	}
-	
+
 	$head[$h][0] = dol_buildpath("/lead/lead/info.php", 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Info");
 	$head[$h][2] = 'info';
 	$h ++;
-	
+
 	// Show more tabs from modules
 	// Entries must be declared in modules descriptor with line
 	// $this->tabs = array(
@@ -117,7 +136,7 @@ function lead_prepare_head($object)
 	// 'entity:-tabname:Title:@lead:/lead/mypage.php?id=__ID__'
 	// ); // to remove a tab
 	complete_head_from_modules($conf, $langs, $object, $head, $h, 'lead');
-	
+
 	return $head;
 }
 
