@@ -1,7 +1,14 @@
-English Lead ChangeLog
+# Change Log
+All notable changes to this project will be documented in this file.
 
-***** ChangeLog for 2.3 compared to 2.3 *****
-NEW : Add tab count badges for tabs "Contacts", "Files" and "Notes"
+## Version 2.3
+
+- FIX : Box compatibility for Dolibarr V13
+- NEW : Add tab count badges for tabs "Contacts", "Files" and "Notes"
+
+
+---
+## Old Changelog
 
 ***** ChangeLog for 2.2 compared to 2.1.7 *****
 FIX : delete "setPrecisionY" function
