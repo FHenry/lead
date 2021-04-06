@@ -142,7 +142,7 @@ class box_lead_late extends ModeleBoxes
 	 * @param integer $nooutput nooutput
 	 * @return void
 	 */
-	function showBox($head = null, $contents = null, $nooutput = 0) {
+	public function showBox($head = null, $contents = null, $nooutput = 0) {
 		return parent::showBox($this->info_box_head, $this->info_box_contents, $nooutput);
 	}
 }
