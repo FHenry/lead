@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -56,7 +56,7 @@ class box_lead extends ModeleBoxes
 		global $langs;
 		$langs->load("boxes");
 		$langs->load("lead@lead");
-		
+
 		$this->boxlabel = $langs->transnoentitiesnoconv("LeadLate");
 	}
 
@@ -70,23 +70,23 @@ class box_lead extends ModeleBoxes
 	public function loadBox($max = 5)
 	{
 		global $conf, $user, $langs, $db;
-		
+
 		$this->max = $max;
-		
+
 		dol_include_once('/lead/class/lead.class.php');
-		
+
 		$lead = new Lead($db);
-		
+
 		$lead->fetch_all('DESC', 't.date_closure', $max, 0, array(
 			't.date_closure<' => dol_now()
 		));
-		
+
 		$text = $langs->trans("LeadLate", $max);
 		$this->info_box_head = array(
 			'text' => $text,
 			'limit' => dol_strlen($text)
 		);
-		
+
 		$i = 0;
 		foreach ($lead->lines as $line) {
 			// FIXME: line is an array, not an object
@@ -97,38 +97,38 @@ class box_lead extends ModeleBoxes
 				'logo' => $this->boximg,
 				'url' => dol_buildpath('/lead/lead/card.php', 1) . '?id=' . $line->id
 			);
-			
+
 			$this->info_box_contents[$i][1] = array(
 				'td' => 'align="left"',
 				'text' => $line->ref,
 				'url' => dol_buildpath('/lead/lead/card.php', 1) . '?id=' . $line->id
 			);
-			
+
 			$this->info_box_contents[$i][2] = array(
 				'td' => 'align="left" width="16"',
 				'logo' => 'company',
 				'url' => DOL_URL_ROOT . "/comm/fiche.php?socid=" . $line->fk_soc
 			);
-			
+
 			$this->info_box_contents[$i][3] = array(
 				'td' => 'align="left"',
 				'text' => dol_trunc($line->thirdparty->name, 40),
 				'url' => DOL_URL_ROOT . "/comm/fiche.php?socid=" . $line->fk_soc
 			);
-			
+
 			// Amount Guess
-			
+
 			$this->info_box_contents[$i][4] = array(
 				'td' => 'align="left"',
 				'text' => price($line->amount_prosp, 'HTML') . $langs->getCurrencySymbol($conf->currency)
 			);
-			
+
 			// Amount real
 			$this->info_box_contents[$i][5] = array(
 				'td' => 'align="left"',
 				'text' => $line->getRealAmount() . $langs->getCurrencySymbol($conf->currency)
 			);
-			
+
 			$i ++;
 		}
 	}
@@ -138,11 +138,10 @@ class box_lead extends ModeleBoxes
 	 *
 	 * @param array $head with properties of box title
 	 * @param array $contents with properties of box lines
-	 *
+	 * @param integer $nooutput nooutput
 	 * @return void
 	 */
-	public function showBox($head = null, $contents = null)
-	{
-		parent::showBox($this->info_box_head, $this->info_box_contents);
+	public function showBox($head = null, $contents = null, $nooutput = 0) {
+		return parent::showBox($this->info_box_head, $this->info_box_contents, $nooutput);
 	}
 }
