@@ -47,6 +47,8 @@ class modLead extends DolibarrModules
 		// Use a free id here
 		// (See in Home -> System information -> Dolibarr for list of used modules id).
 		$this->numero = 103111;
+		$this->editor_name = 'ATM Consulting';
+		$this->editor_url = 'https://www.atm-consulting.fr';
 		// Key text used to identify module (for permissions, menus, etc...)
 		$this->rights_class = 'lead';
 
@@ -62,7 +64,7 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '2.3.1';
+		$this->version = '2.3.2';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
