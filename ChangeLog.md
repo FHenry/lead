@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## Version 2.3
 
-- FIX : Box compatibility for Dolibarr V13
+- FIX : List compatibility with Dolibarr v14 (empty value for sales
+        person selector is now -1) - *2021-09-09* - 2.3.2
+- FIX : Box compatibility for Dolibarr V13 - *2021-yy-mm* - 2.3.1
 - NEW : Add tab count badges for tabs "Contacts", "Files" and "Notes"
 
 

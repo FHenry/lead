@@ -91,7 +91,7 @@ if (! empty($link_element)) {
 }
 
 $filter = array();
-if (! empty($search_commercial)) {
+if (! empty($search_commercial) && $search_commercial > 0) {
 	$filter['t.fk_user_resp'] = $search_commercial;
 	$option .= '&search_commercial=' . $search_commercial;
 }
