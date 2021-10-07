@@ -64,7 +64,7 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '2.3.2';
+		$this->version = '2.3.3';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -485,6 +485,8 @@ class modLead extends DolibarrModules
 
 		//Export propal not linked with lead
 		$r ++;
+		$propalTotal = 'p.total_ttc';
+		if ((float) DOL_VERSION < 14) $propalTotal = 'p.total';
 		$this->export_code [$r] = $this->rights_class . '_' . $r;
 		$this->export_label [$r] = 'ExportDataset_leadPropal';
 		$this->export_icon [$r] = 'lead@lead';
@@ -498,21 +500,21 @@ class modLead extends DolibarrModules
 				'p.rowid' => 'Id',
 				'p.ref' => 'Ref',
 				'so.nom' => 'Company',
-				'p.total' => 'TotalTTC',
+				$propalTotal => 'TotalTTC',
 				'p.fk_statut' => 'Status',
 		);
 		$this->export_TypeFields_array [$r] = array (
 				'p.rowid' => 'Text',
 				'p.ref' => 'Text',
 				'so.nom' => 'Text',
-				'p.total' => 'Numeric',
+				$propalTotal => 'Numeric',
 				'p.fk_statut' => 'Status',
 		);
 		$this->export_entities_array [$r] = array (
 				'p.rowid' => 'propal',
 				'p.ref' => 'propal',
 				'so.nom' => 'company',
-				'p.total' => 'propal',
+				$propalTotal => 'propal',
 				'p.fk_statut' => 'propal',
 		);
 
