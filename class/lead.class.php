@@ -976,11 +976,11 @@ class Lead extends CommonObject
 		$totalinvoiceamount = 0;
 		$totalproposalamount = 0;
 
-		$facTotal = 'fac.total_ht';
+		$facTotalSqlCol = 'fac.total_ht';
 		/** COMPATIBILITY DOL_VERSION < 14 */
-		if ((float)DOL_VERSION < 14) $facTotal = 'fac.total';
+		if ((float)DOL_VERSION < 14) $facTotalSqlCol = 'fac.total';
 
-		$sql = "SELECT SUM($facTotal) as totalamount ";
+		$sql = "SELECT SUM($facTotalSqlCol) as totalamount ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "facture as fac";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
 		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='facture' AND elmt.fk_source=fac.rowid";
