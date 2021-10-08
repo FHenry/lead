@@ -485,8 +485,8 @@ class modLead extends DolibarrModules
 
 		//Export propal not linked with lead
 		$r ++;
-		$propalTotal = 'p.total_ttc';
-		if ((float) DOL_VERSION < 14) $propalTotal = 'p.total';
+		$propalTotalSqlCol = 'p.total_ttc';
+		if ((float) DOL_VERSION < 14) $propalTotalSqlCol = 'p.total';
 		$this->export_code [$r] = $this->rights_class . '_' . $r;
 		$this->export_label [$r] = 'ExportDataset_leadPropal';
 		$this->export_icon [$r] = 'lead@lead';
@@ -500,21 +500,21 @@ class modLead extends DolibarrModules
 				'p.rowid' => 'Id',
 				'p.ref' => 'Ref',
 				'so.nom' => 'Company',
-				$propalTotal => 'TotalTTC',
+				$propalTotalSqlCol => 'TotalTTC',
 				'p.fk_statut' => 'Status',
 		);
 		$this->export_TypeFields_array [$r] = array (
 				'p.rowid' => 'Text',
 				'p.ref' => 'Text',
 				'so.nom' => 'Text',
-				$propalTotal => 'Numeric',
+				$propalTotalSqlCol => 'Numeric',
 				'p.fk_statut' => 'Status',
 		);
 		$this->export_entities_array [$r] = array (
 				'p.rowid' => 'propal',
 				'p.ref' => 'propal',
 				'so.nom' => 'company',
-				$propalTotal => 'propal',
+				$propalTotalSqlCol => 'propal',
 				'p.fk_statut' => 'propal',
 		);
 
