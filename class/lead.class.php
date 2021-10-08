@@ -977,6 +977,7 @@ class Lead extends CommonObject
 		$totalproposalamount = 0;
 
 		$facTotal = 'fac.total_ht';
+		/** COMPATIBILITY DOL_VERSION < 14 */
 		if ((float)DOL_VERSION < 14) $facTotal = 'fac.total';
 
 		$sql = "SELECT SUM($facTotal) as totalamount ";
