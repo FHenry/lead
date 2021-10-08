@@ -714,7 +714,7 @@ class Lead extends CommonObject
 		if (! $error) {
 
 			// For avoid conflicts if trigger used
-			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) 
+			if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED))
 			{
 				$result = $this->insertExtraFields();
 				if ($result < 0) {
@@ -976,7 +976,11 @@ class Lead extends CommonObject
 		$totalinvoiceamount = 0;
 		$totalproposalamount = 0;
 
-		$sql = "SELECT SUM(fac.total) as totalamount ";
+		$facTotalSqlCol = 'fac.total_ht';
+		/** COMPATIBILITY DOL_VERSION < 14 */
+		if ((float)DOL_VERSION < 14) $facTotalSqlCol = 'fac.total';
+
+		$sql = "SELECT SUM($facTotalSqlCol) as totalamount ";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "facture as fac";
 		$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "element_element elmt ON  elmt.fk_target=" . $this->id;
 		$sql .= " AND elmt.targettype='lead' AND elmt.sourcetype='facture' AND elmt.fk_source=fac.rowid";
@@ -1323,7 +1327,7 @@ class Lead extends CommonObject
 		// Unsupported mode
 		return '';
 	}
-	
+
 	/**
 	 * Close proposal link to lead
 	 *
@@ -1342,14 +1346,14 @@ class Lead extends CommonObject
 			require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 
 			if (empty($error)) {
-	
+
 				$ret = $this->fetchDocumentLink($this->id, $this->listofreferent['propal']['table']);
 				if ($result < 0) {
 					$this->errors[] = $this->error;
 					$error ++;
 				}
 			}
-	
+
 			if (empty($error)) {
 				// Close all propal linked
 				$elementarray = array ();
@@ -1358,7 +1362,7 @@ class Lead extends CommonObject
 				if (count($elementarray) > 0 && is_array($elementarray)) {
 					$num = count($elementarray);
 					foreach ( $elementarray as $line ) {
-	
+
 						$element = new $classname($this->db);
 						$element->fetch($line->fk_source);
 						// Close only proposal not already close
@@ -1387,11 +1391,11 @@ class Lead extends CommonObject
 		$this->db->rollback();
 		return - 1 * $error;
 	}
-	
-		
+
+
 	/**
 	 * Change proposal link to lead
-	 * 
+	 *
 	 * @param User $user
 	 * @param array $propal_to_update
 	 * @param string $status
@@ -1399,18 +1403,18 @@ class Lead extends CommonObject
 	 */
 	public function setProposalsStatus(User $user, $propal_to_update = array(), $status = '') {
 		global $langs,$conf;
-		
+
 		$error = 0;
-		
+
 		$this->db->begin();
-		
+
 		if (! empty($conf->propal->enabled)) {
-			
-			
+
+
 			require_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
-			
+
 			$element = new Propal($this->db);
-			
+
 			if ($status == 'close') {
 				if (count($propal_to_update) > 0 && is_array($propal_to_update)) {
 					foreach ( $propal_to_update as $id ) {
@@ -1425,7 +1429,7 @@ class Lead extends CommonObject
 					}
 				}
 			}
-			
+
 			if ($status == 'win') {
 				if (count($propal_to_update) > 0 && is_array($propal_to_update)) {
 					foreach ( $propal_to_update as $id ) {
@@ -1441,12 +1445,12 @@ class Lead extends CommonObject
 				}
 			}
 		}
-		
+
 		if (empty($error)) {
 			$this->db->commit();
 			return 1;
 		}
-		
+
 		// Error
 		foreach ( $this->errors as $errmsg ) {
 			dol_syslog(get_class($this) . "::" . __METHOD__ . " " . $errmsg, LOG_ERR);
