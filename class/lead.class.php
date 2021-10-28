@@ -1367,7 +1367,11 @@ class Lead extends CommonObject
 						$element->fetch($line->fk_source);
 						// Close only proposal not already close
 						if ($element->statut != 3 && $element->statut != 2) {
-							$result = $element->cloture($user, 3, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							if(method_exists($element, 'cloture')) {
+								$result = $element->cloture($user, 3, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							} else {
+								$result = $element->closeProposal($user, 3, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							}
 							if ($result < 0) {
 								$this->errors[] = $this->error;
 								$error ++;
@@ -1420,7 +1424,11 @@ class Lead extends CommonObject
 					foreach ( $propal_to_update as $id ) {
 						$element->fetch($id);
 						if ($element->statut == $element::STATUS_DRAFT ||  $element->statut == $element::STATUS_VALIDATED) {
-							$result = $element->cloture($user, $element::STATUS_NOTSIGNED, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							if(method_exists($element, 'cloture')) {
+								$result = $element->cloture($user, $element::STATUS_NOTSIGNED, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							} else {
+								$result = $element->closeProposal($user, $element::STATUS_NOTSIGNED, $langs->trans('LeadPropalCloseByLead', $this->ref));
+							}
 							if ($result < 0) {
 								$this->errors[] = $this->error;
 								$error ++;
@@ -1435,7 +1443,11 @@ class Lead extends CommonObject
 					foreach ( $propal_to_update as $id ) {
 						$element->fetch($id);
 						if ($element->statut == $element::STATUS_DRAFT ||  $element->statut == $element::STATUS_VALIDATED) {
-							$result = $element->cloture($user, $element::STATUS_SIGNED, $langs->trans('LeadPropalCloseSignedByLead', $this->ref));
+							if(method_exists($element, 'cloture')) {
+								$result = $element->cloture($user, $element::STATUS_SIGNED, $langs->trans('LeadPropalCloseSignedByLead', $this->ref));
+							} else {
+								$result = $element->closeProposal($user, $element::STATUS_SIGNED, $langs->trans('LeadPropalCloseSignedByLead', $this->ref));
+							}
 							if ($result < 0) {
 								$this->errors[] = $this->error;
 								$error ++;
