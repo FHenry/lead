@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version 2.3
 
+- FIX : GETPOST (external fix by user @l00ptr) - *2021-12-06* - 2.3.5
 - FIX : function name is now closeProposal() and not cloture(), then we use mthod_exists - *2021-10-28* - 2.3.4
 - FIX : Compatibility with Dolibarr v14 (removal of `total` fields from
         the invoice table and the proposal table) - *2021-10-07* - 2.3.3
