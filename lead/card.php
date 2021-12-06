@@ -69,7 +69,7 @@ $userid = GETPOST('userid', 'int');
 $leadstatus = GETPOST('leadstatus', 'int');
 $leadtype = GETPOST('leadtype', 'int');
 $amount_guess = GETPOST('amount_guess','int');
-$description = GETPOST('description');
+$description = dol_htmlcleanlastbr(GETPOST('description', 'restricthtml'));
 $deadline = dol_mktime(0, 0, 0, GETPOST('deadlinemonth','int'), GETPOST('deadlineday','int'), GETPOST('deadlineyear','int'));
 
 $date_relance = dol_mktime(0, 0, 0, GETPOST('date_relancemonth','int'), GETPOST('date_relanceday','int'), GETPOST('date_relanceyear','int'));
