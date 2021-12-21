@@ -55,7 +55,7 @@ $pageprev = $page - 1;
 $pagenext = $page + 1;
 if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="name";
-
+$permissiontoadd = $user->rights->lead->write;
 $object = new Lead($db);
 if ($id > 0) {
 	$ret = $object->fetch($id);
