@@ -175,7 +175,7 @@ class LeadStats extends Stats
 
 		$sql = "SELECT date_format(t.datec,'%Y') as year, COUNT(t.rowid) as nb, SUM(t.amount_prosp) as total, AVG(t.amount_prosp) as avg";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->socid)
+		if (! $user->rights->societe->client->voir && !  ((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY year";
@@ -227,7 +227,7 @@ class LeadStats extends Stats
 
 		$sql = "SELECT date_format(t.datec,'%m') as dm, COUNT(*) as nb";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->socid)
+		if (! $user->rights->societe->client->voir && ! ((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
@@ -253,7 +253,7 @@ class LeadStats extends Stats
 
 		$sql = "SELECT date_format(t.datec,'%m') as dm, SUM(t.amount_prosp)";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->socid)
+		if (! $user->rights->societe->client->voir && ! ((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
@@ -359,7 +359,7 @@ class LeadStats extends Stats
 
 		$sql = "SELECT date_format(t.datec,'%m') as dm, count(t.amount_prosp)";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->socid)
+		if (! $user->rights->societe->client->voir && ! ((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
@@ -371,7 +371,7 @@ class LeadStats extends Stats
 
 		$sql = "SELECT date_format(t.datec,'%m') as dm, count(t.amount_prosp)";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->socid)
+		if (! $user->rights->societe->client->voir && ! ((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
