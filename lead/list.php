@@ -39,6 +39,8 @@ if ($conf->margin->enabled) {
 	require_once DOL_DOCUMENT_ROOT . '/core/class/html.formmargin.class.php';
 }
 
+if (function_exists('newToken')) $urlToken = "&token=".newToken();
+
 $form = new Form($db);
 $formlead = new FormLead($db);
 $object = new Lead($db);
@@ -579,7 +581,7 @@ if ($resql != - 1) {
 			if (! $i) $totalarray['nbfield']++;
 		}
 
-		print '<td align="center"><a href="card.php?id=' . $line->id . '&action=edit&token='.newToken().'">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
+		print '<td align="center"><a href="card.php?id=' . $line->id . '&action=edit'.$urlToken.'">' . img_picto($langs->trans('Edit'), 'edit') . '</td>';
 
 		print "</tr>\n";
 
