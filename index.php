@@ -38,10 +38,10 @@ $HEIGHT=DolGraph::getDefaultGraphSizeForStats('height');
 $userid=GETPOST('userid','int');
 $socid=GETPOST('socid','int');
 // Security check
-if ($user->societe_id > 0)
+if (((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid > 0)
 {
 	$action = '';
-	$socid = $user->societe_id;
+	$socid = ((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid;
 }
 $nowyear=strftime("%Y", dol_now());
 $year = GETPOST('year','int')>0?GETPOST('year','int'):$nowyear;
