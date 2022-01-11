@@ -49,11 +49,11 @@ class LeadStats extends Stats
 	 */
 	function __construct($db) {
 		global $conf, $user;
-		
+
 		$this->db = $db;
-		
+
 		require_once 'lead.class.php';
-		
+
 		$this->lead = new Lead($this->db);
 	}
 
@@ -67,9 +67,9 @@ class LeadStats extends Stats
 	 */
 	function getAllLeadByType($limit = 5) {
 		global $conf, $user, $langs;
-		
+
 		$datay = array ();
-		
+
 		$sql = "SELECT";
 		$sql .= " count(DISTINCT t.rowid), t.fk_c_type";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
@@ -90,7 +90,7 @@ class LeadStats extends Stats
 				if ($i < $limit || $num == $limit)
 					$result[$i] = array (
 							$this->lead->type[$row[1]] . '(' . $row[0] . ')',
-							$row[0] 
+							$row[0]
 					);
 				else
 					$other += $row[1];
@@ -99,7 +99,7 @@ class LeadStats extends Stats
 			if ($num > $limit)
 				$result[$i] = array (
 						$langs->transnoentitiesnoconv("Other"),
-						$other 
+						$other
 				);
 			$this->db->free($resql);
 		} else {
@@ -144,7 +144,7 @@ class LeadStats extends Stats
 				if ($i < $limit || $num == $limit)
 					$result[$i] = array (
 							$this->lead->status[$row[1]] . '(' . $row[0] . ')',
-							$row[0] 
+							$row[0]
 					);
 				else
 					$other += $row[1];
@@ -153,7 +153,7 @@ class LeadStats extends Stats
 			if ($num > $limit)
 				$result[$i] = array (
 						$langs->transnoentitiesnoconv("Other"),
-						$other 
+						$other
 				);
 			$this->db->free($resql);
 		} else {
@@ -172,15 +172,15 @@ class LeadStats extends Stats
 	 */
 	function getAllByYear() {
 		global $conf, $user, $langs;
-		
+
 		$sql = "SELECT date_format(t.datec,'%Y') as year, COUNT(t.rowid) as nb, SUM(t.amount_prosp) as total, AVG(t.amount_prosp) as avg";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->societe_id)
+		if (! $user->rights->societe->client->voir && ! $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY year";
 		$sql .= $this->db->order('year', 'DESC');
-		
+
 		return $this->_getAllByYear($sql);
 	}
 
@@ -192,9 +192,9 @@ class LeadStats extends Stats
 	public function buildWhere() {
 		$sqlwhere_str = '';
 		$sqlwhere = array ();
-		
+
 		$sqlwhere[] = ' t.entity IN (' . getEntity('lead') . ')';
-		
+
 		if (! empty($this->userid))
 			$sqlwhere[] = ' t.fk_user_resp=' . $this->userid;
 		if (! empty($this->socid))
@@ -203,14 +203,14 @@ class LeadStats extends Stats
 			$sqlwhere[] = " date_format(t.datec,'%Y')='" . $this->year . "'";
 		if (! empty($this->yearmonth))
 			$sqlwhere[] = " t.datec BETWEEN '" . $this->db->idate(dol_get_first_day($this->yearmonth)) . "' AND '" . $this->db->idate(dol_get_last_day($this->yearmonth)) . "'";
-		
+
 		if (! empty($this->status))
 			$sqlwhere[] = " t.fk_c_status IN (" . $this->status . ")";
-		
+
 		if (count($sqlwhere) > 0) {
 			$sqlwhere_str = ' WHERE ' . implode(' AND ', $sqlwhere);
 		}
-		
+
 		return $sqlwhere_str;
 	}
 
@@ -222,19 +222,19 @@ class LeadStats extends Stats
 	 */
 	function getNbByMonth($year) {
 		global $user;
-		
+
 		$this->yearmonth = $year;
-		
+
 		$sql = "SELECT date_format(t.datec,'%m') as dm, COUNT(*) as nb";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->societe_id)
+		if (! $user->rights->societe->client->voir && ! $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
-		
+
 		$this->yearmonth=0;
-		
+
 		$res = $this->_getNbByMonth($year, $sql);
 		// var_dump($res);print '<br>';
 		return $res;
@@ -248,18 +248,18 @@ class LeadStats extends Stats
 	 */
 	function getAmountByMonth($year) {
 		global $user;
-		
+
 		$this->yearmonth = $year;
-		
+
 		$sql = "SELECT date_format(t.datec,'%m') as dm, SUM(t.amount_prosp)";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->societe_id)
+		if (! $user->rights->societe->client->voir && ! $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
 		$this->yearmonth=0;
-		
+
 		$res = $this->_getAmountByMonth($year, $sql);
 		// var_dump($res);print '<br>';
 		return $res;
@@ -275,12 +275,12 @@ class LeadStats extends Stats
 	 */
 	function getTransformRateByMonthWithPrevYear($endyear, $startyear, $cachedelay = 0) {
 		global $conf, $user, $langs;
-		
+
 		if ($startyear > $endyear)
 			return - 1;
-		
+
 		$datay = array ();
-		
+
 		// Search into cache
 		if (! empty($cachedelay)) {
 			include_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
@@ -289,15 +289,15 @@ class LeadStats extends Stats
 
 		$newpathofdestfile = $conf->user->dir_temp . '/' . get_class($this) . '_' . __FUNCTION__ . '_' . (empty($this->cachefilesuffix) ? '' : $this->cachefilesuffix . '_') . $langs->defaultlang . '_user' . $user->id . '.cache';
 		$newmask = '0644';
-		
+
 		$nowgmt = dol_now();
-		
+
 		$foundintocache = 0;
 		if ($cachedelay > 0) {
 			$filedate = dol_filemtime($newpathofdestfile);
 			if ($filedate >= ($nowgmt - $cachedelay)) {
 				$foundintocache = 1;
-				
+
 				$this->_lastfetchdate[get_class($this) . '_' . __FUNCTION__] = $filedate;
 			} else {
 				dol_syslog(get_class($this) . '::' . __FUNCTION__ . " cache file " . $newpathofdestfile . " is not found or older than now - cachedelay (" . $nowgmt . " - " . $cachedelay . ") so we can't use it.");
@@ -339,7 +339,7 @@ class LeadStats extends Stats
 			if (! empty($conf->global->MAIN_UMASK))
 				$newmask = $conf->global->MAIN_UMASK;
 			@chmod($newpathofdestfile, octdec($newmask));
-			
+
 			$this->_lastfetchdate[get_class($this) . '_' . __FUNCTION__] = $nowgmt;
 		}
 
@@ -359,31 +359,31 @@ class LeadStats extends Stats
 
 		$sql = "SELECT date_format(t.datec,'%m') as dm, count(t.amount_prosp)";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->societe_id)
+		if (! $user->rights->societe->client->voir && ! $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
 
 		$res_total = $this->_getNbByMonth($year, $sql);
-		
+
 		$this->status=6;
-		
+
 		$sql = "SELECT date_format(t.datec,'%m') as dm, count(t.amount_prosp)";
 		$sql .= " FROM " . MAIN_DB_PREFIX . "lead as t";
-		if (! $user->rights->societe->client->voir && ! $user->societe_id)
+		if (! $user->rights->societe->client->voir && ! $user->socid)
 			$sql .= " INNER JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc=t.fk_soc AND sc.fk_user=" . $user->id;
 		$sql .= $this->buildWhere();
 		$sql .= " GROUP BY dm";
 		$sql .= $this->db->order('dm', 'DESC');
-		
+
 		$this->status=0;
 		$this->yearmonth=0;
-		
+
 		$res_only_wined = $this->_getNbByMonth($year, $sql);
-		
+
 		$res=array();
-		
+
 		foreach($res_total as $key=>$total_row) {
 			//var_dump($total_row);
 			if (!empty($total_row[1])) {
@@ -391,7 +391,7 @@ class LeadStats extends Stats
 			} else {
 				$res[$key]=array($total_row[0],0);
 			}
-			
+
 		}
 		// var_dump($res);print '<br>';
 		return $res;
