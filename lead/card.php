@@ -46,6 +46,8 @@ if (! empty($conf->global->LEAD_GRP_USER_AFFECT))
 if (! $user->rights->lead->read)
 	accessforbidden();
 
+if (function_exists('newToken')) $urlToken = "&token=".newToken();
+
 $langs->load('lead@lead');
 if (! empty($conf->propal->enabled))
 	$langs->load('propal');
@@ -839,7 +841,7 @@ elseif ($action == 'edit') {
 	}
 
 	if ($user->rights->lead->write) {
-		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=edit">' . $langs->trans("Edit") . "</a></div>\n";
+		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=edit'.$urlToken.'">' . $langs->trans("Edit") . "</a></div>\n";
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("Clone") . "</a></div>\n";
 		if ($user->rights->propale->creer) {
 			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_propale">' . $langs->trans("LeadCreatePropale") . "</a></div>\n";
@@ -863,7 +865,7 @@ elseif ($action == 'edit') {
 
 	// Delete
 	if ($user->rights->lead->delete) {
-		print '<div class="inline-block divButAction"><a class="butActionDelete" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . "</a></div>\n";
+		print '<div class="inline-block divButAction"><a class="butActionDelete" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete'.$urlToken.'">' . $langs->trans("Delete") . "</a></div>\n";
 	} else {
 		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("anoughPermissions")) . '">' . $langs->trans("Delete") . "</a></div>";
 	}
