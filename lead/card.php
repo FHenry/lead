@@ -879,6 +879,8 @@ elseif ($action == 'edit') {
 		$tablename = $value['table'];
 		$qualified = $value['test'];
 
+
+
 		if ($qualified) {
 			print '<br>';
 			print_fiche_titre($langs->trans($title));
@@ -970,8 +972,9 @@ elseif ($action == 'edit') {
 						print '<td align="right">' . (isset($element->total_ttc) ? price($element->total_ttc) : '&nbsp;') . '</td>';
 					}
 
+					$statusMode =  ($classname) == "Facture" ? $element->getSommePaiement() : 0;
 					// Status
-					print '<td align="right">' . $element->getLibStatut(5) . '</td>';
+					print '<td align="right">' . $element->getLibStatut(5,$statusMode) . '</td>';
 
 					print '</tr>';
 
