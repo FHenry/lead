@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## Version 2.3
-
+- FIX : Liaison automatique  d'une facture  à une affaire si la propal d'origine est liée à cette affaire.   - *2022-02-22* - 2.3.7
 - FIX : Compat V15 - *2021-12-21* - 2.3.6
 - FIX : GETPOST (external fix by user @l00ptr) - *2021-12-06* - 2.3.5
 - FIX : function name is now closeProposal() and not cloture(), then we use mthod_exists - *2021-10-28* - 2.3.4
