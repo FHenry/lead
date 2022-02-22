@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## Version 2.3
+- FIX : change status invoice in lead card *2022-02-22* - 2.3.9
 - FIX : Compat V13 : newToken() et $user->socid - *2021-01-11* - 2.3.7
 - FIX : Compat V15 - *2021-12-21* - 2.3.6
 - FIX : GETPOST (external fix by user @l00ptr) - *2021-12-06* - 2.3.5
