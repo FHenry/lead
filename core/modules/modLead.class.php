@@ -64,7 +64,9 @@ class modLead extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
+
 		$this->version = '2.3.9';
+
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -97,7 +99,7 @@ class modLead extends DolibarrModules
 		// Set this to relative path of css if module has its own css file
 		// 'css' => '/lead/css/mycss.css.php',
 		// Set here all hooks context managed by module
-			'hooks' => array('commonobject','commcard','propalcard','contractcard','ordercard','searchform'),
+			'hooks' => array('commonobject','commcard','propalcard','contractcard','ordercard','searchform','invoicecard'),
 		// Set here all workflow context managed by module
 		// 'workflow' => array('order' => array('WORKFLOW_ORDER_AUTOCREATE_INVOICE'))
 				);
