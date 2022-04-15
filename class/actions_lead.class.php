@@ -33,7 +33,7 @@ class ActionsLead // extends CommonObject
 	 */
 	function showLinkedObjectBlock($parameters, $object, $action) {
 		global $conf, $langs, $db, $user;
-		
+
 		if (empty($user->rights->lead->read))
 		{
 			return 0;
@@ -266,4 +266,45 @@ class ActionsLead // extends CommonObject
 
 		return 0;
 	}
+
+	/**
+	 * @param $parameters
+	 * @param $object
+	 * @param $action
+	 * @param $hookmanager
+	 * @return void
+	 * @throws Exception
+	 */
+	public function createFrom($parameters, &$object, &$action, $hookmanager){
+		global $db;
+
+		if (in_array('invoicecard',explode(':',$parameters['context'])))
+		{
+			// lorsque qu'une propal est liée à une affaire  et que l'on créer une facture
+			// depuis cette propale, nous voulons que cette facture soit également liée à l'affaire.
+			//
+			// on test que le objFRom est bien un obj propal
+			if ($parameters['objFrom'] instanceof Propal ){
+
+					// on recupere l'id de l'affaire linké à la propal
+					$obj = $parameters['objFrom'];
+					$obj->fetchObjectLinked();
+
+
+					if (count($obj->linkedObjectsIds['lead']) == 1) {
+						$leadId = array_pop($obj->linkedObjectsIds['lead']);
+						$lead = new Lead($db);
+						$result = $lead->fetch($leadId);
+						if ($result){
+							// link de la facture à l'affaire
+							$lead->add_object_linked('facture', $object->id);
+							dol_syslog("linked lead to invoice. ",6);
+						}else{
+							dol_syslog("fetch lead error. id lead :  ".$leadId  .  ", facture id : ".$object->id ,3);
+						}
+					}
+				}
+		}
+	}
+
 }
