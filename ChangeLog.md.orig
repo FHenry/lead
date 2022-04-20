@@ -3,7 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## Version 2.3
 
+<<<<<<< HEAD
+=======
 - FIX : Compat V15 : newToken() - *20/04/2022* - 2.3.10
+>>>>>>> 15bb22c6c088af3bf6fd40a58bdc2f444c435aad
 - FIX : change status invoice in lead card *2022-02-22* - 2.3.9
 - FIX : Liaison automatique  d'une facture  à une affaire si la propale d'origine est liée à cette affaire.   - *2022-02-22* - 2.3.8
 - FIX : Compat V13 : newToken() et $user->socid - *2021-01-11* - 2.3.7

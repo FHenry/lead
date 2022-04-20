@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2014-2016 Florian HENRY <florian.henry@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -42,36 +42,36 @@ class mod_lead_universal extends ModeleNumRefLead
 	function info()
 	{
 		global $conf, $db, $langs;
-		
+
 		$langs->load("lead@lead");
 		$langs->load("admin");
-		
+
 		$form = new Form($db);
-		
+
 		$texte = $langs->trans('GenericNumRefModelDesc') . "<br>\n";
 		$texte .= '<form action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
-		$texte .= '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+		$texte .= '<input type="hidden" name="token" value="'.(function_exists('newToken')?newToken():$_SESSION['newtoken']).'">';
 		$texte .= '<input type="hidden" name="action" value="updateMask">';
 		$texte .= '<input type="hidden" name="maskconstlead" value="LEAD_UNIVERSAL_MASK">';
 		$texte .= '<table class="nobordernopadding" width="100%">';
-		
+
 		$tooltip = $langs->trans("GenericMaskCodes", $langs->transnoentities("LeadLead"), $langs->transnoentities("LeadLead"));
 		$tooltip .= $langs->trans("GenericMaskCodes2");
 		$tooltip .= $langs->trans("GenericMaskCodes3");
 		$tooltip .= $langs->trans("GenericMaskCodes4a", $langs->transnoentities("LeadLead"), $langs->transnoentities("LeadLead"));
 		$tooltip .= $langs->trans("GenericMaskCodes5");
-		
+
 		// Parametrage du prefix
 		$texte .= '<tr><td>' . $langs->trans("Mask") . ':</td>';
 		$texte .= '<td align="right">' . $form->textwithpicto('<input type="text" class="flat" size="24" name="masklead" value="' . $conf->global->LEAD_UNIVERSAL_MASK . '">', $tooltip, 1, 1) . '</td>';
-		
+
 		$texte .= '<td align="left" rowspan="2">&nbsp; <input type="submit" class="button" value="' . $langs->trans("Modify") . '" name="Button"></td>';
-		
+
 		$texte .= '</tr>';
-		
+
 		$texte .= '</table>';
 		$texte .= '</form>';
-		
+
 		return $texte;
 	}
 
@@ -83,12 +83,12 @@ class mod_lead_universal extends ModeleNumRefLead
 	function getExample()
 	{
 		global $conf, $langs, $mysoc, $user;
-		
+
 		// $old_code_client = $mysoc->code_client;
 		// $mysoc->code_client='CCCCCCCCCC';
 		$numExample = $this->getNextValue($user->id, $mysoc, null);
 		// $mysoc->code_client=$old_code_client;
-		
+
 		if (! $numExample) {
 			$numExample = $langs->trans('NotConfigured');
 		}
@@ -106,19 +106,19 @@ class mod_lead_universal extends ModeleNumRefLead
 	function getNextValue($fk_user, $objsoc, $lead)
 	{
 		global $db, $conf;
-		
+
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
-		
+
 		// On defini critere recherche compteur
 		$mask = $conf->global->LEAD_UNIVERSAL_MASK;
-		
+
 		if (! $mask) {
 			$this->error = 'NotConfigured';
 			return 0;
 		}
-		
+
 		$numFinal = get_next_value($db, $mask, 'lead', 'ref', '', $objsoc->code_client, dol_now());
-		
+
 		return $numFinal;
 	}
 }

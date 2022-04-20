@@ -279,7 +279,7 @@ print "</table><br>\n";
 print_fiche_titre($langs->trans("LeadAdmVar"));
 
 print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" >';
-print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+print '<input type="hidden" name="token" value="'.(function_exists('newToken')?newToken():$_SESSION['newtoken']).'">';
 print '<input type="hidden" name="action" value="setvar">';
 
 print '<table class="noborder" width="100%">';
