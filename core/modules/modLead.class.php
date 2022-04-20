@@ -65,7 +65,7 @@ class modLead extends DolibarrModules
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
 
-		$this->version = '2.3.9';
+		$this->version = '2.3.10';
 
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
