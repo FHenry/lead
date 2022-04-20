@@ -385,7 +385,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 		print_fiche_titre($langs->trans("LeadCreate"), '', dol_buildpath('/lead/img/object_lead.png', 1), 1);
 
 		print '<form name="addlead" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
-		print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+		print '<input type="hidden" name="token" value="'.(function_exists('newToken')?newToken():$_SESSION['newtoken']).'">';
 
 		print '<input type="hidden" name="propalid" value="' . GETPOST('propalid', 'int') . '">';
 
@@ -514,7 +514,7 @@ elseif ($action == 'edit') {
 	} else {
 
 		print '<form name="editlead" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '" method="POST">';
-		print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+		print '<input type="hidden" name="token" value="'.(function_exists('newToken')?newToken():$_SESSION['newtoken']).'">';
 		print '<input type="hidden" name="action" value="update">';
 
 		print '<table class="border" width="100%">';
@@ -890,6 +890,7 @@ elseif ($action == 'edit') {
 				print '<form action="' . $_SERVER["PHP_SELF"] . '?id=' . $id . '" method="post">';
 				print '<input type="hidden" name="tablename" value="' . $tablename . '">';
 				print '<input type="hidden" name="action" value="addelement">';
+				print '<input type="hidden" name="token" value="'.(function_exists('newToken')?newToken():$_SESSION['newtoken']).'">';
 				print '<table><tr><td>' . $langs->trans("SelectElement") . '</td>';
 				print '<td>' . $selectList . '</td>';
 				print '<td><input type="submit" class="button" value="' . $langs->trans("LeadAddElement") . '"></td>';
