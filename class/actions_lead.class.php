@@ -68,7 +68,7 @@ class ActionsLead // extends CommonObject
 			print_fiche_titre($langs->trans('Lead'));
 			if (count($lead->doclines) == 0 || ($object->table_element=='contrat' && !empty($conf->global->LEAD_ALLOW_MULIPLE_LEAD_ON_CONTRACT))) {
 				print '<form action="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '" method="POST">';
-				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+				print '<input type="hidden" name="token" value="'.(function_exists('newToken')?newToken():$_SESSION['newtoken']).'">';
 				print '<input type="hidden" name="redirect" value="' . $_SERVER['REQUEST_URI'] . '">';
 				print '<input type="hidden" name="tablename" value="' . $object->table_element . '">';
 				print '<input type="hidden" name="elementselect" value="' . ($object->rowid ? $object->rowid : $object->id) . '">';
