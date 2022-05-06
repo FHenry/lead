@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version 2.3
 
+- FIX : Multi Module Hook compatibility - *06/05/2022* - 2.3.10
 - FIX : change status invoice in lead card *2022-02-22* - 2.3.9
 - FIX : Liaison automatique  d'une facture  à une affaire si la propale d'origine est liée à cette affaire.   - *2022-02-22* - 2.3.8
 - FIX : Compat V13 : newToken() et $user->socid - *2021-01-11* - 2.3.7

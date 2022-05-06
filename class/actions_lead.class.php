@@ -244,25 +244,20 @@ class ActionsLead // extends CommonObject
 	 * @return void
 	 */
 	public function addSearchEntry($parameters, &$object, &$action, $hookmanager) {
-		global $conf, $langs, $db, $user;
+		global $langs, $db, $user;
 
-		if (empty($user->rights->lead->read))
-		{
+		if (empty($user->rights->lead->read)){
 			return 0;
-		};
+		}
+
+		$search_boxvalue = $parameters['search_boxvalue'];
 
 		$langs->load('lead@lead');
-
-		dol_include_once('/lead/core/modules/modLead.class.php');
-		$modLead = new modLead($db);
-
-		$arrayresult['searchintolead'] = array (
-				'position' => $modLead->numero,
+		$this->results['searchintolead'] = array (
+				'position' => 103111,
 				'text' => img_object('', 'lead@lead') . ' ' . $langs->trans("Module103111Name"),
 				'url' => dol_buildpath('/lead/lead/list.php', 1) . '?search_ref=' . urlencode($parameters['search_boxvalue'])
 		);
-
-		$this->results = $arrayresult;
 
 		return 0;
 	}
