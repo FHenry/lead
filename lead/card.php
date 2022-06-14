@@ -842,21 +842,21 @@ elseif ($action == 'edit') {
 
 	if ($user->rights->lead->write) {
 		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=edit'.$urlToken.'">' . $langs->trans("Edit") . "</a></div>\n";
-		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("Clone") . "</a></div>\n";
+		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone'.$urlToken.'">' . $langs->trans("Clone") . "</a></div>\n";
 		if ($user->rights->propale->creer) {
-			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_propale">' . $langs->trans("LeadCreatePropale") . "</a></div>\n";
-			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone_propale">' . $langs->trans("LeadClonePropale") . "</a></div>\n";
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_propale'.$urlToken.'">' . $langs->trans("LeadCreatePropale") . "</a></div>\n";
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone_propale'.$urlToken.'">' . $langs->trans("LeadClonePropale") . "</a></div>\n";
 		}
 		if ($conf->contract->enabled && $user->rights->contrat->creer) {
-			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_contract">' . $langs->trans("LeadCreateContract") . "</a></div>\n";
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_contract'.$urlToken.'">' . $langs->trans("LeadCreateContract") . "</a></div>\n";
 		}
-		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_relance">' . $langs->trans("CreateRelance") . "</a></div>\n";
+		print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=create_relance'.$urlToken.'">' . $langs->trans("CreateRelance") . "</a></div>\n";
 		if ($object->status[7] == $langs->trans('LeadStatus_LOST') && $object->fk_c_status != 7) {
-			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close">' . $langs->trans("LeadLost") . "</a></div>\n";
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=close'.$urlToken.'">' . $langs->trans("LeadLost") . "</a></div>\n";
 		}
 
 		if ($object->status[6] == $langs->trans('LeadStatus_WIN') && $object->fk_c_status != 6) {
-			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=win">' . $langs->trans("LeadWin") . "</a></div>\n";
+			print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=win'.$urlToken.'">' . $langs->trans("LeadWin") . "</a></div>\n";
 		}
 	} else {
 		print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("Edit") . "</a></div>";

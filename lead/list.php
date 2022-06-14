@@ -163,6 +163,8 @@ foreach ($search_array_options as $key => $val)
 		$filter['leadextra.'.$tmpkey]=natural_search('leadextra.'.$tmpkey, $crit, $mode, 1);
 	}
 }
+
+if (function_exists('newToken')) $option.= "&token=".newToken();
 if (! empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $option.='&contextpage='.$contextpage;
 
 $arrayfields = array(
@@ -326,8 +328,8 @@ if ($resql != - 1) {
 	if (! empty($arrayfields['t.amount_prosp']['checked'])) print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
 	if (! empty($conf->margin->enabled)) {
-		if (!empty($arrayfields['margin']['checked'])) print_liste_field_titre($arrayfields['margin']['label'], $_SERVER["PHP_SELF"], "", "", "$param", 'align="center"', $sortfield, $sortorder);
-		if (!empty($arrayfields['markRate']['checked'])) print_liste_field_titre($arrayfields['markRate']['label'], $_SERVER["PHP_SELF"], "", "", "$param", 'align="center"', $sortfield, $sortorder);
+		if (!empty($arrayfields['margin']['checked'])) print_liste_field_titre($arrayfields['margin']['label'], $_SERVER["PHP_SELF"], "", "", "$option", 'align="center"', $sortfield, $sortorder);
+		if (!empty($arrayfields['markRate']['checked'])) print_liste_field_titre($arrayfields['markRate']['label'], $_SERVER["PHP_SELF"], "", "", "$option", 'align="center"', $sortfield, $sortorder);
 	}
 	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
 
@@ -460,7 +462,7 @@ if ($resql != - 1) {
 				$propal->fetch($propalArray->fk_source);
 				$marginInfosPropal = $formmargin->getMarginInfosArray($propal);
 				$marginInfos["total_margin"] += $marginInfosPropal["total_margin"];
-				$marginInfos["total_mark_rate"] += $marginInfosPropal["total_mark_rate"];
+				$marginInfos["total_mark_rate"] += floatval($marginInfosPropal["total_mark_rate"]);
 				$countProp++;
 			}
 			if ($countProp > 0){
