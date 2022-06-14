@@ -287,6 +287,9 @@ if ($resql != - 1) {
 
 	print '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" name="search_form">' . "\n";
 
+	$newToken = function_exists('newToken') ? newToken() : $_SESSION['newtoken'];
+	print '<input type="hidden" name="token" id="token" value="'.$newToken.'">';
+
 	if (! empty($sortfield))
 		print '<input type="hidden" name="sortfield" value="' . $sortfield . '"/>';
 	if (! empty($sortorder))
