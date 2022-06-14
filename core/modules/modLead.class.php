@@ -232,11 +232,16 @@ class modLead extends DolibarrModules
 			$conf->lead->enabled = 0;
 		}
 
+		$dictionnariesTablePrefix = '';
+                if (intval(DOL_VERSION)< 16){
+                        $dictionnariesTablePrefix =  MAIN_DB_PREFIX;
+                }
+
 		$this->dictionnaries = array(
 			'langs' => 'lead@lead',
 			'tabname' => array(
-				MAIN_DB_PREFIX . "c_lead_status",
-				MAIN_DB_PREFIX . "c_lead_type"
+				$dictionnariesTablePrefix . "c_lead_status",
+				$dictionnariesTablePrefix . "c_lead_type"
 			),
 			'tablib' => array(
 				"LeadStatusDict",
