@@ -267,12 +267,19 @@ if ($action == "add") {
 	$propale_id = GETPOST('propale_id','int');
 	$propale = new Propal($db);
 	$propale->fetch($propale_id);
-	$new_propale_id = $propale->createFromClone($object->fk_soc);
-	$result = $object->add_object_linked('propal', $new_propale_id);
-	if ($result < 0) {
-		setEventMessages(null, $object->errors, 'errors');
-	} else {
-		header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+	$new_propale_id = $propale->createFromClone($user, $object->fk_soc);
+	if ($new_propale_id < 0)
+	{
+		setEventMessages("Error clone :", $propale->errors, 'errors');
+	}
+	else
+	{
+		$result = $object->add_object_linked('propal', $new_propale_id);
+		if ($result < 0) {
+			setEventMessages(null, $object->errors, 'errors');
+		} else {
+			header('Location:' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+		}
 	}
 } else if ($action == "confirm_lost" && $confirm == 'yes') {
 
