@@ -54,7 +54,7 @@ class modLead extends DolibarrModules
 
 		// Family can be 'crm','financial','hr','projects','products','ecm','technic','other'
 		// It is used to group modules in module setup page
-		$this->family = "crm";
+		$this->family = "ATM Consulting";
 		// Module label (no space allowed)
 		// used if translation string 'ModuleXXXName' not found
 		// (where XXX is value of numeric property 'numero' of module)
@@ -65,7 +65,7 @@ class modLead extends DolibarrModules
 		$this->description = "Description of module Lead";
 		// Possible values for version are: 'development', 'experimental' or version
 
-		$this->version = '2.3.11';
+		$this->version = '2.3.12';
 
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
@@ -232,11 +232,16 @@ class modLead extends DolibarrModules
 			$conf->lead->enabled = 0;
 		}
 
+		$dictionnariesTablePrefix = '';
+                if (intval(DOL_VERSION)< 16){
+                        $dictionnariesTablePrefix =  MAIN_DB_PREFIX;
+                }
+
 		$this->dictionnaries = array(
 			'langs' => 'lead@lead',
 			'tabname' => array(
-				MAIN_DB_PREFIX . "c_lead_status",
-				MAIN_DB_PREFIX . "c_lead_type"
+				$dictionnariesTablePrefix . "c_lead_status",
+				$dictionnariesTablePrefix . "c_lead_type"
 			),
 			'tablib' => array(
 				"LeadStatusDict",
