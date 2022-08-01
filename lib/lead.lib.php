@@ -26,23 +26,25 @@ function leadAdminPrepareHead()
 {
 	global $langs, $conf;
 
+	if (function_exists('newToken')) $urlToken = "?token=".newToken();
+
 	$langs->load("lead@lead");
 	$langs->load("admin");
 
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/lead/admin/admin_lead.php", 1);
+	$head[$h][0] = dol_buildpath("/lead/admin/admin_lead.php".$urlToken, 1);
 	$head[$h][1] = $langs->trans("SettingsLead");
 	$head[$h][2] = 'settings';
 	$h ++;
 
-	$head[$h][0] = dol_buildpath("/lead/admin/lead_extrafields.php", 1);
+	$head[$h][0] = dol_buildpath("/lead/admin/lead_extrafields.php".$urlToken, 1);
 	$head[$h][1] = $langs->trans("ExtraFields");
 	$head[$h][2] = 'attributes';
 	$h ++;
 
-	$head[$h][0] = dol_buildpath("/lead/admin/about.php", 1);
+	$head[$h][0] = dol_buildpath("/lead/admin/about.php".$urlToken, 1);
 	$head[$h][1] = $langs->trans("About");
 	$head[$h][2] = 'about';
 	$h ++;
@@ -76,14 +78,16 @@ function lead_prepare_head($object)
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/lead/lead/card.php", 1) . '?id=' . $object->id;
+	if (function_exists('newToken')) $urlToken = "&token=".newToken();
+
+	$head[$h][0] = dol_buildpath("/lead/lead/card.php", 1) . '?id=' . $object->id.$urlToken;
 	$head[$h][1] = $langs->trans("LeadLead");
 	$head[$h][2] = 'card';
 	$h ++;
 
 	// CONTACTS
 	$nbContact = count($object->liste_contact(-1, 'internal')) + count($object->liste_contact(-1, 'external'));
-	$head[$h][0] = dol_buildpath("/lead/lead/contact.php", 1) . '?id=' . $object->id;
+	$head[$h][0] = dol_buildpath("/lead/lead/contact.php", 1) . '?id=' . $object->id.$urlToken;
 	$head[$h][1] = $langs->trans("Contacts");
 	if ($nbContact > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbContact.'</span>';
 	$head[$h][2] = 'contact';
@@ -103,7 +107,7 @@ function lead_prepare_head($object)
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $object->element, $object->id);
 
-	$head[$h][0] = dol_buildpath("/lead/lead/document.php", 1) . '?id=' . $object->id;
+	$head[$h][0] = dol_buildpath("/lead/lead/document.php", 1) . '?id=' . $object->id.$urlToken;
 	$head[$h][1] = $langs->trans("Documents");
 	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
 	$head[$h][2] = 'documents';
@@ -115,14 +119,14 @@ function lead_prepare_head($object)
 		$nbNote = 0;
 		if(!empty($object->note_private)) $nbNote++;
 		if(!empty($object->note_public)) $nbNote++;
-		$head[$h][0] = dol_buildpath("/lead/lead/note.php", 1) . '?id=' . $object->id;
+		$head[$h][0] = dol_buildpath("/lead/lead/note.php", 1) . '?id=' . $object->id.$urlToken;
 		$head[$h][1] = $langs->trans('Notes');
 		if($nbNote > 0) $head[$h][1].= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
 		$head[$h][2] = 'note';
 		$h++;
 	}
 
-	$head[$h][0] = dol_buildpath("/lead/lead/info.php", 1) . '?id=' . $object->id;
+	$head[$h][0] = dol_buildpath("/lead/lead/info.php", 1) . '?id=' . $object->id.$urlToken;
 	$head[$h][1] = $langs->trans("Info");
 	$head[$h][2] = 'info';
 	$h ++;
@@ -151,10 +155,12 @@ function lead_stats_prepare_head()
 
 	$langs->load("lead@lead");
 
+	if (function_exists('newToken')) $urlToken = "?token=".newToken();
+
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/lead/index.php", 1);
+	$head[$h][0] = dol_buildpath("/lead/index.php".$urlToken, 1);
 	$head[$h][1] = $langs->trans("LeadStats");
 	$head[$h][2] = 'stat';
 	$h ++;

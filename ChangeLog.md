@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## Version 2.3
 
+- FIX : Compatibility V16 - *14/06/2022* - 2.3.12
+  - remove db_prefix in dictionnary definitions
+  - add token to index
+  - add token to list search form
+  - add token to url and list sortfield
+  - fix fatal : createfromclone does not work...
+  - fix module family
 - FIX : Multi Module Hook compatibility - *06/05/2022* - 2.3.11
 - FIX : Compat V15 : newToken() - *20/04/2022* - 2.3.10
 - FIX : change status invoice in lead card *2022-02-22* - 2.3.9
