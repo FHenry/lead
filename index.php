@@ -37,6 +37,8 @@ $HEIGHT=DolGraph::getDefaultGraphSizeForStats('height');
 
 $userid=GETPOST('userid','int');
 $socid=GETPOST('socid','int');
+$mode=GETPOST('mode','alpha');
+
 // Security check
 if (((float) DOL_VERSION < 13) ? $user->societe_id : $user->socid > 0)
 {
@@ -49,6 +51,8 @@ $year = GETPOST('year','int')>0?GETPOST('year','int'):$nowyear;
 $startyear=$year-1;
 $endyear=$year;
 
+$showpointvalue=1;
+$nocolor=0;
 
 $includeuserlist=array();
 if (!empty($conf->global->LEAD_GRP_USER_AFFECT)) {
@@ -348,6 +352,7 @@ print '<table class="border" width="100%">';
 print '<tr class="liste_titre"><td class="liste_titre" colspan="2">'.$langs->trans("Filter").'</td></tr>';
 // Company
 print '<tr><td>'.$langs->trans("ThirdParty").'</td><td>';
+$filter='';
 if ($mode == 'customer') $filter='s.client in (1,2,3)';
 if ($mode == 'supplier') $filter='s.fournisseur = 1';
 print $form->select_thirdparty_list($socid,'socid',$filter,1);

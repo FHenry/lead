@@ -220,7 +220,7 @@ class LeadStats extends Stats
 	 * @param int $year scan
 	 * @return array of values
 	 */
-	function getNbByMonth($year) {
+	function getNbByMonth($year, $format = 0) {
 		global $user;
 
 		$this->yearmonth = $year;
@@ -246,7 +246,7 @@ class LeadStats extends Stats
 	 * @param int $year scan
 	 * @return array with amount by month
 	 */
-	function getAmountByMonth($year) {
+	function getAmountByMonth($year, $format = 0) {
 		global $user;
 
 		$this->yearmonth = $year;
@@ -396,4 +396,13 @@ class LeadStats extends Stats
 		// var_dump($res);print '<br>';
 		return $res;
 	}
+
+    /**
+     * @param	int     $year           year number
+     * @return 	int						value
+     */
+    public function getAverageByMonth($year)
+    {
+
+    }
 }

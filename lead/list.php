@@ -92,7 +92,9 @@ if (! empty($link_element)) {
 	$action = 'link_element';
 }
 
+$option='';
 $filter = array();
+
 if (! empty($search_commercial) && $search_commercial > 0) {
 	$filter['t.fk_user_resp'] = $search_commercial;
 	$option .= '&search_commercial=' . $search_commercial;
@@ -319,19 +321,19 @@ if ($resql != - 1) {
 	$i = 0;
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
-	if (! empty($arrayfields['t.ref']['checked'])) print_liste_field_titre($langs->trans("Ref"), $_SERVEUR['PHP_SELF'], "t.ref", "", $option, '', $sortfield, $sortorder);
-	if (! empty($arrayfields['t.ref_int']['checked'])) print_liste_field_titre($langs->trans("LeadRefInt"), $_SERVEUR['PHP_SELF'], "t.ref_int", "", $option, '', $sortfield, $sortorder);
-	if (! empty($arrayfields['so.nom']['checked'])) print_liste_field_titre($langs->trans("Customer"), $_SERVEUR['PHP_SELF'], "so.nom", "", $option, '', $sortfield, $sortorder);
-	if (! empty($arrayfields['usr.lastname']['checked'])) print_liste_field_titre($langs->trans("LeadCommercial"), $_SERVEUR['PHP_SELF'], "usr.lastname", "", $option, '', $sortfield, $sortorder);
-	if (! empty($arrayfields['leadsta.label']['checked'])) print_liste_field_titre($langs->trans("LeadStatus"), $_SERVEUR['PHP_SELF'], "leadsta.label", "", $option, '', $sortfield, $sortorder);
-	if (! empty($arrayfields['leadtype.label']['checked'])) print_liste_field_titre($langs->trans("LeadType"), $_SERVEUR['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
-	if (! empty($arrayfields['t.amount_prosp']['checked'])) print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVEUR['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
-	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVEUR['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.ref']['checked'])) print_liste_field_titre($langs->trans("Ref"), $_SERVER['PHP_SELF'], "t.ref", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.ref_int']['checked'])) print_liste_field_titre($langs->trans("LeadRefInt"), $_SERVER['PHP_SELF'], "t.ref_int", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['so.nom']['checked'])) print_liste_field_titre($langs->trans("Customer"), $_SERVER['PHP_SELF'], "so.nom", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['usr.lastname']['checked'])) print_liste_field_titre($langs->trans("LeadCommercial"), $_SERVER['PHP_SELF'], "usr.lastname", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['leadsta.label']['checked'])) print_liste_field_titre($langs->trans("LeadStatus"), $_SERVER['PHP_SELF'], "leadsta.label", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['leadtype.label']['checked'])) print_liste_field_titre($langs->trans("LeadType"), $_SERVER['PHP_SELF'], "leadtype.label", "", $option, '', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.amount_prosp']['checked'])) print_liste_field_titre($langs->trans("LeadAmountGuess"), $_SERVER['PHP_SELF'], "t.amount_prosp", "", $option, 'align="right"', $sortfield, $sortorder);
+	print_liste_field_titre($langs->trans("LeadRealAmount"), $_SERVER['PHP_SELF'], "", "", $option, 'align="right"', $sortfield, $sortorder);
 	if (! empty($conf->margin->enabled)) {
 		if (!empty($arrayfields['margin']['checked'])) print_liste_field_titre($arrayfields['margin']['label'], $_SERVER["PHP_SELF"], "", "", "$option", 'align="center"', $sortfield, $sortorder);
 		if (!empty($arrayfields['markRate']['checked'])) print_liste_field_titre($arrayfields['markRate']['label'], $_SERVER["PHP_SELF"], "", "", "$option", 'align="center"', $sortfield, $sortorder);
 	}
-	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVEUR['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
+	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVER['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
 
 	// Extra fields
 	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
@@ -445,6 +447,8 @@ if ($resql != - 1) {
 	$var = true;
 	$totalamountguess = 0;
 	$totalamountreal = 0;
+    $totalmargin = 0;
+    $totalarray = array('nbfield' => 0);
 
 	foreach ($object->lines as $line) {
 		/**
