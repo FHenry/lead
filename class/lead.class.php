@@ -1066,7 +1066,7 @@ class Lead extends CommonObject
 		if ($resql) {
 			if ($this->db->num_rows($resql)) {
 				$obj = $this->db->fetch_object($resql);
-				$nbobjectwined += $obj->cnt;
+				$nbobjectwined += $obj->totalamount;
 			}
 			$this->db->free($resql);
 		} else {

@@ -487,7 +487,7 @@ if ($action == 'create' && $user->rights->lead->write) {
 		print $langs->trans('LeadDescription');
 		print '</td>';
 		print '<td>';
-		$doleditor = new DolEditor('description', $object->description, '', 160, 'dolibarr_notes', 'In', true, false, $conf->global->FCKEDITOR_ENABLE || $conf->global->FCKEDITOR_ENABLE_SOCIETE, 4, 90);
+		$doleditor = new DolEditor('description', $object->description, '', 160, 'dolibarr_notes', 'In', true, false, !empty($conf->global->FCKEDITOR_ENABLE) || !empty($conf->global->FCKEDITOR_ENABLE_SOCIETE), 4, 90);
 		$doleditor->Create();
 		print '</td>';
 		print '</tr>';
