@@ -162,7 +162,7 @@ class ActionsLead // extends CommonObject
 				$total_lead = count($lead->lines);
 
 				// $filter['so.rowid'] = $object->id;
-				$resql = $lead->fetch_all('DESC', 't.date_closure', 4, 0, $filter);
+				$resql = $lead->fetch_all('DESC', 't.date_closure', 3, 0, $filter);
 				if ($resql == - 1) {
 					setEventMessages(null, $object->errors, 'errors');
 				}
