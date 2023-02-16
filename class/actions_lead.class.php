@@ -162,7 +162,7 @@ class ActionsLead // extends CommonObject
 				$total_lead = count($lead->lines);
 
 				// $filter['so.rowid'] = $object->id;
-				$resql = $lead->fetch_all('DESC', 't.date_closure', 4, 0, $filter);
+				$resql = $lead->fetch_all('DESC', 't.date_closure', 3, 0, $filter);
 				if ($resql == - 1) {
 					setEventMessages(null, $object->errors, 'errors');
 				}
@@ -192,10 +192,14 @@ class ActionsLead // extends CommonObject
 
 				$html .= '</table>';
 				$html = str_replace('"', '\"', $html);
+				$classToAppend = 'ficheaddleft';
+				if(floatval(DOL_VERSION) > 14.0) {
+					$classToAppend = 'fichehalfright';
+				}
 				$js= '<script type="text/javascript">'."\n";
 				$js.= '	$(document).ready('."\n";
 				$js.= '		function () {'."\n";
-				$js.= '			$(".ficheaddleft").append("' . $html . '");'."\n";
+				$js.= '			$(".'.$classToAppend.'").append("' . $html . '");'."\n";
 				$js.= '		});'."\n";
 				$js.= '</script>';
 				print $js;
