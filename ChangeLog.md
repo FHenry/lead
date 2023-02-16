@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version 2.3
 
+- FIX : Compat v15 - *16/02/2023* - 2.3.14
 - FIX : Compatibility PHP 8.1 - *02/08/2022* - 2.3.13
 - FIX : Compatibility V16 - *14/06/2022* - 2.3.12
   - remove db_prefix in dictionnary definitions
