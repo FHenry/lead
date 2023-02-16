@@ -192,10 +192,14 @@ class ActionsLead // extends CommonObject
 
 				$html .= '</table>';
 				$html = str_replace('"', '\"', $html);
+				$classToAppend = 'ficheaddleft';
+				if(floatval(DOL_VERSION) > 14.0) {
+					$classToAppend = 'fichehalfright';
+				}
 				$js= '<script type="text/javascript">'."\n";
 				$js.= '	$(document).ready('."\n";
 				$js.= '		function () {'."\n";
-				$js.= '			$(".ficheaddleft").append("' . $html . '");'."\n";
+				$js.= '			$(".'.$classToAppend.'").append("' . $html . '");'."\n";
 				$js.= '		});'."\n";
 				$js.= '</script>';
 				print $js;
