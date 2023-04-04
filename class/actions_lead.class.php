@@ -96,7 +96,7 @@ class ActionsLead // extends CommonObject
 
 			foreach ( $lead->doclines as $line ) {
 				print '<tr><td>';
-				print $line->getNomUrl(1).'-'.dol_trunc($line->description).' ('.$line->status_label.' - '.$line->type_label.')';
+				print $line->getNomUrl(1).' - '.$line->ref_int.' ('.$line->status_label.' - '.$line->type_label.')';
 				print '<a href="' . dol_buildpath("/lead/lead/manage_link.php", 1) . '?action=unlink&sourceid=' . ($object->rowid ? $object->rowid : $object->id);
 				print '&sourcetype=' . $object->table_element;
 				print '&leadid=' . $line->id;
