@@ -75,7 +75,7 @@ class box_lead_late extends ModeleBoxes
 
 		$lead = new Lead($db);
 
-		$lead->fetch_all('DESC', 't.date_closure', $max, 0, array(
+		$lead->fetchAll('DESC', 't.date_closure', $max, 0, array(
 			't.date_closure<' => dol_now()
 		));
 

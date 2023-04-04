@@ -154,7 +154,7 @@ foreach ($search_array_options as $key => $val)
 {
 	$crit=$val;
 	$tmpkey=preg_replace('/search_options_/','',$key);
-	$typ=$extrafields->attribute_type[$tmpkey];
+	$typ=$extrafields->attribute['lead']['type'][$tmpkey];
 	if ($val != '') {
 		$option.='&search_options_'.$tmpkey.'='.urlencode($val);
 	}
@@ -210,15 +210,15 @@ if (! empty($conf->margin->enabled)){
 }
 
 // Extra fields
-if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label)) {
-	foreach ( $extrafields->attribute_label as $key => $val ) {
-		$typeofextrafield=$extrafields->attribute_type[$key];
+if (is_array($extrafields->attribute['lead']['label']) && count($extrafields->attribute['lead']['label'])) {
+	foreach ( $extrafields->attribute['lead']['label'] as $key => $val ) {
+		$typeofextrafield=$extrafields->attribute['lead']['label'][$key];
 		if ($typeofextrafield!='separate') {
 			$arrayfields["leadextra." . $key] = array(
-					'label' => $extrafields->attribute_label[$key],
-					'checked' => $extrafields->attribute_list[$key],
-					'position' => $extrafields->attribute_pos[$key],
-					'enabled' => $extrafields->attribute_perms[$key]
+					'label' => $extrafields->attribute['lead']['label'][$key],
+					'checked' => $extrafields->attribute['lead']['list'][$key],
+					'position' => $extrafields->attribute['lead']['pos'][$key],
+					'enabled' => $extrafields->attribute['lead']['perms'][$key]
 			);
 		}
 	}
@@ -277,9 +277,9 @@ if (!empty($socid)) {
 $nbtotalofrecords = 0;
 
 if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST)) {
-	$nbtotalofrecords = $object->fetch_all($sortorder, $sortfield, 0, 0, $filter);
+	$nbtotalofrecords = $object->fetchAll($sortorder, $sortfield, 0, 0, $filter);
 }
-$resql = $object->fetch_all($sortorder, $sortfield, $conf->liste_limit, $offset, $filter);
+$resql = $object->fetchAll($sortorder, $sortfield, $conf->liste_limit, $offset, $filter);
 
 if ($resql != - 1) {
 	$num = $resql;
@@ -336,9 +336,9 @@ if ($resql != - 1) {
 	if (! empty($arrayfields['t.date_closure']['checked'])) print_liste_field_titre($langs->trans("LeadDeadLine"), $_SERVER['PHP_SELF'], "t.date_closure", "", $option, 'align="right"', $sortfield, $sortorder);
 
 	// Extra fields
-	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
+	if (is_array($extrafields->attribute['lead']['label']) && count($extrafields->attribute['lead']['label']))
 	{
-		foreach($extrafields->attribute_label as $key => $val)
+		foreach($extrafields->attribute['lead']['label'] as $key => $val)
 		{
 			if (! empty($arrayfields["leadextra.".$key]['checked']))
 			{
@@ -412,14 +412,14 @@ if ($resql != - 1) {
 
 
 	// Extra fields
-	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
+	if (is_array($extrafields->attribute['lead']['label']) && count($extrafields->attribute['lead']['label']))
 	{
-		foreach($extrafields->attribute_label as $key => $val)
+		foreach($extrafields->attribute['lead']['label'] as $key => $val)
 		{
 			if (! empty($arrayfields["leadextra.".$key]['checked']))
 			{
 				$align=$extrafields->getAlignFlag($key);
-				$typeofextrafield=$extrafields->attribute_type[$key];
+				$typeofextrafield=$extrafields->attribute['lead']['type'][$key];
 				print '<td class="liste_titre'.($align?' '.$align:'').'">';
 				if (in_array($typeofextrafield, array('varchar', 'int', 'double', 'select')))
 				{
@@ -572,9 +572,9 @@ if ($resql != - 1) {
 		}
 
 		// Extra fields
-		if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
+		if (is_array($extrafields->attribute['lead']['label']) && count($extrafields->attribute['lead']['label']))
 		{
-			foreach($extrafields->attribute_label as $key => $val)
+			foreach($extrafields->attribute['lead']['label'] as $key => $val)
 			{
 				if (! empty($arrayfields["leadextra.".$key]['checked']))
 				{
