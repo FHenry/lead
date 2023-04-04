@@ -596,6 +596,38 @@ if ($resql != - 1) {
 
 		$i ++;
 	}
+	print "<tr class='liste_total'>";
+	if (! empty($arrayfields['t.ref']['checked'])) print "<td class='liste_total'></td>";
+	if (! empty($arrayfields['t.ref_int']['checked'])) print "<td class='liste_total'></td>";
+	if (! empty($arrayfields['so.nom']['checked'])) print "<td class='liste_total'></td>";
+	if (! empty($arrayfields['usr.lastname']['checked'])) print "<td class='liste_total'></td>";
+	if (! empty($arrayfields['leadsta.label']['checked'])) print "<td class='liste_total'></td>";
+	if (! empty($arrayfields['leadtype.label']['checked'])) print "<td class='liste_total'></td>";
+	if (! empty($arrayfields['t.amount_prosp']['checked'])) print "<td class='liste_total right'>".price($totalamountguess).' ' . $langs->getCurrencySymbol($conf->currency) ."</td>";
+	print "<td class='liste_total right'>".price($totalamountreal).' ' . $langs->getCurrencySymbol($conf->currency) ."</td>";
+	if (! empty($conf->margin->enabled)) {
+		if (!empty($arrayfields['margin']['checked'])) {
+			print "<td class='liste_total'>". price($marginInfos['total_margin']). $langs->getCurrencySymbol($conf->currency)."</td>";
+		}
+		print "<td class='liste_total'></td>";
+	}
+	if (! empty($arrayfields['t.date_closure']['checked'])) print "<td class='liste_total'></td>";
+	// Extra fields
+	if (is_array($extrafields->attribute_label) && count($extrafields->attribute_label))
+	{
+		foreach($extrafields->attribute_label as $key => $val)
+		{
+			if (! empty($arrayfields["leadextra.".$key]['checked']))
+			{
+				print '<td>';
+				print '</td>';
+			}
+		}
+		if (! $i) $totalarray['nbfield']++;
+	}
+	print "<td></td>";
+
+	print '</tr>';
 
 	print "</table>";
 	print '</form>';

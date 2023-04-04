@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Version 2.3
+
+- FIX : Fix missing list total - *03/04/2023* -2.3.16
 - FIX : Fix bad display of lead in opportunity block - *03/04/2023* - 2.3.15
 - FIX : Compat v15 - *16/02/2023* - 2.3.14
 - FIX : Compatibility PHP 8.1 - *02/08/2022* - 2.3.13
