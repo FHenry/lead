@@ -217,7 +217,7 @@ class FormLead extends Form
 
 		$lead = new Lead($this->db);
 
-		$result = $lead->fetch_all('DESC', 't.ref', 0, 0, $filter);
+		$result = $lead->fetchAll('DESC', 't.ref', 0, 0, $filter);
 		if ($result<0) {
 			setEventMessages(null, $lead->errors, 'errors');
 		}

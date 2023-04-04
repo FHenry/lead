@@ -76,7 +76,7 @@ class box_lead_current extends ModeleBoxes
 
 		$lead = new Lead($db);
 
-		$lead->fetch_all('DESC', 't.ref', $max, 0);
+		$lead->fetchAll('DESC', 't.ref', $max, 0);
 
 		$text = $langs->trans("LeadList");
 		$text .= " (" . $langs->trans("LastN", $max) . ")";
